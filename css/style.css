@@ -7,6 +7,9 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-font-smoothing: antialiased;
 }
+.LClogo{
+  transform: translateY(-8px);
+}
 h2,
 h3 {
   font-family: "Playfair Display", serif;
@@ -80,6 +83,10 @@ button:focus {
   letter-spacing: 1px;
   padding: 11px 18px;
   transition: 0.5s;
+}
+
+.navbar-fixed-top{
+  height: 70px;
 }
 
 .btn-main:hover,
@@ -698,8 +705,20 @@ div.loading {
   line-height: 25px;
 }
 @media only screen and (min-width: 1px) and (max-width: 992px) {
+
+  .LClogo{
+    transform: translateY(1px);
+  }
+
+  .navbar{
+    padding: 0.5rem;
+  }
   .navigation .navbar-toggle span {
     background: #fff;
+  }
+
+  .navbar-fixed-top{
+    height: auto;
   }
   .hero-area h1 {
     font-size: 35px;
@@ -858,4 +877,33 @@ div.loading {
   form .padding-left-15 {
     padding-left: 0;
   }
+}
+
+@media (min-width: 800px) {
+  #anon1 {
+     transform: translateX(-150%);
+  }
+
+  #anon2 {
+    transform: translateX(-150%);
+ }
+
+ #anon3 {
+  transform: translateX(-50%);
+}
+}
+
+
+@media (max-width: 800px) {
+  #anon4 {
+    transform: translateX(-100%);
+ }
+
+ #anon5 {
+   transform: translateX(-100%);
+}
+
+#anon6 {
+ transform: translateX(-100%);
+}
 }
