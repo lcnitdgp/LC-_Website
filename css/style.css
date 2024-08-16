@@ -884,12 +884,8 @@ div.loading {
      transform: translateX(-150%);
   }
 
-  #anon2 {
-    transform: translateX(-150%);
- }
-
  #anon3 {
-  transform: translateX(-50%);
+  transform: translateY(-100%);
 }
 }
 
