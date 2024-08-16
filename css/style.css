@@ -883,10 +883,9 @@ div.loading {
   #anon1 {
      transform: translateX(-150%);
   }
-
- #anon3 {
-  transform: translateY(-100%);
-}
+  #anon2{
+    transform: : translateY(-100%);
+  }
 }
 
 
