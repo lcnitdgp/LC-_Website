@@ -16,6 +16,7 @@ These files are critical for the project to run. **Modifying them directly can b
 | `node_modules/` | Contains thousands of downloaded code packages. | **HIGH**: Your app will stop working instantly. | Never edit manually. Delete usage with `npm uninstall <package>`. |
 | `dist/` | The final built website for production. | **LOW**: Your changes will just be overwritten next build. | Do not edit. This is auto-generated. |
 | `.git/` | Stores version history. | **EXTREME**: You could lose all project history. | Never touch this hidden folder. |
+| `.github/` | Controls **Automated Deployment**. | **HIGH**: You could break the website update process. | Only Tech Heads should modify the workflows here. |
 
 ---
 
