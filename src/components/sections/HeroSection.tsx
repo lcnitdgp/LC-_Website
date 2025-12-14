@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 export function HeroSection() {
     return (
         <header className="relative min-h-screen flex items-center justify-center overflow-hidden">
-            {/* Background */}
             <div
                 className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                 style={{
@@ -13,7 +12,6 @@ export function HeroSection() {
                 <div className="absolute inset-0 bg-black/40" />
             </div>
 
-            {/* Content */}
             <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
@@ -50,7 +48,6 @@ export function HeroSection() {
                     </motion.p>
                 </motion.div>
 
-                {/* Scroll Indicator */}
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}

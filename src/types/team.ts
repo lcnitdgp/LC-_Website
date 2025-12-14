@@ -7,7 +7,7 @@ export interface TeamMember {
     id: string;
     name: string;
     role: string;
-    year: 'Core' | 'Third Year' | 'Second Year';
+    year: 'Final Year' | 'Third Year' | 'Second Year';
     image1: string;
     image2: string;
     social: SocialLinks;

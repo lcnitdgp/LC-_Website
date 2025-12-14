@@ -1,193 +1,11 @@
 import type { TeamMember } from '../types/team';
 
 export const teamMembers: TeamMember[] = [
-
-    {
-        id: 'poorab',
-        name: 'Poorab Kumar',
-        role: 'President',
-        year: 'Core',
-        image1: 'images/team/Poorab1.jpg',
-        image2: 'images/team/Poorab2.jpg',
-        social: {
-            facebook: 'https://www.facebook.com/profile.php?id=100076402211367',
-            instagram: 'https://www.instagram.com/poorab_kr/',
-        },
-    },
-    {
-        id: 'navneet',
-        name: 'Navneet Berwal',
-        role: 'General Secretary',
-        year: 'Core',
-        image1: 'images/team/Navneet1.jpg',
-        image2: 'images/team/Navneet2.jpg',
-        social: {
-            facebook: 'https://www.facebook.com/navneet.berwal.58',
-            instagram: 'https://www.instagram.com/navneet_berwal/',
-        },
-    },
-    {
-        id: 'zeba',
-        name: 'Zeba Haq',
-        role: 'Vice President',
-        year: 'Core',
-        image1: 'images/team/Zeba1.jpg',
-        image2: 'images/team/Zeba2.jpg',
-        social: {
-            facebook: 'https://www.facebook.com/profile.php?id=100075675470629',
-            instagram: 'https://www.instagram.com/turbulent.tranquility',
-        },
-    },
-    {
-        id: 'soumik',
-        name: 'Soumik Biswas',
-        role: 'Treasurer',
-        year: 'Core',
-        image1: 'images/team/Soumik1.jpg',
-        image2: 'images/team/Soumik2.jpg',
-        social: {
-            facebook: 'https://www.facebook.com/sou.bis.9',
-            instagram: 'https://www.instagram.com/_soumiik_',
-        },
-    },
-    {
-        id: 'kshitiz',
-        name: 'Kshitiz Chadha',
-        role: 'Assistant General Secretary',
-        year: 'Core',
-        image1: 'images/team/Kshitiz1.jpg',
-        image2: 'images/team/Kshitiz2.jpg',
-        social: {
-            facebook: 'https://m.facebook.com/100078722296049',
-            instagram: 'https://www.instagram.com/iam.kshitiz._',
-        },
-    },
-    {
-        id: 'richa',
-        name: 'Richa Roy',
-        role: 'Convenor',
-        year: 'Core',
-        image1: 'images/team/Richa1.jpeg',
-        image2: 'images/team/Richa2.jpg',
-        social: {
-            facebook: 'https://www.facebook.com/profile.php?id=100077956013046',
-            instagram: 'https://www.instagram.com/richaroy_07',
-        },
-    },
-    {
-        id: 'kashish',
-        name: 'Kashish Agrawal',
-        role: 'Co-Convenor',
-        year: 'Core',
-        image1: 'images/team/Kashish1.jpg',
-        image2: 'images/team/Kashish2.jpg',
-        social: {
-            facebook: 'https://m.facebook.com/100028442207321',
-            instagram: 'https://www.instagram.com/kash_2408/',
-        },
-    },
-    {
-        id: 'rishav',
-        name: 'Rishav Mishra',
-        role: 'Tech Head',
-        year: 'Core',
-        image1: 'images/team/Rish1.jpg',
-        image2: 'images/team/Rish2.jpg',
-        social: {
-            facebook: 'https://m.facebook.com/100024698449929',
-            instagram: 'https://www.instagram.com/rishavmishra_97',
-        },
-    },
-    {
-        id: 'aditya',
-        name: 'Aditya Agarwal',
-        role: 'Sponsorship Head',
-        year: 'Core',
-        image1: 'images/team/Adityagg1.jpg',
-        image2: 'images/team/Adityagg2.jpg',
-        social: {
-            facebook: 'https://www.facebook.com/yug.soni007',
-            instagram: 'https://www.instagram.com/aditya_ag_2504',
-        },
-    },
-    {
-        id: 'durvankur',
-        name: 'Durvankur Diwadkar',
-        role: 'Design Head',
-        year: 'Core',
-        image1: 'images/team/Durvankur1.jpg',
-        image2: 'images/team/Durvankur2.jpg',
-        social: {
-            facebook: 'https://www.facebook.com/profile.php?id=100076131744532',
-            instagram: 'https://www.instagram.com/_.durvankurrr._',
-        },
-    },
-    {
-        id: 'ayush',
-        name: 'Ayush Raj',
-        role: 'Operations Head',
-        year: 'Core',
-        image1: 'images/team/AyushR1.jpg',
-        image2: 'images/team/AyushR2.jpg',
-        social: {
-            facebook: 'https://m.facebook.com/100052419365896',
-            instagram: 'https://www.instagram.com/_7ayush_raj7',
-        },
-    },
-    {
-        id: 'vedang',
-        name: 'Vedang Chauhan',
-        role: 'PR & Outreach Head',
-        year: 'Core',
-        image1: 'images/team/Vedang1.jpg',
-        image2: 'images/team/Vedang2.jpg',
-        social: {
-            facebook: 'https://www.facebook.com/profile.php?id=100073380730484',
-            instagram: 'https://www.instagram.com/im_vedang',
-        },
-    },
-    {
-        id: 'abhishek',
-        name: 'Abhishek Prusty',
-        role: 'Media Head',
-        year: 'Core',
-        image1: 'images/team/Prusty1.jpg',
-        image2: 'images/team/Prusty2.jpg',
-        social: {
-            facebook: 'https://m.facebook.com/100015495341184',
-            instagram: 'https://www.instagram.com/ab._.hi._.sh._.ek',
-        },
-    },
-
-    // Third Year
-    {
-        id: 'ankit',
-        name: 'Ankit Pratap',
-        role: 'Third Year',
-        year: 'Third Year',
-        image1: 'images/team/Ankit1.png',
-        image2: 'images/team/Ankit2.png',
-        social: {
-            instagram: 'https://www.instagram.com/ankitxpratap',
-        },
-    },
-    {
-        id: 'manoj',
-        name: 'Manoj Sai Vardhan P',
-        role: 'Third Year',
-        year: 'Third Year',
-        image1: 'images/team/Manoj1.png',
-        image2: 'images/team/Manoj2.png',
-        social: {
-            facebook: 'https://www.facebook.com/profile.php?id=100090790414874',
-            instagram: 'https://instagram.com/manoj_9517_',
-        },
-    },
     {
         id: 'melita',
         name: 'Melita Saha',
-        role: 'Third Year',
-        year: 'Third Year',
+        role: 'President',
+        year: 'Final Year',
         image1: 'images/team/Melita1.png',
         image2: 'images/team/Melita2.png',
         social: {
@@ -196,70 +14,10 @@ export const teamMembers: TeamMember[] = [
         },
     },
     {
-        id: 'naba',
-        name: 'Naba Chandra Singha',
-        role: 'Third Year',
-        year: 'Third Year',
-        image1: 'images/team/Naba1.png',
-        image2: 'images/team/Naba2.png',
-        social: {
-            facebook: 'https://www.facebook.com/naba.singha.5249',
-            instagram: 'https://www.instagram.com/naba_singha_/',
-        },
-    },
-    {
-        id: 'naivedyam',
-        name: 'Naivedyam Mishra',
-        role: 'Third Year',
-        year: 'Third Year',
-        image1: 'images/team/Naivedyam1.png',
-        image2: 'images/team/Naivedyam2.png',
-        social: {
-            facebook: 'https://www.facebook.com/naivaidyam.mishra',
-            instagram: 'https://www.instagram.com/naivedyam1614/',
-        },
-    },
-    {
-        id: 'sreejita',
-        name: 'Sreejita Biswas',
-        role: 'Third Year',
-        year: 'Third Year',
-        image1: 'images/team/Sreejita1.png',
-        image2: 'images/team/Sreejita2.png',
-        social: {
-            facebook: 'https://www.facebook.com/Eleanor.Rigby226',
-            instagram: 'https://www.instagram.com/pearls.o.six22/',
-        },
-    },
-    {
-        id: 'srijan',
-        name: 'Srijan Chowdhury',
-        role: 'Third Year',
-        year: 'Third Year',
-        image1: 'images/team/Srijan2 (2).png',
-        image2: 'images/team/Srijan2 (1).png',
-        social: {
-            facebook: 'https://www.facebook.com/srijanchowdhury.srijan.3',
-            instagram: 'https://instagram.com/cheeztacos',
-        },
-    },
-    {
-        id: 'sumit',
-        name: 'Sumit Kumar Yadav',
-        role: 'Third Year',
-        year: 'Third Year',
-        image1: 'images/team/Sumit1.png',
-        image2: 'images/team/Sumit2.png',
-        social: {
-            facebook: 'https://www.facebook.com/sumitkumar.yadav.96742',
-            instagram: 'https://www.instagram.com/sumitrex_124421/',
-        },
-    },
-    {
         id: 'varun',
         name: 'Varun Reddy',
-        role: 'Third Year',
-        year: 'Third Year',
+        role: 'General Secretary',
+        year: 'Final Year',
         image1: 'images/team/Varun1.png',
         image2: 'images/team/Varun2.png',
         social: {
@@ -268,10 +26,69 @@ export const teamMembers: TeamMember[] = [
         },
     },
     {
+        id: 'ankit',
+        name: 'Ankit Pratap',
+        role: 'Treasurer',
+        year: 'Final Year',
+        image1: 'images/team/Ankit1.png',
+        image2: 'images/team/Ankit2.png',
+        social: {
+            instagram: 'https://www.instagram.com/ankitxpratap',
+        },
+    },
+    {
+        id: 'srijan',
+        name: 'Srijan Chowdhury',
+        role: 'Vice President',
+        year: 'Final Year',
+        image1: 'images/team/Srijan2 (2).png',
+        image2: 'images/team/Srijan2 (1).png',
+        social: {
+            facebook: 'https://www.facebook.com/srijanchowdhury.srijan.3',
+            instagram: 'https://instagram.com/cheeztacos',
+        },
+    },
+    {
+        id: 'manoj',
+        name: 'Manoj Sai Vardhan P',
+        role: 'Assistant General Secretary',
+        year: 'Final Year',
+        image1: 'images/team/Manoj1.png',
+        image2: 'images/team/Manoj2.png',
+        social: {
+            facebook: 'https://www.facebook.com/profile.php?id=100090790414874',
+            instagram: 'https://instagram.com/manoj_9517_',
+        },
+    },
+    {
+        id: 'sreejita',
+        name: 'Sreejita Biswas',
+        role: 'Convenor',
+        year: 'Final Year',
+        image1: 'images/team/Sreejita1.png',
+        image2: 'images/team/Sreejita2.png',
+        social: {
+            facebook: 'https://www.facebook.com/Eleanor.Rigby226',
+            instagram: 'https://www.instagram.com/pearls.o.six22/',
+        },
+    },
+    {
+        id: 'naivedyam',
+        name: 'Naivedyam Mishra',
+        role: 'Tech Head',
+        year: 'Final Year',
+        image1: 'images/team/Naivedyam1.png',
+        image2: 'images/team/Naivedyam2.png',
+        social: {
+            facebook: 'https://www.facebook.com/naivaidyam.mishra',
+            instagram: 'https://www.instagram.com/naivedyam1614/',
+        },
+    },
+    {
         id: 'vidya',
         name: 'Vidya Sri',
-        role: 'Third Year',
-        year: 'Third Year',
+        role: 'Co-Convenor & Yearbook Coordinator',
+        year: 'Final Year',
         image1: 'images/team/Vidya1.png',
         image2: 'images/team/Vidya2.png',
         social: {
@@ -282,8 +99,8 @@ export const teamMembers: TeamMember[] = [
     {
         id: 'pal',
         name: 'Pal Shekhar',
-        role: 'Third Year',
-        year: 'Third Year',
+        role: 'Design Head',
+        year: 'Final Year',
         image1: 'images/team/Pal1.png',
         image2: 'images/team/Pal2.png',
         social: {
@@ -291,10 +108,34 @@ export const teamMembers: TeamMember[] = [
         },
     },
     {
+        id: 'naba',
+        name: 'Naba Chandra Singha',
+        role: 'Operations Head',
+        year: 'Final Year',
+        image1: 'images/team/Naba1.png',
+        image2: 'images/team/Naba2.png',
+        social: {
+            facebook: 'https://www.facebook.com/naba.singha.5249',
+            instagram: 'https://www.instagram.com/naba_singha_/',
+        },
+    },
+    {
+        id: 'sumit',
+        name: 'Sumit Kumar Yadav',
+        role: 'Media & Sponsorship Head',
+        year: 'Final Year',
+        image1: 'images/team/Sumit1.png',
+        image2: 'images/team/Sumit2.png',
+        social: {
+            facebook: 'https://www.facebook.com/sumitkumar.yadav.96742',
+            instagram: 'https://www.instagram.com/sumitrex_124421/',
+        },
+    },
+    {
         id: 'aviraj',
         name: 'Aviraj Chakrabarty',
-        role: 'Third Year',
-        year: 'Third Year',
+        role: 'PR Head',
+        year: 'Final Year',
         image1: 'images/team/Aviraj1.png',
         image2: 'images/team/Aviraj2.png',
         social: {
@@ -303,12 +144,11 @@ export const teamMembers: TeamMember[] = [
         },
     },
 
-    // Second Year
     {
         id: 'alok',
         name: 'Alok Raj',
-        role: 'Second Year',
-        year: 'Second Year',
+        role: 'Third Year',
+        year: 'Third Year',
         image1: 'images/team/alok1.jpg',
         image2: 'images/team/alok2.jpg',
         social: {
@@ -318,8 +158,8 @@ export const teamMembers: TeamMember[] = [
     {
         id: 'rajshekhar',
         name: 'Rajshekhar Das',
-        role: 'Second Year',
-        year: 'Second Year',
+        role: 'Third Year',
+        year: 'Third Year',
         image1: 'images/team/rajshekhar1.jpg',
         image2: 'images/team/rajshekhar2.jpg',
         social: {
@@ -329,8 +169,8 @@ export const teamMembers: TeamMember[] = [
     {
         id: 'rounak',
         name: 'Rounak Ray',
-        role: 'Second Year',
-        year: 'Second Year',
+        role: 'Third Year',
+        year: 'Third Year',
         image1: 'images/team/rounak1.jpg',
         image2: 'images/team/rounak2.jpg',
         social: {
@@ -341,8 +181,8 @@ export const teamMembers: TeamMember[] = [
     {
         id: 'taanish',
         name: 'Taanish Modgil',
-        role: 'Second Year',
-        year: 'Second Year',
+        role: 'Third Year',
+        year: 'Third Year',
         image1: 'images/team/taanish1.png',
         image2: 'images/team/taanish2.jpg',
         social: {},
@@ -350,8 +190,8 @@ export const teamMembers: TeamMember[] = [
     {
         id: 'chaitanya',
         name: 'Chaitanya Kumar Singh',
-        role: 'Second Year',
-        year: 'Second Year',
+        role: 'Third Year',
+        year: 'Third Year',
         image1: 'images/team/chaitanya1.jpg',
         image2: 'images/team/chaitanya2.jpg',
         social: {
@@ -362,8 +202,8 @@ export const teamMembers: TeamMember[] = [
     {
         id: 'shambhabi',
         name: 'Shambhabi Gupta',
-        role: 'Second Year',
-        year: 'Second Year',
+        role: 'Third Year',
+        year: 'Third Year',
         image1: 'images/team/shambhabi1.jpg',
         image2: 'images/team/shambhabi2.jpg',
         social: {
@@ -374,8 +214,8 @@ export const teamMembers: TeamMember[] = [
     {
         id: 'shreyansh',
         name: 'Shreyansh Sharma',
-        role: 'Second Year',
-        year: 'Second Year',
+        role: 'Third Year',
+        year: 'Third Year',
         image1: 'images/team/shreyansh1.jpg',
         image2: 'images/team/shreyansh2.jpg',
         social: {
@@ -385,8 +225,8 @@ export const teamMembers: TeamMember[] = [
     {
         id: 'sanya',
         name: 'Sanya Dev',
-        role: 'Second Year',
-        year: 'Second Year',
+        role: 'Third Year',
+        year: 'Third Year',
         image1: 'images/team/sanya1.jpg',
         image2: 'images/team/sanya2.jpg',
         social: {
@@ -397,8 +237,8 @@ export const teamMembers: TeamMember[] = [
     {
         id: 'stuti',
         name: 'Stuti Maheska',
-        role: 'Second Year',
-        year: 'Second Year',
+        role: 'Third Year',
+        year: 'Third Year',
         image1: 'images/team/stuti1.jpg',
         image2: 'images/team/stuti2.jpg',
         social: {
@@ -409,8 +249,8 @@ export const teamMembers: TeamMember[] = [
     {
         id: 'hema',
         name: 'Hema Varshini',
-        role: 'Second Year',
-        year: 'Second Year',
+        role: 'Third Year',
+        year: 'Third Year',
         image1: 'images/team/hema1.jpg',
         image2: 'images/team/hema2.jpg',
         social: {
@@ -421,8 +261,8 @@ export const teamMembers: TeamMember[] = [
     {
         id: 'pranava',
         name: 'Pranava Sharma',
-        role: 'Second Year',
-        year: 'Second Year',
+        role: 'Third Year',
+        year: 'Third Year',
         image1: 'images/team/pranava1.jpg',
         image2: 'images/team/pranava2.jpeg',
         social: {
@@ -433,8 +273,8 @@ export const teamMembers: TeamMember[] = [
     {
         id: 'sourasish',
         name: 'Sourasish Pandit',
-        role: 'Second Year',
-        year: 'Second Year',
+        role: 'Third Year',
+        year: 'Third Year',
         image1: 'images/team/sourasish1.jpg',
         image2: 'images/team/sourasish2.jpg',
         social: {
@@ -445,8 +285,8 @@ export const teamMembers: TeamMember[] = [
     {
         id: 'kunal',
         name: 'Kunal Singh Munda',
-        role: 'Second Year',
-        year: 'Second Year',
+        role: 'Third Year',
+        year: 'Third Year',
         image1: 'images/team/kunal1.jpg',
         image2: 'images/team/kunal2.jpg',
         social: {
@@ -456,8 +296,8 @@ export const teamMembers: TeamMember[] = [
     {
         id: 'nishant',
         name: 'Nishant Mohanty',
-        role: 'Second Year',
-        year: 'Second Year',
+        role: 'Third Year',
+        year: 'Third Year',
         image1: 'images/team/Nishant1.png',
         image2: 'images/team/nishant2.png',
         social: {},
@@ -468,6 +308,5 @@ export const getTeamByYear = (year: TeamMember['year']): TeamMember[] => {
     return teamMembers.filter(member => member.year === year);
 };
 
-export const coreTeam = getTeamByYear('Core');
-export const thirdYear = getTeamByYear('Third Year');
-export const secondYear = getTeamByYear('Second Year');
+export const FinalYear = getTeamByYear('Final Year');
+export const ThirdYear = getTeamByYear('Third Year');
