@@ -144,7 +144,7 @@ Understanding where files live is 90% of the work.
 ## 📝 5. Commit & Contribution Rules
 
 **Rules to live by:**
-1.  **NEVER push directly to `main`**. The `main` branch is production. If you break it, the site breaks.
+1.  **NEVER push directly to `master`**. The `master` branch is production. If you break it, the site breaks.
 2.  **Always create a new branch** for your work.
 3.  **Test locally** before saving.
 
