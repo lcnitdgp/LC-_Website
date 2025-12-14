@@ -11,7 +11,7 @@ export function TeamSection() {
         <section
             className="relative py-20 bg-cover bg-center bg-fixed"
             style={{
-                backgroundImage: `url('/images/slider/201.jpg')`,
+                backgroundImage: `url('images/slider/201.jpg')`,
             }}
         >
             <div className="absolute inset-0 bg-white/80" />
