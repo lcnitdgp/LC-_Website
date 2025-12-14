@@ -6,7 +6,7 @@ export function AboutSection() {
         <section
             className="relative py-20 bg-cover bg-center bg-fixed"
             style={{
-                backgroundImage: `url('/images/slider/91.jpg')`,
+                backgroundImage: `url('images/slider/91.jpg')`,
             }}
         >
             <div className="absolute inset-0 bg-black/60" />
