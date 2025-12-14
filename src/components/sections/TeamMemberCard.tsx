@@ -22,7 +22,6 @@ export function TeamMemberCard({ member, index }: TeamMemberCardProps) {
             onMouseLeave={() => setIsHovered(false)}
         >
             <div className="relative overflow-hidden rounded-xl aspect-[3/4] cursor-pointer">
-                {/* Primary Image */}
                 <img
                     src={member.image1}
                     alt={member.name}
@@ -30,7 +29,6 @@ export function TeamMemberCard({ member, index }: TeamMemberCardProps) {
                     style={{ opacity: isHovered ? 0 : 1 }}
                 />
 
-                {/* Hover State - Secondary Image + Info */}
                 <div
                     className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent transition-opacity duration-300"
                     style={{ opacity: isHovered ? 1 : 0 }}
@@ -49,7 +47,6 @@ export function TeamMemberCard({ member, index }: TeamMemberCardProps) {
                             {member.role}
                         </span>
 
-                        {/* Social Links */}
                         <div className="flex gap-3">
                             {member.social.facebook && (
                                 <a

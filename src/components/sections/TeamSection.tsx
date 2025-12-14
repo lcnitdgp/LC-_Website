@@ -3,7 +3,7 @@ import { teamMembers } from '../../data/teamMembers';
 import { TeamMemberCard } from './TeamMemberCard';
 
 export function TeamSection() {
-    const coreTeam = teamMembers.filter(m => m.year === 'Core');
+    const finalYear = teamMembers.filter(m => m.year === 'Final Year');
     const thirdYear = teamMembers.filter(m => m.year === 'Third Year');
     const secondYear = teamMembers.filter(m => m.year === 'Second Year');
 
@@ -37,13 +37,13 @@ export function TeamSection() {
                         className="text-xl font-cormorant text-gray-700 mb-6 flex items-center gap-4"
                     >
                         <span className="bg-primary-600 text-white px-4 py-1 rounded-full">
-                            Core Team
+                            Final Year
                         </span>
                         <span className="flex-1 h-px bg-gray-300" />
                     </motion.h3>
 
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
-                        {coreTeam.map((member, index) => (
+                        {finalYear.map((member, index) => (
                             <TeamMemberCard key={member.id} member={member} index={index} />
                         ))}
                     </div>
