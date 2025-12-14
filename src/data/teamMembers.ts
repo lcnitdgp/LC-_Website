@@ -10,7 +10,7 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/Melita2.png',
         social: {
             facebook: 'https://www.facebook.com/profile.php?id=100089247920826',
-            instagram: 'https://instagram.com/melitasaha',
+            instagram: 'melitasaha',
         },
     },
     {
@@ -22,7 +22,7 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/Varun2.png',
         social: {
             facebook: 'https://www.facebook.com/varunreddy.mandhala.7',
-            instagram: 'https://instagram.com/m_varun_25',
+            instagram: 'm_varun_25',
         },
     },
     {
@@ -33,7 +33,7 @@ export const teamMembers: TeamMember[] = [
         image1: 'images/team/Ankit1.png',
         image2: 'images/team/Ankit2.png',
         social: {
-            instagram: 'https://www.instagram.com/ankitxpratap',
+            instagram: 'ankitxpratap',
         },
     },
     {
@@ -45,7 +45,7 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/Srijan2 (1).png',
         social: {
             facebook: 'https://www.facebook.com/srijanchowdhury.srijan.3',
-            instagram: 'https://instagram.com/cheeztacos',
+            instagram: 'cheeztacos',
         },
     },
     {
@@ -57,7 +57,7 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/Manoj2.png',
         social: {
             facebook: 'https://www.facebook.com/profile.php?id=100090790414874',
-            instagram: 'https://instagram.com/manoj_9517_',
+            instagram: 'manoj_9517_',
         },
     },
     {
@@ -69,7 +69,7 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/Sreejita2.png',
         social: {
             facebook: 'https://www.facebook.com/Eleanor.Rigby226',
-            instagram: 'https://www.instagram.com/pearls.o.six22/',
+            instagram: 'pearls.o.six22',
         },
     },
     {
@@ -81,7 +81,7 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/Naivedyam2.png',
         social: {
             facebook: 'https://www.facebook.com/naivaidyam.mishra',
-            instagram: 'https://www.instagram.com/naivedyam1614/',
+            instagram: 'naivedyam1614',
         },
     },
     {
@@ -93,7 +93,7 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/Vidya2.png',
         social: {
             facebook: 'https://www.facebook.com/profile.php?id=100089265211671',
-            instagram: 'https://instagram.com/itzvidyaxx',
+            instagram: 'itzvidyaxx',
         },
     },
     {
@@ -104,7 +104,7 @@ export const teamMembers: TeamMember[] = [
         image1: 'images/team/Pal1.png',
         image2: 'images/team/Pal2.png',
         social: {
-            instagram: 'https://www.instagram.com/palshekharr/',
+            instagram: 'palshekharr',
         },
     },
     {
@@ -116,7 +116,7 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/Naba2.png',
         social: {
             facebook: 'https://www.facebook.com/naba.singha.5249',
-            instagram: 'https://www.instagram.com/naba_singha_/',
+            instagram: 'naba_singha_',
         },
     },
     {
@@ -128,7 +128,7 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/Sumit2.png',
         social: {
             facebook: 'https://www.facebook.com/sumitkumar.yadav.96742',
-            instagram: 'https://www.instagram.com/sumitrex_124421/',
+            instagram: 'sumitrex_124421',
         },
     },
     {
@@ -140,7 +140,7 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/Aviraj2.png',
         social: {
             facebook: 'https://www.facebook.com/profile.php?id=100087367254572',
-            instagram: 'https://www.instagram.com/a.v.i.r.a.j.c.h/',
+            instagram: 'a.v.i.r.a.j.c.h',
         },
     },
 
@@ -152,7 +152,7 @@ export const teamMembers: TeamMember[] = [
         image1: 'images/team/alok1.jpg',
         image2: 'images/team/alok2.jpg',
         social: {
-            instagram: 'https://www.instagram.com/alok_raj1101',
+            instagram: 'alok_raj1101',
         },
     },
     {
@@ -163,7 +163,7 @@ export const teamMembers: TeamMember[] = [
         image1: 'images/team/rajshekhar1.jpg',
         image2: 'images/team/rajshekhar2.jpg',
         social: {
-            instagram: 'https://www.instagram.com/_outcast_raj',
+            instagram: '_outcast_raj',
         },
     },
     {
@@ -175,7 +175,7 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/rounak2.jpg',
         social: {
             facebook: 'https://www.facebook.com/rounak.ray.589100',
-            instagram: 'https://www.instagram.com/daydreamer_2811',
+            instagram: 'daydreamer_2811',
         },
     },
     {
@@ -196,7 +196,7 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/chaitanya2.jpg',
         social: {
             facebook: 'https://www.facebook.com/profile.php?id=61557354986620',
-            instagram: 'https://www.instagram.com/chaitan_17',
+            instagram: 'chaitan_17',
         },
     },
     {
@@ -208,7 +208,7 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/shambhabi2.jpg',
         social: {
             facebook: 'https://www.facebook.com/share/hnJsWskF2RhtvGDF/',
-            instagram: 'https://www.instagram.com/shambhabii',
+            instagram: 'shambhabii',
         },
     },
     {
@@ -219,7 +219,7 @@ export const teamMembers: TeamMember[] = [
         image1: 'images/team/shreyansh1.jpg',
         image2: 'images/team/shreyansh2.jpg',
         social: {
-            instagram: 'https://www.instagram.com/meevin.shr3y',
+            instagram: 'meevin.shr3y',
         },
     },
     {
@@ -231,7 +231,7 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/sanya2.jpg',
         social: {
             facebook: 'https://www.facebook.com/profile.php?id=61557450472095',
-            instagram: 'https://www.instagram.com/dev_sanya',
+            instagram: 'dev_sanya',
         },
     },
     {
@@ -243,7 +243,7 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/stuti2.jpg',
         social: {
             facebook: 'https://www.facebook.com/maheskastuti',
-            instagram: 'https://www.instagram.com/maheskastuti',
+            instagram: 'maheskastuti',
         },
     },
     {
@@ -255,7 +255,7 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/hema2.jpg',
         social: {
             facebook: 'https://www.facebook.com/profile.php?id=61556993322506',
-            instagram: 'https://www.instagram.com/hema_srinivas04',
+            instagram: 'hema_srinivas04',
         },
     },
     {
@@ -267,7 +267,7 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/pranava2.jpeg',
         social: {
             facebook: 'https://www.facebook.com/pranav.oleti.7',
-            instagram: 'https://www.instagram.com/pranav_simpleguy',
+            instagram: 'pranav_simpleguy',
         },
     },
     {
@@ -279,7 +279,7 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/sourasish2.jpg',
         social: {
             facebook: 'https://www.facebook.com/profile.php?id=61557067416518',
-            instagram: 'https://www.instagram.com/sourasish_pandit',
+            instagram: 'sourasish_pandit',
         },
     },
     {
@@ -290,7 +290,7 @@ export const teamMembers: TeamMember[] = [
         image1: 'images/team/kunal1.jpg',
         image2: 'images/team/kunal2.jpg',
         social: {
-            instagram: 'https://www.instagram.com/kunal.sm',
+            instagram: 'kunal.sm',
         },
     },
     {
@@ -302,6 +302,159 @@ export const teamMembers: TeamMember[] = [
         image2: 'images/team/nishant2.png',
         social: {},
     },
+
+    {
+        id: 'aarambhika',
+        name: 'Aarambhika',
+        role: 'Second Year',
+        year: 'Second Year',
+        image1: 'images/team/2028/Aarambhika/Formal.jpg',
+        image2: 'images/team/2028/Aarambhika/Informal.jpg',
+        social: {
+            instagram: '_aarambhika',
+        },
+    },
+    {
+        id: 'aastha',
+        name: 'Aastha',
+        role: 'Second Year',
+        year: 'Second Year',
+        image1: 'images/team/2028/Aastha/Formal.jpg',
+        image2: 'images/team/2028/Aastha/Informal.jpg',
+        social: {
+            instagram: '_aastha284_'
+        },
+    },
+    {
+        id: 'akanksha',
+        name: 'Akanksha',
+        role: 'Second Year',
+        year: 'Second Year',
+        image1: 'images/team/2028/Akanksha /Formal.jpg',
+        image2: 'images/team/2028/Akanksha /Informal.jpg',
+        social: {
+            instagram: 'akankshaa.55'
+        },
+    },
+    {
+        id: 'alisha',
+        name: 'Alisha',
+        role: 'Second Year',
+        year: 'Second Year',
+        image1: 'images/team/2028/Alisha/Formal.jpg',
+        image2: 'images/team/2028/Alisha/Informal.jpg',
+        social: {
+            instagram: 'gattodonaaa'
+        },
+    },
+    {
+        id: 'ankur',
+        name: 'Ankur',
+        role: 'Second Year',
+        year: 'Second Year',
+        image1: 'images/team/2028/Ankur/Ankur Mohanty.png',
+        image2: 'images/team/2028/Ankur/Ankur-informal.jpg',
+        social: {
+            instagram: 'thats.ankur'
+        },
+    },
+    {
+        id: 'chiranjeev',
+        name: 'Chiranjeev',
+        role: 'Second Year',
+        year: 'Second Year',
+        image1: 'images/team/2028/Chiranjeev/Formal.jpg',
+        image2: 'images/team/2028/Chiranjeev/Informal.jpg',
+        social: {
+            instagram: 'chiranjeev1742'
+        },
+    },
+    {
+        id: 'harshita',
+        name: 'Harshita',
+        role: 'Second Year',
+        year: 'Second Year',
+        image1: 'images/team/2028/Harshita/Formal_.jpg',
+        image2: 'images/team/2028/Harshita/Informal_.jpg',
+        social: {},
+    },
+    {
+        id: 'hemant',
+        name: 'Hemant',
+        role: 'Second Year',
+        year: 'Second Year',
+        image1: 'images/team/2028/Hemant /Informal.jpg',
+        image2: 'images/team/2028/Hemant /Informal.jpg',
+        social: {
+            instagram: 'hemant_saini017'
+        },
+    },
+    {
+        id: 'raunak',
+        name: 'Raunak',
+        role: 'Second Year',
+        year: 'Second Year',
+        image1: 'images/team/2028/Raunak/Raunak-formal.jpg',
+        image2: 'images/team/2028/Raunak/Raunak-informal.jpg',
+        social: {
+            instagram: 'raunak_psd'
+        },
+    },
+    {
+        id: 'rewant',
+        name: 'Rewant',
+        role: 'Second Year',
+        year: 'Second Year',
+        image1: 'images/team/2028/Rewant/Formal.jpg',
+        image2: 'images/team/2028/Rewant/Informal.jpg',
+        social: {
+            instagram: '__rewant_05'
+        },
+    },
+    {
+        id: 'sattwik',
+        name: 'Sattwik',
+        role: 'Second Year',
+        year: 'Second Year',
+        image1: 'images/team/2028/Sattwik/Formal.jpg',
+        image2: 'images/team/2028/Sattwik/Informal.jpg',
+        social: {
+            instagram: 'sattwik1105'
+        },
+    },
+    {
+        id: 'supriya',
+        name: 'Supriya',
+        role: 'Second Year',
+        year: 'Second Year',
+        image1: 'images/team/2028/Supriya /formal.jpg',
+        image2: 'images/team/2028/Supriya /informal.jpg',
+        social: {
+            instagram: 'sumire_viola_'
+        },
+    },
+    {
+        id: 'tapomay',
+        name: 'Tapomay',
+        role: 'Second Year',
+        year: 'Second Year',
+        image1: 'images/team/2028/Tapomay/Formal.jpg',
+        image2: 'images/team/2028/Tapomay/Informal',
+        social: {
+            instagram: 'tapomoy_ghosh'
+        },
+    },
+    {
+        id: 'yayen',
+        name: 'Yayen',
+        role: 'Second Year',
+        year: 'Second Year',
+        image1: 'images/team/2028/Yayen/Formal.png',
+        image2: 'images/team/2028/Yayen/Informal.HEIC',
+        social: {
+            instagram: 'yayensaini'
+        },
+    },
 ];
 
 export const getTeamByYear = (year: TeamMember['year']): TeamMember[] => {
@@ -310,3 +463,4 @@ export const getTeamByYear = (year: TeamMember['year']): TeamMember[] => {
 
 export const FinalYear = getTeamByYear('Final Year');
 export const ThirdYear = getTeamByYear('Third Year');
+export const SecondYear = getTeamByYear('Second Year');

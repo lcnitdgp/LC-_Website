@@ -8,8 +8,20 @@ interface TeamMemberCardProps {
     index: number;
 }
 
+const buildInstagramUrl = (handle?: string) => {
+    if (!handle) return undefined;
+
+    const sanitizedHandle = handle
+        .replace(/^https?:\/\/(www\.)?instagram\.com\//i, '')
+        .replace(/\/$/, '')
+        .replace(/^@/, '');
+
+    return `https://www.instagram.com/${sanitizedHandle}`;
+};
+
 export function TeamMemberCard({ member, index }: TeamMemberCardProps) {
     const [isHovered, setIsHovered] = useState(false);
+    const instagramUrl = buildInstagramUrl(member.social.instagram);
 
     return (
         <motion.div
@@ -60,9 +72,9 @@ export function TeamMemberCard({ member, index }: TeamMemberCardProps) {
                                     <Facebook size={18} className="text-white" />
                                 </a>
                             )}
-                            {member.social.instagram && (
+                            {instagramUrl && (
                                 <a
-                                    href={member.social.instagram}
+                                    href={instagramUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="p-2 bg-white/20 rounded-full hover:bg-primary-600 transition-colors duration-200"
