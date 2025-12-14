@@ -170,7 +170,7 @@ Edit the files in VS Code. Save them.
 "Staging" and "Committing" saves a snapshot of your work.
 ```bash
 git add .
-git commit -m "Added Navneet's bio and photo"
+git commit -m "Added Naivedyam's bio and photo"
 ```
 *Note: Write a clear message. "Fixed stuff" is a bad message.*
 
