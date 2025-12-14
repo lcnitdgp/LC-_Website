@@ -1,6 +1,6 @@
 export interface SocialLinks {
     facebook?: string;
-    instagram?: string;
+    instagram?: string; // Instagram username only
 }
 
 export interface TeamMember {
