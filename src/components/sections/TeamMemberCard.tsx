@@ -37,6 +37,8 @@ export function TeamMemberCard({ member, index }: TeamMemberCardProps) {
                 <img
                     src={member.image1}
                     alt={member.name}
+                    loading="lazy"
+                    decoding="async"
                     className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
                     style={{ opacity: isHovered ? 0 : 1 }}
                 />
@@ -48,6 +50,8 @@ export function TeamMemberCard({ member, index }: TeamMemberCardProps) {
                     <img
                         src={member.image2}
                         alt={member.name}
+                        loading="lazy"
+                        decoding="async"
                         className="absolute inset-0 w-full h-full object-cover -z-10"
                     />
 

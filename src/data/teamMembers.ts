@@ -6,8 +6,8 @@ export const teamMembers: TeamMember[] = [
         name: 'Melita Saha',
         role: 'President',
         year: 'Final Year',
-        image1: 'images/team/Melita1.png',
-        image2: 'images/team/Melita2.png',
+        image1: 'images/team/Melita1.jpg',
+        image2: 'images/team/Melita2.jpg',
         social: {
             facebook: 'https://www.facebook.com/profile.php?id=100089247920826',
             instagram: 'melitasaha',
@@ -18,8 +18,8 @@ export const teamMembers: TeamMember[] = [
         name: 'Varun Reddy',
         role: 'General Secretary',
         year: 'Final Year',
-        image1: 'images/team/Varun1.png',
-        image2: 'images/team/Varun2.png',
+        image1: 'images/team/Varun1.jpg',
+        image2: 'images/team/Varun2.jpg',
         social: {
             facebook: 'https://www.facebook.com/varunreddy.mandhala.7',
             instagram: 'm_varun_25',
@@ -30,8 +30,8 @@ export const teamMembers: TeamMember[] = [
         name: 'Ankit Pratap',
         role: 'Treasurer',
         year: 'Final Year',
-        image1: 'images/team/Ankit1.png',
-        image2: 'images/team/Ankit2.png',
+        image1: 'images/team/Ankit1.jpg',
+        image2: 'images/team/Ankit2.jpg',
         social: {
             instagram: 'ankitxpratap',
         },
@@ -41,8 +41,8 @@ export const teamMembers: TeamMember[] = [
         name: 'Srijan Chowdhury',
         role: 'Vice President',
         year: 'Final Year',
-        image1: 'images/team/Srijan2 (2).png',
-        image2: 'images/team/Srijan2 (1).png',
+        image1: 'images/team/Srijan2 (2).jpg',
+        image2: 'images/team/Srijan2 (1).jpg',
         social: {
             facebook: 'https://www.facebook.com/srijanchowdhury.srijan.3',
             instagram: 'cheeztacos',
@@ -53,8 +53,8 @@ export const teamMembers: TeamMember[] = [
         name: 'Manoj Sai Vardhan P',
         role: 'Assistant General Secretary',
         year: 'Final Year',
-        image1: 'images/team/Manoj1.png',
-        image2: 'images/team/Manoj2.png',
+        image1: 'images/team/Manoj1.jpg',
+        image2: 'images/team/Manoj2.jpg',
         social: {
             facebook: 'https://www.facebook.com/profile.php?id=100090790414874',
             instagram: 'manoj_9517_',
@@ -65,7 +65,7 @@ export const teamMembers: TeamMember[] = [
         name: 'Sreejita Biswas',
         role: 'Convenor',
         year: 'Final Year',
-        image1: 'images/team/Sreejita1.png',
+        image1: 'images/team/Sreejita1.jpg',
         image2: 'images/team/Sreejita2.png',
         social: {
             facebook: 'https://www.facebook.com/Eleanor.Rigby226',
@@ -78,7 +78,7 @@ export const teamMembers: TeamMember[] = [
         role: 'Tech Head',
         year: 'Final Year',
         image1: 'images/team/Naivedyam1.png',
-        image2: 'images/team/Naivedyam2.png',
+        image2: 'images/team/Naivedyam2.jpg',
         social: {
             facebook: 'https://www.facebook.com/naivaidyam.mishra',
             instagram: 'naivedyam1614',
@@ -89,8 +89,8 @@ export const teamMembers: TeamMember[] = [
         name: 'Vidya Sri',
         role: 'Co-Convenor & Yearbook Coordinator',
         year: 'Final Year',
-        image1: 'images/team/Vidya1.png',
-        image2: 'images/team/Vidya2.png',
+        image1: 'images/team/Vidya1.jpg',
+        image2: 'images/team/Vidya2.jpg',
         social: {
             facebook: 'https://www.facebook.com/profile.php?id=100089265211671',
             instagram: 'itzvidyaxx',
@@ -101,8 +101,8 @@ export const teamMembers: TeamMember[] = [
         name: 'Pal Shekhar',
         role: 'Design Head',
         year: 'Final Year',
-        image1: 'images/team/Pal1.png',
-        image2: 'images/team/Pal2.png',
+        image1: 'images/team/Pal1.jpg',
+        image2: 'images/team/Pal2.jpg',
         social: {
             instagram: 'palshekharr',
         },
@@ -112,8 +112,8 @@ export const teamMembers: TeamMember[] = [
         name: 'Naba Chandra Singha',
         role: 'Operations Head',
         year: 'Final Year',
-        image1: 'images/team/Naba1.png',
-        image2: 'images/team/Naba2.png',
+        image1: 'images/team/Naba1.jpg',
+        image2: 'images/team/Naba2.jpg',
         social: {
             facebook: 'https://www.facebook.com/naba.singha.5249',
             instagram: 'naba_singha_',
@@ -124,8 +124,8 @@ export const teamMembers: TeamMember[] = [
         name: 'Sumit Kumar Yadav',
         role: 'Media & Sponsorship Head',
         year: 'Final Year',
-        image1: 'images/team/Sumit1.png',
-        image2: 'images/team/Sumit2.png',
+        image1: 'images/team/Sumit1.jpg',
+        image2: 'images/team/Sumit2.jpg',
         social: {
             facebook: 'https://www.facebook.com/sumitkumar.yadav.96742',
             instagram: 'sumitrex_124421',
@@ -136,8 +136,8 @@ export const teamMembers: TeamMember[] = [
         name: 'Aviraj Chakrabarty',
         role: 'PR Head',
         year: 'Final Year',
-        image1: 'images/team/Aviraj1.png',
-        image2: 'images/team/Aviraj2.png',
+        image1: 'images/team/Aviraj1.jpg',
+        image2: 'images/team/Aviraj2.jpg',
         social: {
             facebook: 'https://www.facebook.com/profile.php?id=100087367254572',
             instagram: 'a.v.i.r.a.j.c.h',
@@ -352,7 +352,7 @@ export const teamMembers: TeamMember[] = [
         name: 'Ankur',
         role: 'Second Year',
         year: 'Second Year',
-        image1: 'images/team/2028/Ankur/Ankur Mohanty.png',
+        image1: 'images/team/2028/Ankur/Ankur Mohanty.jpg',
         image2: 'images/team/2028/Ankur/Ankur-informal.jpg',
         social: {
             instagram: 'thats.ankur'
@@ -449,7 +449,7 @@ export const teamMembers: TeamMember[] = [
         name: 'Yayen',
         role: 'Second Year',
         year: 'Second Year',
-        image1: 'images/team/2028/Yayen/Formal.png',
+        image1: 'images/team/2028/Yayen/Formal.jpg',
         image2: 'images/team/2028/Yayen/Informal.HEIC',
         social: {
             instagram: 'yayensaini'
