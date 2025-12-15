@@ -6,7 +6,7 @@ export const teamMembers: TeamMember[] = [
         name: 'Melita Saha',
         role: 'President',
         year: 'Final Year',
-        image1: 'images/team/Melita1.jpg',
+        image1: 'images/team/Melita1.jpeg',
         image2: 'images/team/Melita2.jpg',
         social: {
             facebook: 'https://www.facebook.com/profile.php?id=100089247920826',
