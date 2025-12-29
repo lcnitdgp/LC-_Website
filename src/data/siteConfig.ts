@@ -15,7 +15,6 @@ export const siteConfig = {
 
     contact: {
         address: 'NIT Durgapur, A-Zone, Durgapur, West Bengal 713209.',
-        phone: ['+91 7044070449', '+91 9382149160'],
         email: 'lcnitd@gmail.com',
     },
 

@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Mail, Phone, MapPin } from 'lucide-react';
+import { Facebook, Instagram, Mail, MapPin } from 'lucide-react';
 import { siteConfig } from '../../data/siteConfig';
 
 export function Footer() {
@@ -45,10 +45,6 @@ export function Footer() {
                             <div className="flex items-start gap-3">
                                 <MapPin size={20} className="flex-shrink-0 mt-1" />
                                 <p>{siteConfig.contact.address}</p>
-                            </div>
-                            <div className="flex items-start gap-3">
-                                <Phone size={20} className="flex-shrink-0 mt-1" />
-                                <p>{siteConfig.contact.phone.join(' , ')}</p>
                             </div>
                             <div className="flex items-start gap-3">
                                 <Mail size={20} className="flex-shrink-0 mt-1" />
