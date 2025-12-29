@@ -11,6 +11,7 @@ export const siteConfig = {
     social: {
         facebook: 'https://www.facebook.com/lcnitdgp/',
         instagram: 'https://www.instagram.com/lcnitd/',
+        youtube: 'https://www.youtube.com/user/TheLiteraryCircle',
     },
 
     contact: {

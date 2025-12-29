@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Mail, MapPin } from 'lucide-react';
+import { Facebook, Instagram, Youtube, Mail, MapPin } from 'lucide-react';
 import { siteConfig } from '../../data/siteConfig';
 
 export function Footer() {
@@ -34,6 +34,15 @@ export function Footer() {
                                 aria-label="Instagram"
                             >
                                 <Instagram size={20} />
+                            </a>
+                            <a
+                                href={siteConfig.social.youtube}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-2 bg-white/10 rounded-full hover:bg-primary-600 transition-colors duration-200"
+                                aria-label="YouTube"
+                            >
+                                <Youtube size={20} />
                             </a>
                         </div>
                     </div>
