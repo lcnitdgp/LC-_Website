@@ -189,7 +189,7 @@ export function AboutSection() {
                                 {aboutText}
                             </div>
 
-                            {lastEditedBy && (
+                            {lastEditedBy && canEdit && (
                                 <p className="text-xs text-white/40 italic mt-4">
                                     (Last edited by - {lastEditedBy})
                                 </p>
