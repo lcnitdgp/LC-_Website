@@ -188,4 +188,44 @@ git push origin add-naivedyam-bio
 *   Once approved, merge it!
 
 ---
+
+## 🔐 6. Authentication Workflow
+
+The website uses Firebase Authentication with Google Sign-In for NIT Durgapur students.
+
+```mermaid
+flowchart TD
+    A[User visits site] --> B{Logged in?}
+    B -->|No| C[Show Login Button]
+    B -->|Yes| D[Show UserID in header]
+    
+    C --> E[Login Modal]
+    E --> F[UserID + Password Login]
+    E --> G[Sign up with Institute Email]
+    
+    G --> H[Google Sign-In popup]
+    H --> I{Email ends with nitdgp.ac.in?}
+    I -->|No| J[Error: Use institute email]
+    I -->|Yes| K{User exists in DB?}
+    
+    K -->|Yes| L[Log them in]
+    K -->|No| M[Create new user]
+    
+    L --> N{Password set?}
+    M --> N
+    N -->|No| O[Prompt to set password]
+    N -->|Yes| P[Dashboard]
+    
+    D --> Q[Click UserID]
+    Q --> R[Profile Modal]
+    R --> S[Edit: Department, Password, Roll No, Reg No]
+```
+
+### Key Points:
+- Only `@nitdgp.ac.in` emails are allowed (btech, mtech, etc.)
+- UserID is extracted from email (e.g., `nm.22u10885@btech.nitdgp.ac.in` → `22U10885`)
+- First-time users are prompted to set a password
+- Users can login with UserID + Password after setting it
+
+---
 *Maintained by The Literary Circle*
