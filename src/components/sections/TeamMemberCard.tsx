@@ -56,12 +56,17 @@ export function TeamMemberCard({ member, index }: TeamMemberCardProps) {
                     />
 
                     <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
-                        <h4 className="text-white font-merriweather text-lg md:text-xl mb-1">
-                            {member.name}
-                        </h4>
-                        <span className="text-primary-300 font-spectral text-sm mb-4">
-                            {member.role}
-                        </span>
+                        <div className="mb-1 w-full flex justify-center">
+                            <h3 className="text-white font-merriweather text-lg md:text-xl">
+                                {member.name}
+                            </h3>
+                        </div>
+
+                        <div className="mb-4 w-full flex justify-center">
+                            <p className="text-primary-300 font-spectral text-sm">
+                                {member.role}
+                            </p>
+                        </div>
 
                         <div className="flex gap-3">
                             {member.social.facebook && (

@@ -11,4 +11,5 @@ export interface TeamMember {
     image1: string;
     image2: string;
     social: SocialLinks;
+    lastUpdatedBy?: string;
 }

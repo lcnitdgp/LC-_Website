@@ -65,7 +65,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const userId = extractUserId(email);
             const userDoc = await getDoc(doc(db, 'Users', userId));
             if (userDoc.exists()) {
-                return userDoc.data() as UserData;
+                const data = userDoc.data() as UserData;
+                return {
+                    ...data,
+                    name: data.name || data.userId || 'User' // Robust fallback
+                };
             }
             return null;
         } catch (err) {
