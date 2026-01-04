@@ -439,7 +439,7 @@ export const teamMembers: TeamMember[] = [
         role: 'Second Year',
         year: 'Second Year',
         image1: 'images/team/2028/Tapomay/Formal.jpg',
-        image2: 'images/team/2028/Tapomay/Informal',
+        image2: 'images/team/2028/Tapomay/Informal.jpg',
         social: {
             instagram: 'tapomoy_ghosh'
         },
@@ -450,7 +450,7 @@ export const teamMembers: TeamMember[] = [
         role: 'Second Year',
         year: 'Second Year',
         image1: 'images/team/2028/Yayen/Formal.jpg',
-        image2: 'images/team/2028/Yayen/Informal.HEIC',
+        image2: 'images/team/2028/Yayen/Informal.jpg',
         social: {
             instagram: 'yayensaini'
         },
