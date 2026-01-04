@@ -28,7 +28,7 @@ export function TeamMemberCard({ member, index }: TeamMemberCardProps) {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: index * 0.05 }}
+            transition={{ duration: 0.4, delay: (index % 5) * 0.05 }}
             className="group"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -37,8 +37,8 @@ export function TeamMemberCard({ member, index }: TeamMemberCardProps) {
                 <img
                     src={member.image1}
                     alt={member.name}
-                    loading="lazy"
-                    decoding="async"
+                    loading="eager"
+                    decoding="sync"
                     className="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
                     style={{ opacity: isHovered ? 0 : 1 }}
                 />
