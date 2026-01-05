@@ -30,7 +30,7 @@ export function TeamSection() {
     // User requested to revert to local only for team members
     const teamMembers: TeamMember[] = defaultMembers;
 
-    const canEdit = user !== null && user.role !== 'student';
+    const canEdit = user !== null && user.admin === true;
 
     useEffect(() => {
         fetchContent();

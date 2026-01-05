@@ -25,7 +25,7 @@ export function HeroSection() {
     const [editValue, setEditValue] = useState('');
     const [isSaving, setIsSaving] = useState(false);
 
-    const canEdit = user !== null && user.role !== 'student';
+    const canEdit = user !== null && user.admin === true;
 
     useEffect(() => {
         fetchContent();

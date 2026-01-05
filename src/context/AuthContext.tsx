@@ -14,6 +14,7 @@ export interface UserData {
     registrationNumber: string;
     department: string;
     role: string;
+    admin: boolean;
     password: string;
     createdAt: Date;
 }
@@ -109,6 +110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     registrationNumber: '',
                     department: '',
                     role: 'student',
+                    admin: false,
                     password: '',
                     createdAt: new Date(),
                 };

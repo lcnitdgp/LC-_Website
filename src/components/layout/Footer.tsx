@@ -33,7 +33,7 @@ export function Footer() {
     const [content, setContent] = useState<FooterContent>(defaultContent);
     const [isLoading, setIsLoading] = useState(true);
 
-    const canEdit = user !== null && user.role !== 'student';
+    const canEdit = user !== null && user.admin === true;
 
     useEffect(() => {
         fetchFooterContent();
