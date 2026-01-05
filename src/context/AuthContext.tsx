@@ -43,6 +43,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const [needsPasswordSetup, setNeedsPasswordSetup] = useState(false);
 
     useEffect(() => {
+        const restoreCredentialsSession = async () => {
+            const storedUserId = localStorage.getItem('lc_credentials_user');
+            if (storedUserId) {
+                try {
+                    const userDoc = await getDoc(doc(db, 'Users', storedUserId));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data() as UserData;
+                        setUser({
+                            ...userData,
+                            name: userData.name || userData.userId || 'User'
+                        });
+                        setNeedsPasswordSetup(!userData.password);
+                        setIsLoading(false);
+                        return true;
+                    }
+                } catch (err) {
+                    console.error('Error restoring credentials session:', err);
+                    localStorage.removeItem('lc_credentials_user');
+                }
+            }
+            return false;
+        };
+
         const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
             setFirebaseUser(fbUser);
             if (fbUser && fbUser.email) {
@@ -51,11 +74,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     setUser(userData);
                     setNeedsPasswordSetup(!userData.password);
                 }
+                setIsLoading(false);
             } else {
-                setUser(null);
-                setNeedsPasswordSetup(false);
+                const restoredFromCredentials = await restoreCredentialsSession();
+                if (!restoredFromCredentials) {
+                    setUser(null);
+                    setNeedsPasswordSetup(false);
+                    setIsLoading(false);
+                }
             }
-            setIsLoading(false);
         });
 
         return () => unsubscribe();
@@ -153,6 +180,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 return { success: false, error: 'Incorrect password.' };
             }
 
+            localStorage.setItem('lc_credentials_user', userData.userId);
             setUser(userData);
             setNeedsPasswordSetup(false);
             setIsLoading(false);
@@ -166,6 +194,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const logout = async () => {
         try {
+            localStorage.removeItem('lc_credentials_user');
             await signOut(auth);
             setUser(null);
             setNeedsPasswordSetup(false);
