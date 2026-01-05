@@ -1,28 +1,25 @@
 import { useEffect } from 'react';
-import { Header, Footer } from './components/layout';
-import { HeroSection, AboutSection, TeamSection } from './components/sections';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context';
+import { HomePage, AuditionsPage } from './pages';
 import { migrateTeamMembersToFirestore } from './firebase/migrateTeam';
 
 function App() {
   useEffect(() => {
-    // Run migration once on mount
     migrateTeamMembersToFirestore();
   }, []);
 
   return (
     <AuthProvider>
-      <div className="min-h-screen">
-        <Header />
-        <main>
-          <HeroSection />
-          <AboutSection />
-          <TeamSection />
-        </main>
-        <Footer />
-      </div>
+      <HashRouter>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/auditions" element={<AuditionsPage />} />
+        </Routes>
+      </HashRouter>
     </AuthProvider>
   );
 }
 
 export default App;
+
