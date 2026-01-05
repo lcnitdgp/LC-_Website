@@ -22,82 +22,39 @@ interface MissingField {
     field: string;
 }
 
-const TITLE_TEXT = "The Literary Circle";
+const TITLE_LINES = ["THE", "LITERARY", "CIRCLE"];
+const TITLE_TEXT = TITLE_LINES.join("");
 const LETTER_DELAY = 120;
 
-const FireEffect = () => (
-    <motion.div
-        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none -z-10"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-    >
-        <motion.div
-            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[140%] h-[150%] -z-10 rounded-full"
-            style={{
-                background: 'radial-gradient(ellipse at bottom, rgba(255, 220, 0, 0.6) 0%, rgba(255, 69, 0, 0.3) 50%, transparent 80%)',
-                filter: 'blur(5px)',
-            }}
-            animate={{
-                scale: [1, 1.1, 1],
-                opacity: [0.6, 0.9, 0.6]
-            }}
-            transition={{ duration: 0.2, repeat: Infinity, ease: "linear" }}
-        />
 
-        {[...Array(5)].map((_, i) => (
-            <motion.div
-                key={i}
-                className="absolute bottom-1 left-1/2 w-3 h-3 rounded-full"
-                style={{
-                    background: i % 2 === 0 ? '#ffcc00' : '#ff4500',
-                    filter: 'blur(2px)',
-                    marginLeft: '-6px'
-                }}
-                animate={{
-                    y: [0, -35 - Math.random() * 15],
-                    x: [0, (Math.random() - 0.5) * 30],
-                    scale: [1, 0],
-                    opacity: [1, 0]
-                }}
-                transition={{
-                    duration: 0.5 + Math.random() * 0.4,
-                    repeat: Infinity,
-                    delay: Math.random() * 0.2,
-                    ease: "easeOut"
-                }}
-            />
-        ))}
-    </motion.div>
-);
 
 function PersistentTitle() {
     return (
-        <h1
-            className="text-5xl md:text-7xl font-cormorant font-bold text-center px-8 py-4 flex flex-wrap justify-center absolute left-1/2 -translate-x-1/2"
+        <div
+            className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center gap-6"
             style={{ top: '80px', zIndex: 10 }}
         >
-            {TITLE_TEXT.split('').map((char, index) => (
-                <div key={index} className="relative inline-block">
-                    <FireEffect />
-                    <span
-                        style={{
-                            background: 'linear-gradient(135deg, #ffd700 0%, #ff8c00 25%, #ff4500 50%, #ff6347 75%, #ffd700 100%)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            backgroundClip: 'text',
-                            display: 'inline-block',
-                            whiteSpace: char === ' ' ? 'pre' : 'normal',
-                            position: 'relative',
-                            zIndex: 2,
-                            textShadow: '0 2px 4px rgba(0,0,0,0.3)'
-                        }}
-                    >
-                        {char === ' ' ? '\u00A0' : char}
-                    </span>
+            {TITLE_LINES.map((line, lineIndex) => (
+                <div key={lineIndex} className="text-6xl md:text-8xl text-center px-8 flex justify-center leading-none" style={{ fontFamily: "'Anton', sans-serif" }}>
+                    {line.split('').map((char, charIndex) => (
+                        <div key={charIndex} className="relative inline-block mx-[2px]">
+                            <span
+                                style={{
+                                    color: '#fcc201',
+                                    textShadow: '1px 1px 0 #aa1100, 2px 2px 0 #aa1100, 3px 3px 0 #aa1100, 4px 4px 0 #aa1100, 5px 5px 0 #aa1100, 6px 6px 0 #000000',
+                                    display: 'inline-block',
+                                    position: 'relative',
+                                    zIndex: 2,
+                                    letterSpacing: '0.05em'
+                                }}
+                            >
+                                {char}
+                            </span>
+                        </div>
+                    ))}
                 </div>
             ))}
-        </h1>
+        </div>
     );
 }
 
@@ -139,22 +96,37 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
         }
     }, [phase]);
 
+    const gunLineIndex = currentLetterIndex === -1 ? 0 : (() => {
+        let count = 0;
+        for (let i = 0; i < TITLE_LINES.length; i++) {
+            count += TITLE_LINES[i].length;
+            if (currentLetterIndex < count) return i;
+        }
+        return TITLE_LINES.length - 1;
+    })();
+
+    const gunBaseTop = 80;
+    const lineHeight = 80; // Approximate height of 7xl font + gap
+    const gunTop = gunBaseTop + (gunLineIndex * lineHeight);
+
     return (
         <div className="fixed inset-0 z-50 overflow-hidden">
             <AnimatePresence>
                 {(phase === 'rolling' || phase === 'shooting') && (
                     <motion.div
                         className="absolute"
-                        style={{ top: '80px', right: '5%' }}
+                        style={{ top: `${phase === 'shooting' ? gunTop : 80}px`, right: '5%' }}
                         initial={{ rotate: 0, x: 300, scaleX: -1 }}
                         animate={phase === 'rolling' ? {
                             rotate: 2880,
                             x: 0,
                             scaleX: -1,
+                            top: 80,
                         } : {
                             rotate: 2880 - 20,
                             x: shotFired ? 15 : 0,
                             scaleX: -1,
+                            top: gunTop,
                         }}
                         transition={phase === 'rolling' ? {
                             duration: 2,
@@ -162,6 +134,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
                         } : {
                             x: { duration: 0.05 },
                             rotate: { duration: 0.15 },
+                            top: { duration: 0.2, ease: "easeOut" }
                         }}
                     >
                         <img
@@ -232,51 +205,48 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
                     >
 
 
-                        <h1
-                            className="text-5xl md:text-7xl font-cormorant font-bold text-center px-8 py-4 flex flex-wrap justify-center"
-                            style={{
-                                filter: phase === 'burning' ? 'brightness(1.2)' : 'none',
-                            }}
-                        >
-                            {TITLE_TEXT.split('').map((char, index) => (
-                                <motion.div
-                                    key={index}
-                                    className="relative inline-block"
-                                    initial={{ opacity: 0, x: 100, scale: 1.3 }}
-                                    animate={index <= currentLetterIndex || phase === 'burning' || phase === 'falling' || phase === 'complete' ? {
-                                        opacity: 1,
-                                        x: 0,
-                                        scale: 1,
-                                    } : {
-                                        opacity: 0,
-                                        x: 100,
-                                        scale: 1.3,
-                                    }}
-                                    transition={{
-                                        duration: 0.15,
-                                        ease: "easeOut",
-                                    }}
-                                >
-                                    {(index <= currentLetterIndex || phase === 'burning' || phase === 'falling' || phase === 'complete') && (
-                                        <FireEffect />
-                                    )}
-                                    <span
-                                        style={{
-                                            background: 'linear-gradient(135deg, #ffd700 0%, #ff8c00 25%, #ff4500 50%, #ff6347 75%, #ffd700 100%)',
-                                            WebkitBackgroundClip: 'text',
-                                            WebkitTextFillColor: 'transparent',
-                                            backgroundClip: 'text',
-                                            display: 'inline-block',
-                                            whiteSpace: char === ' ' ? 'pre' : 'normal',
-                                            position: 'relative',
-                                            zIndex: 2,
-                                        }}
-                                    >
-                                        {char === ' ' ? '\u00A0' : char}
-                                    </span>
-                                </motion.div>
+                        <div className="flex flex-col items-center gap-6">
+                            {TITLE_LINES.map((line, lineIndex) => (
+                                <div key={lineIndex} className="text-6xl md:text-8xl text-center px-8 flex justify-center leading-none" style={{ fontFamily: "'Anton', sans-serif" }}>
+                                    {line.split('').map((char, charIndex) => {
+                                        const globalIndex = TITLE_LINES.slice(0, lineIndex).join("").length + charIndex;
+                                        return (
+                                            <motion.div
+                                                key={globalIndex}
+                                                className="relative inline-block mx-[2px]"
+                                                initial={{ opacity: 0, x: 100, scale: 1.3 }}
+                                                animate={globalIndex <= currentLetterIndex || phase === 'burning' || phase === 'falling' || phase === 'complete' ? {
+                                                    opacity: 1,
+                                                    x: 0,
+                                                    scale: 1,
+                                                } : {
+                                                    opacity: 0,
+                                                    x: 100,
+                                                    scale: 1.3,
+                                                }}
+                                                transition={{
+                                                    duration: 0.15,
+                                                    ease: "easeOut",
+                                                }}
+                                            >
+                                                <span
+                                                    style={{
+                                                        color: '#fcc201',
+                                                        textShadow: '1px 1px 0 #aa1100, 2px 2px 0 #aa1100, 3px 3px 0 #aa1100, 4px 4px 0 #aa1100, 5px 5px 0 #aa1100, 6px 6px 0 #000000',
+                                                        display: 'inline-block',
+                                                        position: 'relative',
+                                                        zIndex: 2,
+                                                        letterSpacing: '0.05em'
+                                                    }}
+                                                >
+                                                    {char}
+                                                </span>
+                                            </motion.div>
+                                        );
+                                    })}
+                                </div>
                             ))}
-                        </h1>
+                        </div>
 
 
                     </motion.div>
@@ -389,7 +359,7 @@ export function AuditionsPage() {
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
-                    <div className="max-w-4xl mx-auto px-4 pt-48 pb-20">
+                    <div className="max-w-4xl mx-auto px-4 pt-[600px] pb-20">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -434,7 +404,7 @@ export function AuditionsPage() {
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
-                    <div className="max-w-4xl mx-auto px-4 pt-48 pb-20">
+                    <div className="max-w-4xl mx-auto px-4 pt-[600px] pb-20">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -467,7 +437,7 @@ export function AuditionsPage() {
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
-                    <div className="max-w-4xl mx-auto px-4 pt-48 pb-20">
+                    <div className="max-w-4xl mx-auto px-4 pt-[600px] pb-20">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -500,7 +470,7 @@ export function AuditionsPage() {
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
-                    <div className="max-w-4xl mx-auto px-4 pt-48 pb-20">
+                    <div className="max-w-4xl mx-auto px-4 pt-[600px] pb-20">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
