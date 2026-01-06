@@ -22,7 +22,7 @@ interface MissingField {
     field: string;
 }
 
-const TITLE_LINES = ["LITERARY", "CIRCLE"];
+const TITLE_LINES = ["LITERARY", "CIRCLE", "AUDITIONS"];
 const TITLE_TEXT = TITLE_LINES.join("");
 const LETTER_DELAY = 120;
 
@@ -398,7 +398,7 @@ export function AuditionsPage() {
                 >
                     <div className="min-h-screen bg-black/50">
                         <PersistentTitle />
-                        <div className="max-w-4xl mx-auto px-4 pt-[200px] md:pt-[600px] pb-20">
+                        <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -439,7 +439,7 @@ export function AuditionsPage() {
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
-                    <div className="max-w-4xl mx-auto px-4 pt-[200px] md:pt-[600px] pb-20">
+                    <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -472,7 +472,7 @@ export function AuditionsPage() {
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
-                    <div className="max-w-4xl mx-auto px-4 pt-[200px] md:pt-[600px] pb-20">
+                    <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -505,7 +505,7 @@ export function AuditionsPage() {
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
-                    <div className="max-w-4xl mx-auto px-4 pt-[200px] md:pt-[600px] pb-20">
+                    <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -627,7 +627,7 @@ export function AuditionsPage() {
         >
             <div className="min-h-screen bg-black/50">
                 <PersistentTitle />
-                <div className="max-w-4xl mx-auto px-4 pt-[200px] md:pt-[600px] pb-20">
+                <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
