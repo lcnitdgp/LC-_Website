@@ -22,7 +22,7 @@ interface MissingField {
     field: string;
 }
 
-const TITLE_LINES = ["THE", "LITERARY", "CIRCLE"];
+const TITLE_LINES = ["LITERARY", "CIRCLE"];
 const TITLE_TEXT = TITLE_LINES.join("");
 const LETTER_DELAY = 120;
 
@@ -32,10 +32,10 @@ function PersistentTitle() {
     return (
         <div
             className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center gap-6"
-            style={{ top: '80px', zIndex: 10 }}
+            style={{ top: '40px', zIndex: 10 }}
         >
             {TITLE_LINES.map((line, lineIndex) => (
-                <div key={lineIndex} className="text-6xl md:text-8xl text-center px-8 flex justify-center leading-none" style={{ fontFamily: "'Anton', sans-serif" }}>
+                <div key={lineIndex} className="text-6xl md:text-8xl text-center px-8 flex justify-center leading-none" style={{ fontFamily: "'Alfa Slab One', cursive" }}>
                     {line.split('').map((char, charIndex) => (
                         <div key={charIndex} className="relative inline-block mx-[2px]">
                             <span
@@ -45,7 +45,8 @@ function PersistentTitle() {
                                     display: 'inline-block',
                                     position: 'relative',
                                     zIndex: 2,
-                                    letterSpacing: '0.05em'
+                                    letterSpacing: '0.05em',
+                                    transform: 'scaleY(1.5)'
                                 }}
                             >
                                 {char}
@@ -105,8 +106,8 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
         return TITLE_LINES.length - 1;
     })();
 
-    const gunBaseTop = 80;
-    const lineHeight = 80; // Approximate height of 7xl font + gap
+    const gunBaseTop = 40;
+    const lineHeight = 80;
     const gunTop = gunBaseTop + (gunLineIndex * lineHeight);
 
     return (
@@ -115,13 +116,13 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
                 {(phase === 'rolling' || phase === 'shooting') && (
                     <motion.div
                         className="absolute"
-                        style={{ top: `${phase === 'shooting' ? gunTop : 80}px`, right: '5%' }}
+                        style={{ top: `${phase === 'shooting' ? gunTop : 40}px`, right: '5%' }}
                         initial={{ rotate: 0, x: 300, scaleX: -1 }}
                         animate={phase === 'rolling' ? {
                             rotate: 2880,
                             x: 0,
                             scaleX: -1,
-                            top: 80,
+                            top: 40,
                         } : {
                             rotate: 2880 - 20,
                             x: shotFired ? 15 : 0,
@@ -189,7 +190,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
                 {(phase === 'shooting' || phase === 'burning' || phase === 'falling' || phase === 'complete') && (
                     <motion.div
                         className="absolute left-1/2 -translate-x-1/2"
-                        style={{ top: '80px' }}
+                        style={{ top: '40px' }}
                         initial={{ opacity: 0, scale: 0, x: 200 }}
                         animate={{
                             opacity: 1,
@@ -207,7 +208,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
 
                         <div className="flex flex-col items-center gap-6">
                             {TITLE_LINES.map((line, lineIndex) => (
-                                <div key={lineIndex} className="text-6xl md:text-8xl text-center px-8 flex justify-center leading-none" style={{ fontFamily: "'Anton', sans-serif" }}>
+                                <div key={lineIndex} className="text-6xl md:text-8xl text-center px-8 flex justify-center leading-none" style={{ fontFamily: "'Alfa Slab One', cursive" }}>
                                     {line.split('').map((char, charIndex) => {
                                         const globalIndex = TITLE_LINES.slice(0, lineIndex).join("").length + charIndex;
                                         return (
@@ -236,7 +237,8 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
                                                         display: 'inline-block',
                                                         position: 'relative',
                                                         zIndex: 2,
-                                                        letterSpacing: '0.05em'
+                                                        letterSpacing: '0.05em',
+                                                        transform: 'scaleY(1.5)'
                                                     }}
                                                 >
                                                     {char}
