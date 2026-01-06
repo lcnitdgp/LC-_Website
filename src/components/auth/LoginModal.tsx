@@ -14,6 +14,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [showIntruderAlert, setShowIntruderAlert] = useState(false);
 
     const handleCredentialLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -43,6 +44,8 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
         if (result.success) {
             onClose();
             resetForm();
+        } else if (result.error?.includes('Intruder Alert')) {
+            setShowIntruderAlert(true);
         } else {
             setError(result.error || 'Login failed');
         }
@@ -54,6 +57,7 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
         setUserId('');
         setPassword('');
         setError(null);
+        setShowIntruderAlert(false);
     };
 
     const handleClose = () => {
@@ -62,120 +66,173 @@ export function LoginModal({ isOpen, onClose }: LoginModalProps) {
     };
 
     return (
-        <AnimatePresence>
-            {isOpen && (
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
-                    onClick={handleClose}
-                >
+        <>
+            <AnimatePresence>
+                {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                        transition={{ duration: 0.3, ease: 'easeOut' }}
-                        className="relative w-full max-w-md bg-gradient-to-br from-white via-gray-50 to-primary-50 rounded-2xl shadow-2xl overflow-hidden"
-                        onClick={e => e.stopPropagation()}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                        onClick={handleClose}
                     >
-                        <div className="h-2 bg-gradient-to-r from-primary-500 via-primary-600 to-primary-700" />
-
-                        <button
-                            onClick={handleClose}
-                            className="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                            aria-label="Close modal"
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            transition={{ duration: 0.3, ease: 'easeOut' }}
+                            className="relative w-full max-w-md bg-gradient-to-br from-white via-gray-50 to-primary-50 rounded-2xl shadow-2xl overflow-hidden"
+                            onClick={e => e.stopPropagation()}
                         >
-                            <X size={20} />
-                        </button>
-
-                        <div className="p-8">
-                            <div className="text-center mb-8">
-                                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-full mb-4">
-                                    <LogIn className="w-8 h-8 text-primary-600" />
-                                </div>
-                                <h2 className="text-2xl font-cormorant font-semibold text-gray-800">
-                                    Welcome Back
-                                </h2>
-                                <p className="text-sm text-gray-500 mt-2 font-spectral">
-                                    Log in to your Literary Circle account
-                                </p>
-                            </div>
-
-                            <form onSubmit={handleCredentialLogin} className="space-y-5">
-                                <div>
-                                    <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                                        <User className="w-4 h-4 mr-2 text-primary-500" />
-                                        User ID
-                                    </label>
-                                    <input
-                                        type="text"
-                                        value={userId}
-                                        onChange={e => setUserId(e.target.value.toUpperCase())}
-                                        placeholder="Enter your User ID"
-                                        required
-                                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all duration-200 bg-white/80 font-spectral uppercase"
-                                    />
-                                </div>
-
-                                <div>
-                                    <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
-                                        <Key className="w-4 h-4 mr-2 text-primary-500" />
-                                        Password
-                                    </label>
-                                    <input
-                                        type="password"
-                                        value={password}
-                                        onChange={e => setPassword(e.target.value)}
-                                        placeholder="Enter your password"
-                                        required
-                                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all duration-200 bg-white/80 font-spectral"
-                                    />
-                                </div>
-
-                                {error && (
-                                    <div className="text-red-500 text-sm text-center py-2 bg-red-50 rounded-lg">
-                                        {error}
-                                    </div>
-                                )}
-
-                                <button
-                                    type="submit"
-                                    disabled={isSubmitting || isLoading}
-                                    className="w-full py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg shadow-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {isSubmitting ? 'Logging in...' : 'Login'}
-                                </button>
-                            </form>
-
-                            <div className="relative my-6">
-                                <div className="absolute inset-0 flex items-center">
-                                    <div className="w-full border-t border-gray-200"></div>
-                                </div>
-                                <div className="relative flex justify-center text-sm">
-                                    <span className="px-4 bg-gradient-to-br from-white via-gray-50 to-primary-50 text-gray-500">
-                                        OR
-                                    </span>
-                                </div>
-                            </div>
+                            <div className="h-2 bg-gradient-to-r from-primary-500 via-primary-600 to-primary-700" />
 
                             <button
-                                onClick={handleGoogleLogin}
-                                disabled={isSubmitting || isLoading}
-                                className="w-full py-3.5 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-lg shadow-md hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                                onClick={handleClose}
+                                className="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                                aria-label="Close modal"
                             >
-                                <Mail className="w-5 h-5 text-primary-600" />
-                                Sign up with Institute Email
+                                <X size={20} />
                             </button>
 
-                            <p className="text-xs text-gray-400 text-center mt-4">
-                                Only @nitdgp.ac.in emails are allowed
-                            </p>
-                        </div>
+                            <div className="p-8">
+                                <div className="text-center mb-8">
+                                    <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-full mb-4">
+                                        <LogIn className="w-8 h-8 text-primary-600" />
+                                    </div>
+                                    <h2 className="text-2xl font-cormorant font-semibold text-gray-800">
+                                        Welcome Back
+                                    </h2>
+                                    <p className="text-sm text-gray-500 mt-2 font-spectral">
+                                        Log in to your Literary Circle account
+                                    </p>
+                                </div>
+
+                                <form onSubmit={handleCredentialLogin} className="space-y-5">
+                                    <div>
+                                        <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
+                                            <User className="w-4 h-4 mr-2 text-primary-500" />
+                                            User ID
+                                        </label>
+                                        <input
+                                            type="text"
+                                            value={userId}
+                                            onChange={e => setUserId(e.target.value.toUpperCase())}
+                                            placeholder="Enter your User ID"
+                                            required
+                                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all duration-200 bg-white/80 font-spectral uppercase"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="flex items-center text-sm font-medium text-gray-700 mb-2">
+                                            <Key className="w-4 h-4 mr-2 text-primary-500" />
+                                            Password
+                                        </label>
+                                        <input
+                                            type="password"
+                                            value={password}
+                                            onChange={e => setPassword(e.target.value)}
+                                            placeholder="Enter your password"
+                                            required
+                                            className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all duration-200 bg-white/80 font-spectral"
+                                        />
+                                    </div>
+
+                                    {error && (
+                                        <div className="text-red-500 text-sm text-center py-2 bg-red-50 rounded-lg">
+                                            {error}
+                                        </div>
+                                    )}
+
+                                    <button
+                                        type="submit"
+                                        disabled={isSubmitting || isLoading}
+                                        className="w-full py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg shadow-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {isSubmitting ? 'Logging in...' : 'Login'}
+                                    </button>
+                                </form>
+
+                                <div className="relative my-6">
+                                    <div className="absolute inset-0 flex items-center">
+                                        <div className="w-full border-t border-gray-200"></div>
+                                    </div>
+                                    <div className="relative flex justify-center text-sm">
+                                        <span className="px-4 bg-gradient-to-br from-white via-gray-50 to-primary-50 text-gray-500">
+                                            OR
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={handleGoogleLogin}
+                                    disabled={isSubmitting || isLoading}
+                                    className="w-full py-3.5 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-lg shadow-md hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <Mail className="w-5 h-5 text-primary-600" />
+                                    Sign up with Institute Email
+                                </button>
+
+                                <p className="text-xs text-gray-400 text-center mt-4">
+                                    Only @nitdgp.ac.in emails are allowed
+                                </p>
+                            </div>
+                        </motion.div>
                     </motion.div>
-                </motion.div>
-            )}
-        </AnimatePresence>
+                )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+                {showIntruderAlert && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+                        onClick={() => setShowIntruderAlert(false)}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8, y: 30 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.8, y: 30 }}
+                            transition={{ duration: 0.3, ease: 'easeOut' }}
+                            className="relative w-full max-w-md bg-gradient-to-br from-red-950 via-red-900 to-black rounded-2xl shadow-2xl overflow-hidden border border-red-500/50"
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <div className="h-2 bg-gradient-to-r from-red-600 via-orange-500 to-red-600" />
+
+                            <button
+                                onClick={() => setShowIntruderAlert(false)}
+                                className="absolute top-4 right-4 p-2 text-red-300 hover:text-white hover:bg-red-800/50 rounded-full transition-colors duration-200"
+                                aria-label="Close"
+                            >
+                                <X size={20} />
+                            </button>
+
+                            <div className="p-8 text-center">
+                                <div className="text-6xl mb-4">⚠️</div>
+                                <h2 className="text-3xl font-bold text-red-400 mb-4">
+                                    Intruder Alert!
+                                </h2>
+                                <p className="text-gray-300 text-lg leading-relaxed mb-6">
+                                    Only NIT Durgapur students have the permission to access this.
+                                </p>
+                                <p className="text-gray-400 text-base">
+                                    If you are one, prove it by completing the auth from the browser in your <strong className="text-white">work profile</strong>!
+                                </p>
+                                <button
+                                    onClick={() => setShowIntruderAlert(false)}
+                                    className="mt-8 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200"
+                                >
+                                    Got it
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </>
     );
 }

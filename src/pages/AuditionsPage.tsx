@@ -31,13 +31,13 @@ const LETTER_DELAY = 120;
 function PersistentTitle() {
     return (
         <div
-            className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center gap-6"
+            className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 md:gap-6 w-full px-4"
             style={{ top: '40px', zIndex: 10 }}
         >
             {TITLE_LINES.map((line, lineIndex) => (
-                <div key={lineIndex} className="text-6xl md:text-8xl text-center px-8 flex justify-center leading-none" style={{ fontFamily: "'Alfa Slab One', cursive" }}>
+                <div key={lineIndex} className="text-3xl sm:text-5xl md:text-8xl text-center flex justify-center leading-none" style={{ fontFamily: "'Alfa Slab One', cursive" }}>
                     {line.split('').map((char, charIndex) => (
-                        <div key={charIndex} className="relative inline-block mx-[2px]">
+                        <div key={charIndex} className="relative inline-block mx-[1px] md:mx-[2px]">
                             <span
                                 style={{
                                     color: '#fcc201',
@@ -206,15 +206,15 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
                     >
 
 
-                        <div className="flex flex-col items-center gap-6">
+                        <div className="flex flex-col items-center gap-3 md:gap-6 w-full px-4">
                             {TITLE_LINES.map((line, lineIndex) => (
-                                <div key={lineIndex} className="text-6xl md:text-8xl text-center px-8 flex justify-center leading-none" style={{ fontFamily: "'Alfa Slab One', cursive" }}>
+                                <div key={lineIndex} className="text-3xl sm:text-5xl md:text-8xl text-center flex justify-center leading-none" style={{ fontFamily: "'Alfa Slab One', cursive" }}>
                                     {line.split('').map((char, charIndex) => {
                                         const globalIndex = TITLE_LINES.slice(0, lineIndex).join("").length + charIndex;
                                         return (
                                             <motion.div
                                                 key={globalIndex}
-                                                className="relative inline-block mx-[2px]"
+                                                className="relative inline-block mx-[1px] md:mx-[2px]"
                                                 initial={{ opacity: 0, x: 100, scale: 1.3 }}
                                                 animate={globalIndex <= currentLetterIndex || phase === 'burning' || phase === 'falling' || phase === 'complete' ? {
                                                     opacity: 1,
@@ -342,59 +342,66 @@ export function AuditionsPage() {
 
     if (isLoading || !animationComplete) {
         return (
-            <div
-                className="min-h-screen bg-cover bg-center bg-no-repeat"
-                style={{ backgroundImage: "url('/images/auditions/bg-auditions.jpg')" }}
-            >
-                <div className="min-h-screen bg-black/40">
-                    <LoadingAnimation onComplete={() => setAnimationComplete(true)} />
+            <>
+                <LoginModal
+                    isOpen={showLoginModal}
+                    onClose={() => setShowLoginModal(false)}
+                />
+                <div
+                    className="min-h-screen bg-cover bg-center bg-no-repeat"
+                    style={{ backgroundImage: "url('/images/auditions/bg-auditions.jpg')" }}
+                >
+                    <div className="min-h-screen bg-black/40">
+                        <LoadingAnimation onComplete={() => setAnimationComplete(true)} />
+                    </div>
                 </div>
-            </div>
+            </>
         );
     }
 
     if (!user) {
         return (
-            <div
-                className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-                style={{ backgroundImage: "url('/images/auditions/bg-auditions.jpg')" }}
-            >
-                <div className="min-h-screen bg-black/50">
-                    <PersistentTitle />
-                    <div className="max-w-4xl mx-auto px-4 pt-[600px] pb-20">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6 }}
-                            className="text-center"
-                        >
-                            <div className="bg-black/40 backdrop-blur-md rounded-2xl p-8 md:p-12 border border-amber-500/20">
-                                <div className="flex items-center justify-center gap-3 mb-6">
-                                    <AlertCircle className="w-8 h-8 text-yellow-400" />
-                                    <h2 className="text-2xl font-merriweather text-amber-100">
-                                        Authentication Required
-                                    </h2>
+            <>
+                <LoginModal
+                    isOpen={showLoginModal}
+                    onClose={() => setShowLoginModal(false)}
+                />
+                <div
+                    className="min-h-screen bg-cover bg-center bg-no-repeat relative"
+                    style={{ backgroundImage: "url('/images/auditions/bg-auditions.jpg')" }}
+                >
+                    <div className="min-h-screen bg-black/50">
+                        <PersistentTitle />
+                        <div className="max-w-4xl mx-auto px-4 pt-[600px] pb-20">
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.6 }}
+                                className="text-center"
+                            >
+                                <div className="bg-black/40 backdrop-blur-md rounded-2xl p-8 md:p-12 border border-amber-500/20">
+                                    <div className="flex items-center justify-center gap-3 mb-6">
+                                        <AlertCircle className="w-8 h-8 text-yellow-400" />
+                                        <h2 className="text-2xl font-merriweather text-amber-100">
+                                            Authentication Required
+                                        </h2>
+                                    </div>
+                                    <p className="text-amber-200/80 font-spectral mb-8">
+                                        You must be logged in to proceed with the auditions.
+                                    </p>
+                                    <button
+                                        onClick={() => setShowLoginModal(true)}
+                                        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white rounded-lg font-medium transition-all shadow-lg shadow-orange-500/30"
+                                    >
+                                        <LogIn size={20} />
+                                        Login to Continue
+                                    </button>
                                 </div>
-                                <p className="text-amber-200/80 font-spectral mb-8">
-                                    You must be logged in to proceed with the auditions.
-                                </p>
-                                <button
-                                    onClick={() => setShowLoginModal(true)}
-                                    className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white rounded-lg font-medium transition-all shadow-lg shadow-orange-500/30"
-                                >
-                                    <LogIn size={20} />
-                                    Login to Continue
-                                </button>
-                            </div>
-                        </motion.div>
+                            </motion.div>
+                        </div>
                     </div>
-
-                    <LoginModal
-                        isOpen={showLoginModal}
-                        onClose={() => setShowLoginModal(false)}
-                    />
                 </div>
-            </div>
+            </>
         );
     }
 

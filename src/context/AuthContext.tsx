@@ -118,7 +118,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (!email || !isInstituteEmail(email)) {
                 await signOut(auth);
                 setIsLoading(false);
-                return { success: false, error: 'Please register using institute email only.' };
+                return { success: false, error: 'Intruder Alert! Only NIT Durgapur students have the permission to access this. If you are one, prove it by completing the auth from the browser in your work profile!' };
             }
 
             const userId = extractUserId(email);
