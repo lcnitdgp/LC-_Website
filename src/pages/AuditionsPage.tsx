@@ -355,7 +355,7 @@ export function AuditionsPage() {
                 />
                 <div
                     className="min-h-screen bg-cover bg-center bg-no-repeat"
-                    style={{ backgroundImage: "url('/images/auditions/bg-auditions.jpg')" }}
+                    style={{ backgroundImage: "url('/images/auditions/auditions-bg.gif')" }}
                 >
                     <div className="min-h-screen bg-black/40">
                         <LoadingAnimation onComplete={() => setAnimationComplete(true)} />
@@ -374,7 +374,7 @@ export function AuditionsPage() {
                 />
                 <div
                     className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-                    style={{ backgroundImage: "url('/images/auditions/bg-auditions.jpg')" }}
+                    style={{ backgroundImage: "url('/images/auditions/auditions-bg.gif')" }}
                 >
                     <div className="min-h-screen bg-black/50">
                         <PersistentTitle />
@@ -415,7 +415,7 @@ export function AuditionsPage() {
         return (
             <div
                 className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-                style={{ backgroundImage: "url('/images/auditions/bg-auditions.jpg')" }}
+                style={{ backgroundImage: "url('/images/auditions/auditions-bg.gif')" }}
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
@@ -448,7 +448,7 @@ export function AuditionsPage() {
         return (
             <div
                 className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-                style={{ backgroundImage: "url('/images/auditions/bg-auditions.jpg')" }}
+                style={{ backgroundImage: "url('/images/auditions/auditions-bg.gif')" }}
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
@@ -481,7 +481,7 @@ export function AuditionsPage() {
         return (
             <div
                 className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-                style={{ backgroundImage: "url('/images/auditions/bg-auditions.jpg')" }}
+                style={{ backgroundImage: "url('/images/auditions/auditions-bg.gif')" }}
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
@@ -603,7 +603,7 @@ export function AuditionsPage() {
     return (
         <div
             className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-            style={{ backgroundImage: "url('/images/auditions/bg-auditions.jpg')" }}
+            style={{ backgroundImage: "url('/images/auditions/auditions-bg.gif')" }}
         >
             <div className="min-h-screen bg-black/50">
                 <PersistentTitle />
