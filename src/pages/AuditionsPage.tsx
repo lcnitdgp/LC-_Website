@@ -32,10 +32,10 @@ function PersistentTitle() {
     return (
         <div
             className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 md:gap-6 w-full px-4"
-            style={{ top: '40px', zIndex: 10 }}
+            style={{ top: '50px', zIndex: 10 }}
         >
             {TITLE_LINES.map((line, lineIndex) => (
-                <div key={lineIndex} className="text-3xl sm:text-5xl md:text-8xl text-center flex justify-center leading-none" style={{ fontFamily: "'Alfa Slab One', cursive" }}>
+                <div key={lineIndex} className="text-4xl sm:text-5xl md:text-8xl text-center flex justify-center leading-none" style={{ fontFamily: "'Alfa Slab One', cursive" }}>
                     {line.split('').map((char, charIndex) => (
                         <div key={charIndex} className="relative inline-block mx-[1px] md:mx-[2px]">
                             <span
@@ -190,7 +190,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
                 {(phase === 'shooting' || phase === 'burning' || phase === 'falling' || phase === 'complete') && (
                     <motion.div
                         className="absolute left-1/2 -translate-x-1/2"
-                        style={{ top: '40px' }}
+                        style={{ top: '50px' }}
                         initial={{ opacity: 0, scale: 0, x: 200 }}
                         animate={{
                             opacity: 1,
@@ -208,7 +208,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
 
                         <div className="flex flex-col items-center gap-3 md:gap-6 w-full px-4">
                             {TITLE_LINES.map((line, lineIndex) => (
-                                <div key={lineIndex} className="text-3xl sm:text-5xl md:text-8xl text-center flex justify-center leading-none" style={{ fontFamily: "'Alfa Slab One', cursive" }}>
+                                <div key={lineIndex} className="text-4xl sm:text-5xl md:text-8xl text-center flex justify-center leading-none" style={{ fontFamily: "'Alfa Slab One', cursive" }}>
                                     {line.split('').map((char, charIndex) => {
                                         const globalIndex = TITLE_LINES.slice(0, lineIndex).join("").length + charIndex;
                                         return (
@@ -280,6 +280,12 @@ export function AuditionsPage() {
             });
         }
     }, [user]);
+
+    const formatFirstName = (fullName: string | undefined): string => {
+        if (!fullName) return 'there';
+        const firstName = fullName.split(' ')[0];
+        return firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+    };
 
     const getMissingFields = (): MissingField[] => {
         if (!user) return [];
@@ -372,7 +378,7 @@ export function AuditionsPage() {
                 >
                     <div className="min-h-screen bg-black/50">
                         <PersistentTitle />
-                        <div className="max-w-4xl mx-auto px-4 pt-[250px] md:pt-[600px] pb-20">
+                        <div className="max-w-4xl mx-auto px-4 pt-[200px] md:pt-[600px] pb-20">
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -413,7 +419,7 @@ export function AuditionsPage() {
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
-                    <div className="max-w-4xl mx-auto px-4 pt-[250px] md:pt-[600px] pb-20">
+                    <div className="max-w-4xl mx-auto px-4 pt-[200px] md:pt-[600px] pb-20">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -428,7 +434,7 @@ export function AuditionsPage() {
                                     </h2>
                                 </div>
                                 <p className="text-amber-200/90 font-spectral text-lg">
-                                    Seriously <span className="text-orange-400 font-semibold">{user.name}</span>? Aren't you a member of the Circle already? Bring your juniors for auditions rather than wasting time here!
+                                    Seriously <span className="text-orange-400 font-semibold">{formatFirstName(user.name)}</span>? Aren't you a member of the Circle already? Bring your juniors for auditions rather than wasting time here!
                                 </p>
                             </div>
                         </motion.div>
@@ -446,7 +452,7 @@ export function AuditionsPage() {
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
-                    <div className="max-w-4xl mx-auto px-4 pt-[250px] md:pt-[600px] pb-20">
+                    <div className="max-w-4xl mx-auto px-4 pt-[200px] md:pt-[600px] pb-20">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -461,7 +467,7 @@ export function AuditionsPage() {
                                     </h2>
                                 </div>
                                 <p className="text-amber-200/90 font-spectral text-lg leading-relaxed">
-                                    Hey <span className="text-orange-400 font-semibold">{user.name}</span>. We really appreciate your interest in joining the Circle. However, we only take 1st years in our <span className="text-orange-400">Inner Circle</span>. But don't lose heart — you can still be a part of the bigger <span className="text-orange-400">Outer Circle</span> by actively participating in our events! Stay tuned for <span className="font-semibold text-amber-100">NITMUN</span> and <span className="font-semibold text-amber-100">Verve</span>!
+                                    Hey <span className="text-orange-400 font-semibold">{formatFirstName(user.name)}</span>. We really appreciate your interest in joining the Circle. However, we only take 1st years in our <span className="text-orange-400">Inner Circle</span>. But don't lose heart — you can still be a part of the bigger <span className="text-orange-400">Outer Circle</span> by actively participating in our events! Stay tuned for <span className="font-semibold text-amber-100">NITMUN</span> and <span className="font-semibold text-amber-100">Verve</span>!
                                 </p>
                             </div>
                         </motion.div>
@@ -479,7 +485,7 @@ export function AuditionsPage() {
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
-                    <div className="max-w-4xl mx-auto px-4 pt-[250px] md:pt-[600px] pb-20">
+                    <div className="max-w-4xl mx-auto px-4 pt-[200px] md:pt-[600px] pb-20">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -495,7 +501,7 @@ export function AuditionsPage() {
                                     </h2>
                                 </div>
                                 <p className="text-amber-200/90 font-spectral mb-8 text-lg">
-                                    Hey <span className="text-orange-400 font-semibold">{user.name || 'there'}</span>! We are glad you are so excited to join the circle but please add your{' '}
+                                    Hey <span className="text-orange-400 font-semibold">{formatFirstName(user.name)}</span>! We are glad you are so excited to join the circle but please add your{' '}
                                     <span className="text-orange-300">{formatMissingFieldsMessage(missingFields)}</span> first!
                                 </p>
 
@@ -601,7 +607,7 @@ export function AuditionsPage() {
         >
             <div className="min-h-screen bg-black/50">
                 <PersistentTitle />
-                <div className="max-w-4xl mx-auto px-4 pt-[250px] md:pt-[600px] pb-20">
+                <div className="max-w-4xl mx-auto px-4 pt-[200px] md:pt-[600px] pb-20">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -613,7 +619,7 @@ export function AuditionsPage() {
                             <div className="flex items-center justify-center gap-3 mb-6">
                                 <CheckCircle className="w-8 h-8 text-green-400" />
                                 <h2 className="text-2xl font-merriweather text-amber-100">
-                                    Hey {user.name}!
+                                    Hey {formatFirstName(user.name)}!
                                 </h2>
                             </div>
                             <p className="text-amber-200/90 font-spectral mb-8 text-lg">
