@@ -72,7 +72,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
 
         const totalShootingTime = TITLE_TEXT.length * LETTER_DELAY + 500;
         timers.push(setTimeout(() => setPhase('burning'), 2000 + totalShootingTime));
-        timers.push(setTimeout(() => setPhase('falling'), 2000 + totalShootingTime + 1500));
+        timers.push(setTimeout(() => setPhase('falling'), 2000 + totalShootingTime));
         timers.push(setTimeout(() => {
             setPhase('complete');
             onComplete();
@@ -113,16 +113,16 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
     return (
         <div className="fixed inset-0 z-50 overflow-hidden">
             <AnimatePresence>
-                {(phase === 'rolling' || phase === 'shooting') && (
+                {(phase === 'rolling' || phase === 'shooting' || phase === 'burning') && (
                     <motion.div
                         className="absolute"
-                        style={{ top: `${phase === 'shooting' ? gunTop : 40}px`, right: '5%' }}
+                        style={{ top: `${phase === 'shooting' || phase === 'burning' ? gunTop : 50}px`, right: '5%' }}
                         initial={{ rotate: 0, x: 300, scaleX: -1 }}
                         animate={phase === 'rolling' ? {
                             rotate: 2880,
                             x: 0,
                             scaleX: -1,
-                            top: 40,
+                            top: 50,
                         } : {
                             rotate: 2880 - 20,
                             x: shotFired ? 15 : 0,
@@ -141,7 +141,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
                         <img
                             src="/images/auditions/gun.png"
                             alt="Gun"
-                            className="w-16 h-16 md:w-40 md:h-40 object-contain drop-shadow-2xl"
+                            className="w-20 h-20 md:w-40 md:h-40 object-contain drop-shadow-2xl"
                             style={{ filter: 'drop-shadow(0 0 20px rgba(255, 150, 50, 0.5))' }}
                         />
                         {shotFired && (
@@ -153,7 +153,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
                                 key={currentLetterIndex}
                             >
                                 <div
-                                    className="w-8 h-8 md:w-16 md:h-16 rounded-full blur-sm"
+                                    className="w-10 h-10 md:w-16 md:h-16 rounded-full blur-sm"
                                     style={{
                                         background: 'radial-gradient(circle, #fff700 0%, #ff8c00 40%, #ff4500 70%, transparent 100%)'
                                     }}
@@ -180,7 +180,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
                         <img
                             src="/images/auditions/gun.png"
                             alt="Gun"
-                            className="w-16 h-16 md:w-40 md:h-40 object-contain"
+                            className="w-20 h-20 md:w-40 md:h-40 object-contain"
                         />
                     </motion.div>
                 )}
