@@ -272,6 +272,10 @@ export function AuditionsPage() {
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
     useEffect(() => {
+        document.title = 'Join the Circle';
+    }, []);
+
+    useEffect(() => {
         if (user) {
             setFormData({
                 rollNumber: user.rollNumber || '',
