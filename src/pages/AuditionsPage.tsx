@@ -107,7 +107,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
     })();
 
     const gunBaseTop = 40;
-    const lineHeight = 80;
+    const lineHeight = typeof window !== 'undefined' && window.innerWidth < 768 ? 40 : 80;
     const gunTop = gunBaseTop + (gunLineIndex * lineHeight);
 
     return (
@@ -141,7 +141,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
                         <img
                             src="/images/auditions/gun.png"
                             alt="Gun"
-                            className="w-40 h-40 object-contain drop-shadow-2xl"
+                            className="w-16 h-16 md:w-40 md:h-40 object-contain drop-shadow-2xl"
                             style={{ filter: 'drop-shadow(0 0 20px rgba(255, 150, 50, 0.5))' }}
                         />
                         {shotFired && (
@@ -153,7 +153,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
                                 key={currentLetterIndex}
                             >
                                 <div
-                                    className="w-16 h-16 rounded-full blur-sm"
+                                    className="w-8 h-8 md:w-16 md:h-16 rounded-full blur-sm"
                                     style={{
                                         background: 'radial-gradient(circle, #fff700 0%, #ff8c00 40%, #ff4500 70%, transparent 100%)'
                                     }}
@@ -180,7 +180,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
                         <img
                             src="/images/auditions/gun.png"
                             alt="Gun"
-                            className="w-40 h-40 object-contain"
+                            className="w-16 h-16 md:w-40 md:h-40 object-contain"
                         />
                     </motion.div>
                 )}
@@ -372,7 +372,7 @@ export function AuditionsPage() {
                 >
                     <div className="min-h-screen bg-black/50">
                         <PersistentTitle />
-                        <div className="max-w-4xl mx-auto px-4 pt-[600px] pb-20">
+                        <div className="max-w-4xl mx-auto px-4 pt-[250px] md:pt-[600px] pb-20">
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -413,7 +413,7 @@ export function AuditionsPage() {
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
-                    <div className="max-w-4xl mx-auto px-4 pt-[600px] pb-20">
+                    <div className="max-w-4xl mx-auto px-4 pt-[250px] md:pt-[600px] pb-20">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -446,7 +446,7 @@ export function AuditionsPage() {
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
-                    <div className="max-w-4xl mx-auto px-4 pt-[600px] pb-20">
+                    <div className="max-w-4xl mx-auto px-4 pt-[250px] md:pt-[600px] pb-20">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -479,7 +479,7 @@ export function AuditionsPage() {
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
-                    <div className="max-w-4xl mx-auto px-4 pt-[600px] pb-20">
+                    <div className="max-w-4xl mx-auto px-4 pt-[250px] md:pt-[600px] pb-20">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -601,7 +601,7 @@ export function AuditionsPage() {
         >
             <div className="min-h-screen bg-black/50">
                 <PersistentTitle />
-                <div className="max-w-4xl mx-auto px-4 pt-48 pb-20">
+                <div className="max-w-4xl mx-auto px-4 pt-[250px] md:pt-[600px] pb-20">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
