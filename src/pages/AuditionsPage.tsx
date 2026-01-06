@@ -273,6 +273,22 @@ export function AuditionsPage() {
 
     useEffect(() => {
         document.title = 'Join the Circle';
+
+        const updateMetaTag = (property: string, content: string) => {
+            let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
+            if (meta) {
+                meta.content = content;
+            } else {
+                meta = document.createElement('meta');
+                meta.setAttribute('property', property);
+                meta.content = content;
+                document.head.appendChild(meta);
+            }
+        };
+
+        updateMetaTag('og:title', 'Join the Circle');
+        updateMetaTag('og:description', 'Auditions for The Literary Circle, NIT Durgapur. Join the premier literary society!');
+        updateMetaTag('og:url', 'https://lcnitdgp.github.io/LC-_Website/#/auditions');
     }, []);
 
     useEffect(() => {
