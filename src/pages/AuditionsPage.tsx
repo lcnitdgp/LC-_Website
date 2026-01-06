@@ -76,7 +76,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
         timers.push(setTimeout(() => {
             setPhase('complete');
             onComplete();
-        }, 2000 + totalShootingTime + 3000));
+        }, 2000 + totalShootingTime + 2000));
 
         return () => timers.forEach(clearTimeout);
     }, [onComplete]);
