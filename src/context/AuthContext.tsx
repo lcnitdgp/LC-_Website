@@ -10,6 +10,7 @@ export interface UserData {
     userId: string;
     name: string;
     email: string;
+    phoneNumber: string;
     rollNumber: string;
     registrationNumber: string;
     department: string;
@@ -133,6 +134,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                     userId,
                     name: result.user.displayName || '',
                     email: email,
+                    phoneNumber: '',
                     rollNumber: '',
                     registrationNumber: '',
                     department: '',
