@@ -19,6 +19,7 @@ interface UserProfile {
     userId: string;
     name: string;
     department: string;
+    phoneNumber: string;
 }
 
 interface Dossier extends ResponseData {
@@ -52,7 +53,8 @@ export function ResponseLibrary({ onClose }: { onClose: () => void }) {
                         userProfilesMap[data.userId] = {
                             userId: data.userId,
                             name: data.name,
-                            department: data.department
+                            department: data.department,
+                            phoneNumber: data.phoneNumber || ''
                         };
                     }
                 });
@@ -160,6 +162,13 @@ function DossierCard({ dossier, onClick }: { dossier: Dossier, onClick: () => vo
                             <p className="text-[10px] text-zinc-500 uppercase tracking-widest">Department</p>
                             <p className="text-zinc-400 text-xs truncate">
                                 {dossier.userProfile?.department || unknownDept}
+                            </p>
+                        </div>
+                        <div className="h-px bg-zinc-700 w-full"></div>
+                        <div>
+                            <p className="text-[10px] text-zinc-500 uppercase tracking-widest">Phone</p>
+                            <p className="text-zinc-400 text-xs truncate">
+                                {dossier.userProfile?.phoneNumber || 'N/A'}
                             </p>
                         </div>
                     </div>

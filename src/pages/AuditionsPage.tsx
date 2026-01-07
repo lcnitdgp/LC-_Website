@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogIn, AlertCircle, Hash, FileText, GraduationCap, Save, Users, Heart } from 'lucide-react';
+import { LogIn, AlertCircle, Hash, FileText, GraduationCap, Save, Users, Heart, Phone } from 'lucide-react';
 import { useAuth } from '../context';
 import { LoginModal } from '../components/auth';
 import { QuestionsList } from '../components/auditions/QuestionsList';
@@ -272,6 +272,7 @@ export function AuditionsPage() {
         rollNumber: '',
         registrationNumber: '',
         department: '',
+        phoneNumber: '',
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -305,6 +306,7 @@ export function AuditionsPage() {
                 rollNumber: user.rollNumber || '',
                 registrationNumber: user.registrationNumber || '',
                 department: user.department || '',
+                phoneNumber: user.phoneNumber || '',
             });
         }
     }, [user]);
@@ -322,6 +324,7 @@ export function AuditionsPage() {
         if (!user.rollNumber?.trim()) fields.push({ label: 'Roll Number', field: 'rollNumber' });
         if (!user.registrationNumber?.trim()) fields.push({ label: 'Registration Number', field: 'registrationNumber' });
         if (!user.department?.trim()) fields.push({ label: 'Department', field: 'department' });
+        if (!user.phoneNumber?.trim()) fields.push({ label: 'Phone Number', field: 'phoneNumber' });
 
         return fields;
     };
@@ -345,7 +348,7 @@ export function AuditionsPage() {
     };
 
     const handleSave = async () => {
-        if (!formData.rollNumber.trim() || !formData.registrationNumber.trim() || !formData.department.trim()) {
+        if (!formData.rollNumber.trim() || !formData.registrationNumber.trim() || !formData.department.trim() || !formData.phoneNumber.trim()) {
             setMessage({ type: 'error', text: 'Please fill in all fields' });
             return;
         }
@@ -357,6 +360,7 @@ export function AuditionsPage() {
             rollNumber: formData.rollNumber,
             registrationNumber: formData.registrationNumber,
             department: formData.department,
+            phoneNumber: formData.phoneNumber,
         });
 
         if (result.success) {
@@ -549,12 +553,6 @@ export function AuditionsPage() {
                         >
 
                             <div className="bg-black/40 backdrop-blur-md rounded-2xl p-8 md:p-12 border border-amber-500/20">
-                                <div className="flex items-center justify-center gap-3 mb-6">
-                                    <AlertCircle className="w-8 h-8 text-orange-400" />
-                                    <h2 className="text-2xl font-merriweather text-amber-100">
-                                        Almost There!
-                                    </h2>
-                                </div>
                                 <p className="text-amber-200/90 font-spectral mb-8 text-lg">
                                     Hey <span className="text-orange-400 font-semibold">{formatFirstName(user.name)}</span>! We are glad you are so excited to join the circle but please add your{' '}
                                     <span className="text-orange-300">{formatMissingFieldsMessage(missingFields)}</span> first!
@@ -619,6 +617,20 @@ export function AuditionsPage() {
                                                         <option key={dept} value={dept} className="bg-gray-900">{dept}</option>
                                                     ))}
                                                 </select>
+                                            </div>
+
+                                            <div>
+                                                <label className="flex items-center text-sm font-medium text-amber-200 mb-2">
+                                                    <Phone className="w-4 h-4 mr-2 text-orange-400" />
+                                                    Phone Number
+                                                </label>
+                                                <input
+                                                    type="tel"
+                                                    value={formData.phoneNumber}
+                                                    onChange={e => handleInputChange('phoneNumber', e.target.value)}
+                                                    placeholder="Enter phone number"
+                                                    className="w-full px-4 py-3 border border-amber-500/30 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all duration-200 bg-black/30 text-white font-spectral placeholder-amber-200/50"
+                                                />
                                             </div>
 
                                             {message && (
