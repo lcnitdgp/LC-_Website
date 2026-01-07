@@ -129,10 +129,10 @@ export function QuestionsList({ user, onClose }: QuestionsListProps) {
                     <div className="p-6 border-b-2 border-dashed border-[#8c7b5b] bg-[#e8dec8]">
                         <div className="flex justify-between items-center">
                             <div>
-                                <h1 className="text-3xl text-black font-bold tracking-tighter uppercase mb-1">
+                                <h1 className="text-xl md:text-3xl text-black font-bold tracking-tighter uppercase mb-1">
                                     Subject: Audition Protocol
                                 </h1>
-                                <p className="text-[#5c4b2b] text-sm tracking-widest">
+                                <p className="text-[#5c4b2b] text-xs md:text-sm tracking-widest">
                                     REF: AQ-{new Date().getFullYear()}-LC // TOP SECRET
                                 </p>
                             </div>
@@ -142,7 +142,7 @@ export function QuestionsList({ user, onClose }: QuestionsListProps) {
                         </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-8 space-y-8 bg-[url('https://www.transparenttextures.com/patterns/aged-paper.png')]">
+                    <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 md:space-y-8 bg-[url('https://www.transparenttextures.com/patterns/aged-paper.png')]">
                         {questions.map((q, index) => (
                             <div
                                 key={q.id}
@@ -271,9 +271,9 @@ export function QuestionsList({ user, onClose }: QuestionsListProps) {
                     <div className="p-6 bg-[#e8dec8] border-t-2 border-dashed border-[#8c7b5b] flex justify-center">
                         <button
                             onClick={() => setShowAddModal(true)}
-                            className="bg-black text-white px-8 py-4 text-xl tracking-widest hover:bg-[#222] transition-all transform hover:-translate-y-1 shadow-lg border-2 border-transparent hover:border-[#5c4b2b] flex items-center gap-3"
+                            className="bg-black text-white px-6 py-3 md:px-8 md:py-4 text-lg md:text-xl tracking-widest hover:bg-[#222] transition-all transform hover:-translate-y-1 shadow-lg border-2 border-transparent hover:border-[#5c4b2b] flex items-center gap-3 w-full md:w-auto justify-center"
                         >
-                            <span className="w-3 h-3 bg-red-600 rounded-full animate-pulse"></span>
+                            <span className="w-2 h-2 md:w-3 md:h-3 bg-red-600 rounded-full animate-pulse"></span>
                             ADD NEW EVIDENCE
                         </button>
                     </div>
@@ -283,7 +283,7 @@ export function QuestionsList({ user, onClose }: QuestionsListProps) {
 
             {showAddModal && (
                 <div className="absolute inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-                    <div className="bg-[#f0f0f0] w-full max-w-2xl p-8 shadow-[0_0_100px_rgba(255,255,255,0.1)] transform rotate-1 border-8 border-[#333] relative">
+                    <div className="bg-[#f0f0f0] w-full max-w-2xl p-4 md:p-8 shadow-[0_0_100px_rgba(255,255,255,0.1)] transform rotate-1 border-4 md:border-8 border-[#333] relative">
                         <button
                             onClick={() => setShowAddModal(false)}
                             className="absolute -top-6 -right-6 w-12 h-12 bg-red-800 text-white flex items-center justify-center rounded-full shadow-lg hover:bg-red-900 transition-colors"
@@ -300,7 +300,7 @@ export function QuestionsList({ user, onClose }: QuestionsListProps) {
                                 value={newQuestion}
                                 onChange={(e) => setNewQuestion(e.target.value)}
                                 placeholder="Start typing..."
-                                className="w-full h-64 bg-white border-2 border-black p-6 text-2xl font-[Special_Elite] leading-relaxed focus:outline-none focus:ring-4 focus:ring-black/10 resize-none"
+                                className="w-full h-48 md:h-64 bg-white border-2 border-black p-4 md:p-6 text-xl md:text-2xl font-[Special_Elite] leading-relaxed focus:outline-none focus:ring-4 focus:ring-black/10 resize-none"
                                 autoFocus
                             />
                         </div>
