@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/delicious-handrawn": "^5.2.8",
     "@fontsource/special-elite": "^5.2.8",
     "firebase": "^12.7.0",
     "framer-motion": "^12.23.26",

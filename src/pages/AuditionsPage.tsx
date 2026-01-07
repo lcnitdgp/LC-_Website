@@ -5,6 +5,9 @@ import { useAuth } from '../context';
 import { LoginModal } from '../components/auth';
 import { QuestionsList } from '../components/auditions/QuestionsList';
 import { AuditionResponse } from '../components/auditions/AuditionResponse';
+import { ResponseLibrary } from '../components/auditions/ResponseLibrary';
+// @ts-ignore 
+import '@fontsource/delicious-handrawn';
 
 const DEPARTMENTS = [
     'Biotechnology',
@@ -273,6 +276,7 @@ export function AuditionsPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
     const [showQuestions, setShowQuestions] = useState(false);
+    const [showResponses, setShowResponses] = useState(false);
     const [showAuditioning, setShowAuditioning] = useState(false);
 
     useEffect(() => {
@@ -448,6 +452,8 @@ export function AuditionsPage() {
                     <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
                         {showQuestions ? (
                             <QuestionsList user={user!} onClose={() => setShowQuestions(false)} />
+                        ) : showResponses ? (
+                            <ResponseLibrary onClose={() => setShowResponses(false)} />
                         ) : (
                             <motion.div
                                 initial={{ opacity: 0, y: 20 }}
@@ -464,17 +470,26 @@ export function AuditionsPage() {
                                     </div>
                                     <p className="text-amber-200/90 font-spectral text-lg mb-8">
                                         {isLCite
-                                            ? "Click the button below to view the questions we have for the contenders. Since you are already a part of the Circle, you have the authority to add more questions of your choice. But don't be too harsh! We don't have to scare them away in Round 1 itself!"
-                                            : "The Circle is delighted to have your presence here! Click the button below to see the questions your juniors have added to induct the fresh lot into the Circle. But you know how naive kids can be! So unlike them, you have additional powers of being able to Edit and Delete the questions as well! You have carried the burden of the Circle for 4 freaking years so you completely deserve the authority to edit and delete their questions!"
+                                            ? "Click the button below to view the questions we have for the contenders. Since you are already a part of the Circle, you have the authority to add more questions of your choice. But don't be too harsh! We don't have to scare them away in Round 1 itself! Alternatively, you can also click view responses and try to guess who would eventually end up in expanding the Circle!"
+                                            : "The Circle is delighted to have your presence here! Click the button below to see the questions your juniors have added to induct the fresh lot into the Circle. But you know how naive kids can be! So unlike them, you have additional powers of being able to Edit and Delete the questions as well! You have carried the burden of the Circle for 4 freaking years so you completely deserve the authority to edit and delete their questions! Alternatively, you can also click view responses and try to guess who would eventually end up in expanding the Circle!"
                                         }
                                     </p>
 
-                                    <button
-                                        onClick={() => setShowQuestions(true)}
-                                        className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg font-medium transition-all shadow-lg shadow-purple-500/30 group transform hover:scale-105 duration-200"
-                                    >
-                                        <span className="font-merriweather text-lg">View Questions</span>
-                                    </button>
+                                    <div className="flex flex-col md:flex-row gap-4 justify-center">
+                                        <button
+                                            onClick={() => setShowQuestions(true)}
+                                            className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg font-medium transition-all shadow-lg shadow-purple-500/30 group transform hover:scale-105 duration-200"
+                                        >
+                                            <span className="font-merriweather text-lg">View Questions</span>
+                                        </button>
+
+                                        <button
+                                            onClick={() => setShowResponses(true)}
+                                            className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white rounded-lg font-medium transition-all shadow-lg shadow-amber-500/30 group transform hover:scale-105 duration-200"
+                                        >
+                                            <span className="font-merriweather text-lg">View Responses</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </motion.div>
                         )}
