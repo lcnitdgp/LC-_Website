@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LogIn, AlertCircle, CheckCircle, Hash, FileText, GraduationCap, Save, Users, Heart } from 'lucide-react';
 import { useAuth } from '../context';
 import { LoginModal } from '../components/auth';
+import { QuestionsList } from '../components/auditions/QuestionsList';
 
 const DEPARTMENTS = [
     'Biotechnology',
@@ -270,6 +271,7 @@ export function AuditionsPage() {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+    const [showQuestions, setShowQuestions] = useState(false);
 
     useEffect(() => {
         document.title = 'Join the Circle';
@@ -432,6 +434,8 @@ export function AuditionsPage() {
     }
 
     if (isNotStudent) {
+        const isLCite = user.role === 'LCite';
+
         return (
             <div
                 className="min-h-screen bg-cover bg-center bg-no-repeat relative"
@@ -440,24 +444,38 @@ export function AuditionsPage() {
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
                     <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6 }}
-                            className="text-center"
-                        >
-                            <div className="bg-black/40 backdrop-blur-md rounded-2xl p-8 md:p-12 border border-amber-500/20">
-                                <div className="flex items-center justify-center gap-3 mb-6">
-                                    <Users className="w-8 h-8 text-purple-400" />
-                                    <h2 className="text-2xl font-merriweather text-amber-100">
-                                        Wait a minute...
-                                    </h2>
+                        {showQuestions ? (
+                            <QuestionsList user={user!} onClose={() => setShowQuestions(false)} />
+                        ) : (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.6 }}
+                                className="text-center"
+                            >
+                                <div className="bg-black/40 backdrop-blur-md rounded-2xl p-8 md:p-12 border border-amber-500/20">
+                                    <div className="flex items-center justify-center gap-3 mb-6">
+                                        <Users className="w-8 h-8 text-purple-400" />
+                                        <h2 className="text-2xl font-merriweather text-amber-100">
+                                            {isLCite ? `Welcome Comrade ${formatFirstName(user.name)}` : `Welcome ${user.role} ${formatFirstName(user.name)}!`}
+                                        </h2>
+                                    </div>
+                                    <p className="text-amber-200/90 font-spectral text-lg mb-8">
+                                        {isLCite
+                                            ? "Click the button below to view the questions we have for the contenders. Since you are already a part of the Circle, you have the authority to add more questions of your choice. But don't be too harsh! We don't have to scare them away in Round 1 itself!"
+                                            : "The Circle is delighted to have your presence here! Click the button below to see the questions your juniors have added to induct the fresh lot into the Circle. But you know how naive kids can be! So unlike them, you have additional powers of being able to Edit and Delete the questions as well! You have carried the burden of the Circle for 4 freaking years so you completely deserve the authority to edit and delete their questions!"
+                                        }
+                                    </p>
+
+                                    <button
+                                        onClick={() => setShowQuestions(true)}
+                                        className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-lg font-medium transition-all shadow-lg shadow-purple-500/30 group transform hover:scale-105 duration-200"
+                                    >
+                                        <span className="font-merriweather text-lg">View Questions</span>
+                                    </button>
                                 </div>
-                                <p className="text-amber-200/90 font-spectral text-lg">
-                                    Seriously <span className="text-orange-400 font-semibold">{formatFirstName(user.name)}</span>? Aren't you a member of the Circle already? Bring your juniors for auditions rather than wasting time here!
-                                </p>
-                            </div>
-                        </motion.div>
+                            </motion.div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -643,14 +661,13 @@ export function AuditionsPage() {
                                 </h2>
                             </div>
                             <p className="text-amber-200/90 font-spectral mb-8 text-lg">
-                                Click the button below if you wish to join the Circle!
+                                Do you have what it takes to be an LCite? Answer the questions below to find out! And just to let you know, the Circle respects your individuality, freedom and privacy. So if you're uncomfortable with any question, just skip it! No one judges you for it in the Circle! But if you change your mind and decide to comeback to it, just reload the page and all the unanswered questions appear again!
                             </p>
 
                             <button
-                                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white rounded-lg font-medium transition-all shadow-lg shadow-orange-500/30 group transform hover:scale-105 duration-200"
+                                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-lg font-medium transition-all shadow-lg shadow-red-500/30 group transform hover:scale-105 duration-200"
                             >
-                                <span className="font-merriweather text-lg">Join the Circle</span>
-                                <CheckCircle className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                                <span className="font-merriweather text-lg">Hit Me</span>
                             </button>
                         </div>
                     </motion.div>
