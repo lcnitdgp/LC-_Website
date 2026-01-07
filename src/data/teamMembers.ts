@@ -132,19 +132,6 @@ export const teamMembers: TeamMember[] = [
         },
     },
     {
-        id: 'aviraj',
-        name: 'Aviraj Chakrabarty',
-        role: 'PR Head',
-        year: 'Final Year',
-        image1: 'images/team/Aviraj1.jpg',
-        image2: 'images/team/Aviraj2.jpg',
-        social: {
-            facebook: 'https://www.facebook.com/profile.php?id=100087367254572',
-            instagram: 'a.v.i.r.a.j.c.h',
-        },
-    },
-
-    {
         id: 'alok',
         name: 'Alok Raj',
         role: 'Third Year',
