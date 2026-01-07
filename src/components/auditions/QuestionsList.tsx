@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy, serverTimestamp, Timestamp, getDocs, writeBatch, deleteField } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { X, Save, Stamp, PenTool, Flame } from 'lucide-react';
 import type { UserData } from '../../context/AuthContext';
@@ -45,13 +45,24 @@ export function QuestionsList({ user, onClose }: QuestionsListProps) {
         if (!newQuestion.trim()) return;
 
         try {
-            await addDoc(collection(db, 'audition_questions'), {
-                text: newQuestion.trim(),
+            const questionText = newQuestion.trim();
+            const docRef = await addDoc(collection(db, 'audition_questions'), {
+                text: questionText,
                 addedBy: user.name,
                 addedById: user.userId,
                 type: 'add',
                 createdAt: serverTimestamp()
             });
+
+            const responsesSnapshot = await getDocs(collection(db, 'responses'));
+            const batch = writeBatch(db);
+            responsesSnapshot.docs.forEach(responseDoc => {
+                batch.update(responseDoc.ref, {
+                    [`questions.${docRef.id}`]: { text: questionText, response: null }
+                });
+            });
+            await batch.commit();
+
             setNewQuestion('');
             setShowAddModal(false);
         } catch (error) {
@@ -69,12 +80,26 @@ export function QuestionsList({ user, onClose }: QuestionsListProps) {
         try {
             const isLCiteOwner = user.role === 'LCite' && question.addedById === user.userId;
             const newType = (isLCiteOwner && question.type === 'add') ? 'add' : 'edit';
+            const updatedText = editText.trim();
 
             await updateDoc(doc(db, 'audition_questions', id), {
-                text: editText.trim(),
+                text: updatedText,
                 lastEditedBy: newType === 'edit' ? user.name : undefined,
                 type: newType
             });
+
+            const responsesSnapshot = await getDocs(collection(db, 'responses'));
+            const batch = writeBatch(db);
+            responsesSnapshot.docs.forEach(responseDoc => {
+                const data = responseDoc.data();
+                if (data.questions && data.questions[id]) {
+                    batch.update(responseDoc.ref, {
+                        [`questions.${id}.text`]: updatedText
+                    });
+                }
+            });
+            await batch.commit();
+
             setEditingId(null);
             setEditText('');
         } catch (error) {
@@ -91,6 +116,16 @@ export function QuestionsList({ user, onClose }: QuestionsListProps) {
             setTimeout(async () => {
                 try {
                     await deleteDoc(doc(db, 'audition_questions', id));
+
+                    const responsesSnapshot = await getDocs(collection(db, 'responses'));
+                    const batch = writeBatch(db);
+                    responsesSnapshot.docs.forEach(responseDoc => {
+                        batch.update(responseDoc.ref, {
+                            [`questions.${id}`]: deleteField()
+                        });
+                    });
+                    await batch.commit();
+
                     setBurningId(null);
                 } catch (error) {
                     console.error("Error deleting question:", error);
