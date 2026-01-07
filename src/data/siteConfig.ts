@@ -2,11 +2,7 @@ export const siteConfig = {
     name: 'The Literary Circle',
     description: 'The official website of The Literary Circle, NIT Durgapur',
 
-    navigation: [
-        { label: 'Home', href: '#' },
-        { label: 'Our Blog', href: 'https://darkestwhite.lcnitd.co.in', external: true },
-        { label: 'Contact Us', href: '#contact' },
-    ],
+    navigation: [],
 
     social: {
         facebook: 'https://www.facebook.com/lcnitdgp/',
