@@ -2,7 +2,7 @@ export const siteConfig = {
     name: 'The Literary Circle',
     description: 'The official website of The Literary Circle, NIT Durgapur',
 
-    navigation: [],
+    navigation: [] as { label: string; href: string; external?: boolean }[],
 
     social: {
         facebook: 'https://www.facebook.com/lcnitdgp/',
