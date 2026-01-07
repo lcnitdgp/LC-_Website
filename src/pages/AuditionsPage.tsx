@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogIn, AlertCircle, CheckCircle, Hash, FileText, GraduationCap, Save, Users, Heart } from 'lucide-react';
+import { LogIn, AlertCircle, Hash, FileText, GraduationCap, Save, Users, Heart } from 'lucide-react';
 import { useAuth } from '../context';
 import { LoginModal } from '../components/auth';
 import { QuestionsList } from '../components/auditions/QuestionsList';
+import { AuditionResponse } from '../components/auditions/AuditionResponse';
 
 const DEPARTMENTS = [
     'Biotechnology',
@@ -272,6 +273,7 @@ export function AuditionsPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
     const [showQuestions, setShowQuestions] = useState(false);
+    const [showAuditioning, setShowAuditioning] = useState(false);
 
     useEffect(() => {
         document.title = 'Join the Circle';
@@ -655,7 +657,7 @@ export function AuditionsPage() {
 
                         <div className="bg-black/40 backdrop-blur-md rounded-2xl p-8 md:p-12 border border-amber-500/20">
                             <div className="flex items-center justify-center gap-3 mb-6">
-                                <CheckCircle className="w-8 h-8 text-green-400" />
+
                                 <h2 className="text-2xl font-merriweather text-amber-100">
                                     Hey {formatFirstName(user.name)}!
                                 </h2>
@@ -665,6 +667,7 @@ export function AuditionsPage() {
                             </p>
 
                             <button
+                                onClick={() => setShowAuditioning(true)}
                                 className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-lg font-medium transition-all shadow-lg shadow-red-500/30 group transform hover:scale-105 duration-200"
                             >
                                 <span className="font-merriweather text-lg">Hit Me</span>
@@ -673,6 +676,10 @@ export function AuditionsPage() {
                     </motion.div>
                 </div>
             </div>
+
+            {showAuditioning && user && (
+                <AuditionResponse user={user} onClose={() => setShowAuditioning(false)} />
+            )}
         </div>
     );
 }
