@@ -214,12 +214,12 @@ export function AuditionResponse({ user, onClose }: AuditionResponseProps) {
                 <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="bg-black/60 border border-amber-500/30 rounded-2xl p-8 md:p-12 max-w-2xl text-center"
+                    className="bg-zinc-900 border-2 border-amber-600 rounded-lg p-8 md:p-12 max-w-2xl text-center"
                 >
                     {(isComplete ? allAnswered : true) ? (
                         <>
 
-                            <h2 className="text-2xl md:text-3xl font-merriweather text-amber-100 mb-4">Bravo!</h2>
+                            <h2 className="text-2xl md:text-3xl font-merriweather text-amber-50 mb-4">Bravo!</h2>
                             <p className="text-amber-200/80 font-spectral text-lg mb-8">
                                 The Circle has to admit you are a person with some real guts to answer them all! Strong fit for the next round it seems.
                             </p>
@@ -227,7 +227,7 @@ export function AuditionResponse({ user, onClose }: AuditionResponseProps) {
                     ) : (
                         <>
 
-                            <h2 className="text-2xl md:text-3xl font-merriweather text-amber-100 mb-4">That's All For Today</h2>
+                            <h2 className="text-2xl md:text-3xl font-merriweather text-amber-50 mb-4">That's All For Today</h2>
                             <p className="text-amber-200/80 font-spectral text-lg mb-8">
                                 We see you have skipped some questions and we respect your decision. Don't worry the Circle doesn't penalize this in any way. However, just in case you change your mind, just reload the page and those skipped ones will appear again.
                             </p>
@@ -235,7 +235,7 @@ export function AuditionResponse({ user, onClose }: AuditionResponseProps) {
                     )}
                     <button
                         onClick={onClose}
-                        className="px-8 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white rounded-lg font-medium hover:from-amber-700 hover:to-orange-700 transition-all"
+                        className="px-8 py-3 bg-amber-700 hover:bg-amber-600 text-white rounded-md font-bold uppercase tracking-wider transition-all border-2 border-amber-800"
                     >
                         Close
                     </button>
@@ -272,7 +272,7 @@ export function AuditionResponse({ user, onClose }: AuditionResponseProps) {
                                     opacity: 0
                                 }}
                                 transition={{ duration: 1.6, ease: "easeIn" }}
-                                className="absolute inset-0 bg-black/60 border border-amber-500/30 rounded-2xl p-6 md:p-10 pointer-events-none z-20"
+                                className="absolute inset-0 bg-zinc-900 border-2 border-amber-600 rounded-lg p-6 md:p-10 pointer-events-none z-20"
                             >
                                 <Content question={currentQuestion} currentIndex={currentIndex} total={unansweredQuestions.length} />
                             </motion.div>
@@ -287,13 +287,14 @@ export function AuditionResponse({ user, onClose }: AuditionResponseProps) {
                                     opacity: 0
                                 }}
                                 transition={{ duration: 1.6, ease: "easeIn" }}
-                                className="absolute inset-0 bg-black/60 border border-amber-500/30 rounded-2xl p-6 md:p-10 pointer-events-none z-20"
+                                className="absolute inset-0 bg-zinc-900 border-2 border-amber-600 rounded-lg p-6 md:p-10 pointer-events-none z-20"
                             >
                                 <Content question={currentQuestion} currentIndex={currentIndex} total={unansweredQuestions.length} showInput={showInput} currentAnswer={currentAnswer} />
                             </motion.div>
                         </>
                     )}
                 </AnimatePresence>
+
 
                 <AnimatePresence mode="wait">
                     {(animState !== 'entering') && (
@@ -302,16 +303,16 @@ export function AuditionResponse({ user, onClose }: AuditionResponseProps) {
                             initial={{ opacity: 0, x: 500, rotate: 10, scale: 0.8 }}
                             animate={
                                 animState === 'tossing' ? { x: -800, rotate: -45, opacity: 0, scale: 0.9 } :
-                                    animState === 'cracking' ? { opacity: 0, transition: { duration: 0 } } : // Instant Hide
-                                        { opacity: 1, x: 0, rotate: 0, scale: 1 }      // Idle/Center
+                                    animState === 'cracking' ? { opacity: 0, transition: { duration: 0 } } :
+                                        { opacity: 1, x: 0, rotate: 0, scale: 1 }
                             }
                             exit={{ opacity: 0 }}
                             transition={
                                 animState === 'tossing' ? { duration: 0.4, ease: "easeIn" } :
-                                    animState === 'cracking' ? { duration: 0 } : // Start transition instantly
+                                    animState === 'cracking' ? { duration: 0 } :
                                         { type: "spring", stiffness: 300, damping: 25 }
                             }
-                            className="bg-black/60 border border-amber-500/30 rounded-2xl p-6 md:p-10 w-full relative z-10"
+                            className="bg-zinc-900 border-2 border-amber-600 rounded-lg p-6 md:p-10 w-full relative z-10"
                         >
                             <Content
                                 question={currentQuestion}
@@ -335,11 +336,11 @@ export function AuditionResponse({ user, onClose }: AuditionResponseProps) {
 
 const Content = ({ question, currentIndex, total, showInput, currentAnswer, onAnswerChange, onShowInput, onAnswer, onSkip, saving }: any) => (
     <>
-        <div className="text-amber-500/60 text-sm font-medium mb-2 uppercase tracking-widest">
+        <div className="text-amber-600 text-sm font-bold mb-2 uppercase tracking-widest">
             Question {currentIndex + 1} of {total}
         </div>
 
-        <h2 className="text-xl md:text-2xl font-merriweather text-amber-100 mb-8 leading-relaxed">
+        <h2 className="text-xl md:text-2xl font-merriweather text-amber-50 mb-8 leading-relaxed">
             {question.text}
         </h2>
 
@@ -350,7 +351,7 @@ const Content = ({ question, currentIndex, total, showInput, currentAnswer, onAn
                         value={currentAnswer}
                         onChange={(e) => onAnswerChange(e.target.value)}
                         placeholder="Type your answer here..."
-                        className="w-full h-40 bg-black/40 border border-amber-500/30 rounded-lg p-4 text-amber-100 font-spectral text-lg focus:outline-none focus:border-amber-500 resize-none placeholder:text-amber-500/40"
+                        className="w-full h-40 bg-black border-2 border-amber-700/50 rounded-md p-4 text-amber-50 font-spectral text-lg focus:outline-none focus:border-amber-500 resize-none placeholder:text-amber-700/50"
                         autoFocus
                     />
                     <div className="flex gap-3 justify-end">
@@ -359,14 +360,14 @@ const Content = ({ question, currentIndex, total, showInput, currentAnswer, onAn
                                 onShowInput(false);
                                 onAnswerChange('');
                             }}
-                            className="px-6 py-3 text-amber-200/70 hover:text-amber-100 font-medium transition-colors"
+                            className="px-6 py-3 text-amber-600 hover:text-amber-500 font-bold uppercase tracking-wider transition-colors"
                         >
                             Cancel
                         </button>
                         <button
                             onClick={onAnswer}
                             disabled={!currentAnswer.trim() || saving}
-                            className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg font-medium transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="px-6 py-3 bg-amber-700 hover:bg-amber-600 text-white rounded-md font-bold uppercase tracking-wider transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed border-2 border-amber-800"
                         >
                             <Send size={18} />
                             {saving ? 'Saving...' : 'Next'}
@@ -377,13 +378,13 @@ const Content = ({ question, currentIndex, total, showInput, currentAnswer, onAn
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <button
                         onClick={() => onShowInput(true)}
-                        className="px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-lg font-medium transition-all shadow-lg shadow-green-500/20 text-lg"
+                        className="px-8 py-4 bg-amber-700 hover:bg-amber-600 text-white rounded-md font-bold uppercase tracking-wider transition-all shadow-lg shadow-amber-900/40 text-lg border-2 border-amber-800"
                     >
                         Answer
                     </button>
                     <button
                         onClick={onSkip}
-                        className="px-8 py-4 bg-gray-700/50 hover:bg-gray-600/50 text-amber-200 rounded-lg font-medium transition-all flex items-center justify-center gap-2 text-lg"
+                        className="px-8 py-4 bg-zinc-700 hover:bg-zinc-600 text-amber-50 rounded-md font-bold uppercase tracking-wider transition-all flex items-center justify-center gap-2 text-lg border-2 border-zinc-800"
                     >
                         <SkipForward size={20} />
                         Skip
