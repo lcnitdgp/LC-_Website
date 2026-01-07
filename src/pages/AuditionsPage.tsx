@@ -36,7 +36,7 @@ const LETTER_DELAY = 120;
 function PersistentTitle() {
     return (
         <div
-            className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 md:gap-6 w-full px-4"
+            className="absolute left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 md:gap-8 w-full px-4"
             style={{ top: '50px', zIndex: 10 }}
         >
             {TITLE_LINES.map((line, lineIndex) => (
@@ -211,7 +211,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
                     >
 
 
-                        <div className="flex flex-col items-center gap-3 md:gap-6 w-full px-4">
+                        <div className="flex flex-col items-center gap-3 md:gap-8 w-full px-4">
                             {TITLE_LINES.map((line, lineIndex) => (
                                 <div key={lineIndex} className="text-4xl sm:text-5xl md:text-8xl text-center flex justify-center leading-none" style={{ fontFamily: "'Alfa Slab One', cursive" }}>
                                     {line.split('').map((char, charIndex) => {
