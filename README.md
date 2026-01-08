@@ -227,8 +227,6 @@ flowchart TD
 - First-time users are prompted to set a password
 - Users can login with UserID + Password after setting it
 
----
-*Maintained by The Literary Circle*
 
 ## 🛡️ 7. Cloudflare Protection
 
