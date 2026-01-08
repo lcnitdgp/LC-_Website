@@ -8,8 +8,22 @@ import { AuditionResponse } from '../components/auditions/AuditionResponse';
 import { ResponseLibrary } from '../components/auditions/ResponseLibrary';
 // @ts-ignore 
 import '@fontsource/delicious-handrawn';
-import auditionsBg from '../assets/auditions/auditions-bg.gif';
+import auditionsBgVideo from '../assets/auditions/auditions-bg.webm';
 import gunImage from '../assets/auditions/gun.png';
+
+function VideoBackground() {
+    return (
+        <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover -z-10"
+        >
+            <source src={auditionsBgVideo} type="video/webm" />
+        </video>
+    );
+}
 
 const DEPARTMENTS = [
     'Biotechnology',
@@ -387,11 +401,9 @@ export function AuditionsPage() {
                     isOpen={showLoginModal}
                     onClose={() => setShowLoginModal(false)}
                 />
-                <div
-                    className="min-h-screen bg-cover bg-center bg-no-repeat"
-                    style={{ backgroundImage: `url(${auditionsBg})` }}
-                >
-                    <div className="min-h-screen bg-black/40">
+                <div className="min-h-screen relative overflow-hidden">
+                    <VideoBackground />
+                    <div className="min-h-screen bg-black/40 relative z-10">
                         <LoadingAnimation onComplete={() => setAnimationComplete(true)} />
                     </div>
                 </div>
@@ -406,11 +418,9 @@ export function AuditionsPage() {
                     isOpen={showLoginModal}
                     onClose={() => setShowLoginModal(false)}
                 />
-                <div
-                    className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-                    style={{ backgroundImage: `url(${auditionsBg})` }}
-                >
-                    <div className="min-h-screen bg-black/50">
+                <div className="min-h-screen relative overflow-hidden">
+                    <VideoBackground />
+                    <div className="min-h-screen bg-black/50 relative z-10">
                         <PersistentTitle />
                         <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
                             <motion.div
@@ -449,11 +459,9 @@ export function AuditionsPage() {
         const isLCite = user.role === 'LCite';
 
         return (
-            <div
-                className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-                style={{ backgroundImage: `url(${auditionsBg})` }}
-            >
-                <div className="min-h-screen bg-black/50">
+            <div className="min-h-screen relative overflow-hidden">
+                <VideoBackground />
+                <div className="min-h-screen bg-black/50 relative z-10">
                     <PersistentTitle />
                     <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
                         {showQuestions ? (
@@ -507,11 +515,9 @@ export function AuditionsPage() {
 
     if (isNotFirstYear) {
         return (
-            <div
-                className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-                style={{ backgroundImage: `url(${auditionsBg})` }}
-            >
-                <div className="min-h-screen bg-black/50">
+            <div className="min-h-screen relative overflow-hidden">
+                <VideoBackground />
+                <div className="min-h-screen bg-black/50 relative z-10">
                     <PersistentTitle />
                     <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
                         <motion.div
@@ -540,11 +546,9 @@ export function AuditionsPage() {
 
     if (!isProfileComplete) {
         return (
-            <div
-                className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-                style={{ backgroundImage: `url(${auditionsBg})` }}
-            >
-                <div className="min-h-screen bg-black/50">
+            <div className="min-h-screen relative overflow-hidden">
+                <VideoBackground />
+                <div className="min-h-screen bg-black/50 relative z-10">
                     <PersistentTitle />
                     <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
                         <motion.div
@@ -670,11 +674,9 @@ export function AuditionsPage() {
     }
 
     return (
-        <div
-            className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-            style={{ backgroundImage: `url(${auditionsBg})` }}
-        >
-            <div className="min-h-screen bg-black/50">
+        <div className="min-h-screen relative overflow-hidden">
+            <VideoBackground />
+            <div className="min-h-screen bg-black/50 relative z-10">
                 <PersistentTitle />
                 <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
                     <motion.div
