@@ -85,7 +85,7 @@ export function AuditionResponse({ user, onClose }: AuditionResponseProps) {
             setAnimState('entering');
 
             const timer = setTimeout(() => {
-                triggerGunshot();
+                triggerGunshot(true);
 
                 setTimeout(() => {
                     setAnimState('idle');
@@ -96,9 +96,11 @@ export function AuditionResponse({ user, onClose }: AuditionResponseProps) {
         }
     }, [currentIndex, loading]);
 
-    const triggerGunshot = () => {
+    const triggerGunshot = (silent = false) => {
         setFiring(true);
-        playGunshot();
+        if (!silent) {
+            playGunshot();
+        }
         setTimeout(() => setFiring(false), 150);
     };
 
@@ -391,13 +393,10 @@ const Content = ({ question, currentIndex, total, showInput, currentAnswer, onAn
 );
 
 const Shards = () => {
-    // Generate a fixed number of shards with random trajectories
     const shards = Array.from({ length: 40 }).map((_, i) => {
         const angle = Math.random() * Math.PI * 2;
-        const velocity = 800 + Math.random() * 800; // High velocity for explosion
+        const velocity = 800 + Math.random() * 800;
         const rotate = Math.random() * 720 - 360;
-
-        // Ensure accurate mix of types
         const typeRand = Math.random();
 
         let hasText = false;
@@ -412,7 +411,6 @@ const Shards = () => {
             hasBorder = true;
         }
 
-        // Random border side if has border
         const borderClass = hasBorder ?
             ['border-t-4', 'border-b-4', 'border-l-4', 'border-r-4'].at(Math.floor(Math.random() * 4)) : '';
 
@@ -422,13 +420,12 @@ const Shards = () => {
             y: Math.sin(angle) * velocity,
             rotation: rotate,
             scale: 0.5 + Math.random() * 0.5,
-            width: 30 + Math.random() * 50, // Slightly larger base size
+            width: 30 + Math.random() * 50,
             height: 30 + Math.random() * 50,
             delay: Math.random() * 0.1,
             hasText,
             borderClass,
             hasBorder,
-            // Random properties for the text patch
             patchWidth: 30 + Math.random() * 50 + '%',
             patchHeight: 10 + Math.random() * 40 + '%',
             patchRotation: Math.random() * 90 - 45
@@ -450,13 +447,13 @@ const Shards = () => {
                     animate={{
                         opacity: 0,
                         x: shard.x,
-                        y: shard.y + 500, // Add gravity effect
+                        y: shard.y + 500,
                         rotate: shard.rotation,
                         scale: shard.scale
                     }}
                     transition={{
                         duration: 1.2,
-                        ease: [0.22, 1, 0.36, 1], // Custom easing for explosive start
+                        ease: [0.22, 1, 0.36, 1],
                         delay: shard.delay
                     }}
                     className={`absolute bg-zinc-800 overflow-hidden flex items-center justify-center
@@ -464,7 +461,7 @@ const Shards = () => {
                     style={{
                         width: shard.width,
                         height: shard.height,
-                        clipPath: 'polygon(0% 0%, 100% 20%, 80% 100%, 10% 80%)', // Jagged shape
+                        clipPath: 'polygon(0% 0%, 100% 20%, 80% 100%, 10% 80%)',
                         boxShadow: '0 0 10px rgba(0,0,0,0.5)'
                     }}
                 >
