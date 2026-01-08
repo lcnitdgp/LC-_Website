@@ -8,6 +8,8 @@ import { AuditionResponse } from '../components/auditions/AuditionResponse';
 import { ResponseLibrary } from '../components/auditions/ResponseLibrary';
 // @ts-ignore 
 import '@fontsource/delicious-handrawn';
+import auditionsBg from '../assets/auditions/auditions-bg.gif';
+import gunImage from '../assets/auditions/gun.png';
 
 const DEPARTMENTS = [
     'Biotechnology',
@@ -144,7 +146,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
                         }}
                     >
                         <img
-                            src="/images/auditions/gun.png"
+                            src={gunImage}
                             alt="Gun"
                             className="w-20 h-20 md:w-40 md:h-40 object-contain drop-shadow-2xl"
                             style={{ filter: 'drop-shadow(0 0 20px rgba(255, 150, 50, 0.5))' }}
@@ -183,7 +185,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
                         transition={{ duration: 1.5, ease: "easeIn" }}
                     >
                         <img
-                            src="/images/auditions/gun.png"
+                            src={gunImage}
                             alt="Gun"
                             className="w-20 h-20 md:w-40 md:h-40 object-contain"
                         />
@@ -387,7 +389,7 @@ export function AuditionsPage() {
                 />
                 <div
                     className="min-h-screen bg-cover bg-center bg-no-repeat"
-                    style={{ backgroundImage: "url('/images/auditions/auditions-bg.gif')" }}
+                    style={{ backgroundImage: `url(${auditionsBg})` }}
                 >
                     <div className="min-h-screen bg-black/40">
                         <LoadingAnimation onComplete={() => setAnimationComplete(true)} />
@@ -406,7 +408,7 @@ export function AuditionsPage() {
                 />
                 <div
                     className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-                    style={{ backgroundImage: "url('/images/auditions/auditions-bg.gif')" }}
+                    style={{ backgroundImage: `url(${auditionsBg})` }}
                 >
                     <div className="min-h-screen bg-black/50">
                         <PersistentTitle />
@@ -449,7 +451,7 @@ export function AuditionsPage() {
         return (
             <div
                 className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-                style={{ backgroundImage: "url('/images/auditions/auditions-bg.gif')" }}
+                style={{ backgroundImage: `url(${auditionsBg})` }}
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
@@ -507,7 +509,7 @@ export function AuditionsPage() {
         return (
             <div
                 className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-                style={{ backgroundImage: "url('/images/auditions/auditions-bg.gif')" }}
+                style={{ backgroundImage: `url(${auditionsBg})` }}
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
@@ -540,7 +542,7 @@ export function AuditionsPage() {
         return (
             <div
                 className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-                style={{ backgroundImage: "url('/images/auditions/auditions-bg.gif')" }}
+                style={{ backgroundImage: `url(${auditionsBg})` }}
             >
                 <div className="min-h-screen bg-black/50">
                     <PersistentTitle />
@@ -670,7 +672,7 @@ export function AuditionsPage() {
     return (
         <div
             className="min-h-screen bg-cover bg-center bg-no-repeat relative"
-            style={{ backgroundImage: "url('/images/auditions/auditions-bg.gif')" }}
+            style={{ backgroundImage: `url(${auditionsBg})` }}
         >
             <div className="min-h-screen bg-black/50">
                 <PersistentTitle />

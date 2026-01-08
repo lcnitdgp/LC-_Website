@@ -3,6 +3,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import mysteriousManImage from '../../assets/auditions/mysterious-man.png';
 
 interface ResponseData {
     userId: string;
@@ -143,7 +144,7 @@ function DossierCard({ dossier, onClick }: { dossier: Dossier, onClick: () => vo
                 <div className="flex items-start gap-4">
                     <div className="w-20 h-24 bg-zinc-800 border-2 border-red-900/50 flex-shrink-0 overflow-hidden relative">
                         <img
-                            src="/images/auditions/mysterious-man.png"
+                            src={mysteriousManImage}
                             alt="Agent"
                             className="w-full h-full object-cover grayscale contrast-125 opacity-90"
                         />

@@ -4,6 +4,7 @@ import { db } from '../../firebase';
 import { X, Send, SkipForward } from 'lucide-react';
 import type { UserData } from '../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
+import gunImage from '../../assets/auditions/gun.png';
 
 interface Question {
     id: string;
@@ -25,7 +26,7 @@ const GUN_ANGLE = -15;
 const Gun = ({ firing }: { firing: boolean }) => (
     <div className="absolute top-1/2 -right-16 md:right-10 transform -translate-y-1/2 z-40 pointer-events-none origin-right">
         <motion.img
-            src="/images/auditions/gun.png"
+            src={gunImage}
             alt="Revolver"
             initial={{ scaleX: -1, rotate: GUN_ANGLE }}
             animate={firing ? {
