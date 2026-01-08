@@ -4,7 +4,7 @@ import { db } from '../../firebase';
 import { X, Send, SkipForward } from 'lucide-react';
 import type { UserData } from '../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import gunImage from '../../assets/auditions/gun.png';
+import gunImage from '../../assets/auditions/gun.webp';
 import gunshotSound from '../../assets/sounds/gunshot.mp3';
 
 const playGunshot = () => {

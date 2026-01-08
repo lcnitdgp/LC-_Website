@@ -6,10 +6,11 @@ import { LoginModal } from '../components/auth';
 import { QuestionsList } from '../components/auditions/QuestionsList';
 import { AuditionResponse } from '../components/auditions/AuditionResponse';
 import { ResponseLibrary } from '../components/auditions/ResponseLibrary';
+import { SEO } from '../components/SEO';
 // @ts-ignore 
 import '@fontsource/delicious-handrawn';
 import auditionsBgVideo from '../assets/auditions/auditions-bg.webm';
-import gunImage from '../assets/auditions/gun.png';
+import gunImage from '../assets/auditions/gun.webp';
 import gunshotSound from '../assets/sounds/gunshot.mp3';
 
 const playGunshot = () => {
@@ -305,23 +306,7 @@ export function AuditionsPage() {
     const [showAuditioning, setShowAuditioning] = useState(false);
 
     useEffect(() => {
-        document.title = 'Join the Circle';
-
-        const updateMetaTag = (property: string, content: string) => {
-            let meta = document.querySelector(`meta[property="${property}"]`) as HTMLMetaElement;
-            if (meta) {
-                meta.content = content;
-            } else {
-                meta = document.createElement('meta');
-                meta.setAttribute('property', property);
-                meta.content = content;
-                document.head.appendChild(meta);
-            }
-        };
-
-        updateMetaTag('og:title', 'Join the Circle');
-        updateMetaTag('og:description', 'Auditions for The Literary Circle, NIT Durgapur. Join the premier literary society!');
-        updateMetaTag('og:url', 'https://lcnitdgp.github.io/LC-_Website/#/auditions');
+        // Document title and meta tags are now handled by the SEO component
     }, []);
 
     useEffect(() => {
@@ -412,6 +397,11 @@ export function AuditionsPage() {
                 <div className="min-h-screen relative overflow-hidden">
                     <VideoBackground />
                     <div className="min-h-screen bg-black/40 relative z-10">
+                        <SEO
+                            title="Join the Circle"
+                            description="Auditions for The Literary Circle, NIT Durgapur. Join the premier literary society!"
+                            url="https://www.lcnitd.co.in/#/auditions"
+                        />
                         <LoadingAnimation onComplete={() => setAnimationComplete(true)} />
                     </div>
                 </div>
@@ -429,6 +419,11 @@ export function AuditionsPage() {
                 <div className="min-h-screen relative overflow-hidden">
                     <VideoBackground />
                     <div className="min-h-screen bg-black/50 relative z-10">
+                        <SEO
+                            title="Join the Circle"
+                            description="Auditions for The Literary Circle, NIT Durgapur. Join the premier literary society!"
+                            url="https://www.lcnitd.co.in/#/auditions"
+                        />
                         <PersistentTitle />
                         <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
                             <motion.div
@@ -470,6 +465,11 @@ export function AuditionsPage() {
             <div className="min-h-screen relative overflow-hidden">
                 <VideoBackground />
                 <div className="min-h-screen bg-black/50 relative z-10">
+                    <SEO
+                        title="Join the Circle"
+                        description="Auditions for The Literary Circle, NIT Durgapur. Join the premier literary society!"
+                        url="https://www.lcnitd.co.in/#/auditions"
+                    />
                     <PersistentTitle />
                     <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
                         {showQuestions ? (
@@ -526,6 +526,11 @@ export function AuditionsPage() {
             <div className="min-h-screen relative overflow-hidden">
                 <VideoBackground />
                 <div className="min-h-screen bg-black/50 relative z-10">
+                    <SEO
+                        title="Join the Circle"
+                        description="Auditions for The Literary Circle, NIT Durgapur. Join the premier literary society!"
+                        url="https://www.lcnitd.co.in/#/auditions"
+                    />
                     <PersistentTitle />
                     <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
                         <motion.div
@@ -557,6 +562,11 @@ export function AuditionsPage() {
             <div className="min-h-screen relative overflow-hidden">
                 <VideoBackground />
                 <div className="min-h-screen bg-black/50 relative z-10">
+                    <SEO
+                        title="Join the Circle"
+                        description="Auditions for The Literary Circle, NIT Durgapur. Join the premier literary society!"
+                        url="https://www.lcnitd.co.in/#/auditions"
+                    />
                     <PersistentTitle />
                     <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
                         <motion.div
@@ -683,6 +693,12 @@ export function AuditionsPage() {
 
     return (
         <div className="min-h-screen relative overflow-hidden">
+            <SEO
+                title="Join the Circle"
+                description="Auditions for The Literary Circle, NIT Durgapur. Join the premier literary society!"
+                url="https://www.lcnitd.co.in/#/auditions"
+                keywords={["Auditions", "Literary Circle", "LC", "Join LC", "NIT Durgapur", "nit", "NIT", "nitdgp", "NITD", "nit clubs", "nit dgp clubs", "join nit clubs"]}
+            />
             <VideoBackground />
             <div className="min-h-screen bg-black/50 relative z-10">
                 <PersistentTitle />

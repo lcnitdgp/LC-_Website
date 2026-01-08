@@ -3,7 +3,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import mysteriousManImage from '../../assets/auditions/mysterious-man.png';
+import mysteriousManImage from '../../assets/auditions/mysterious-man.webp';
 
 interface ResponseData {
     userId: string;
