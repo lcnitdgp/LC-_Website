@@ -229,3 +229,56 @@ flowchart TD
 
 ---
 *Maintained by The Literary Circle*
+
+## 🛡️ 7. Cloudflare Protection
+
+Our website uses **Cloudflare** for security and performance. Think of it as a security guard + speed booster sitting between visitors and our site.
+
+### Default Features (Always Active)
+
+| Feature | What It Does |
+|---------|--------------|
+| **DDoS Protection** | DDoS (Distributed Denial of Service) attacks try to crash websites by flooding them with millions of fake requests. Cloudflare automatically detects these attacks and blocks the malicious traffic before it reaches our server. This runs 24/7 with no action needed from us. |
+| **Global CDN** | CDN stands for Content Delivery Network. Cloudflare copies our website to 300+ servers across the world. When someone visits from India, they get the site from Mumbai/Chennai servers. Someone from the US gets it from American servers. This means faster loading times for everyone, no matter where they are. |
+| **SSL/TLS Encryption** | This is the padlock you see in your browser's address bar. All data between visitors and our site is encrypted, so hackers can't intercept passwords, form submissions, or any other data. We use TLS 1.3, the newest and most secure version. |
+| **Web Application Firewall** | The firewall analyzes every request to our site. It blocks known hackers, malicious bots, SQL injection attempts, and other common attacks. It uses a database of known threats that Cloudflare updates continuously. |
+
+### Custom Features (Enabled by Us)
+
+| Feature | What It Does |
+|---------|--------------|
+| **Bot Fight Mode** | Many bots crawl the internet trying to scrape content, spam forms, or find vulnerabilities. Bot Fight Mode identifies and blocks these automated visitors while allowing legitimate bots like Google Search to continue crawling. |
+| **AI Labyrinth** | This is a clever trap for AI scrapers. Cloudflare adds invisible honeypot links to our pages. Real visitors never see them, but AI bots that ignore our robots.txt rules follow these links and get trapped in an endless maze of AI-generated fake content. They waste their resources while our real content stays protected. |
+| **Browser Integrity Check** | Some attackers use headless browsers or modified browsers to attack sites. This feature checks if the visitor's browser is legitimate by analyzing HTTP headers. Suspicious browsers are challenged or blocked. |
+| **Auto Minify** | Our JavaScript, CSS, and HTML files contain spaces, comments, and formatting for readability. Auto Minify removes all unnecessary characters, making files smaller and faster to download. This happens automatically on every page load. |
+| **Brotli Compression** | Before sending files to visitors, Cloudflare compresses them using Brotli (better than the older gzip). A 100KB file might become 25KB. Smaller files = faster page loads, especially on slow mobile connections. |
+| **Early Hints (103)** | Normally, browsers wait for the full HTML before downloading CSS/JS. Early Hints sends a "103" response telling browsers which files to start downloading immediately, before the HTML even arrives. This shaves off precious milliseconds from load time. |
+| **Speed Brain** | When a visitor hovers over a link or is likely to click something, Speed Brain prefetches the next page in the background. By the time they click, the page is already partially loaded to make navigation feel instant. |
+| **0-RTT Connection** | When a returning visitor connects, normally there's a TLS handshake (back-and-forth to establish encryption). 0-RTT allows their first request to be sent before the handshake finishes, making repeat visits faster. |
+| **HTTP/3 (QUIC)** | The newest internet protocol. It's faster than HTTP/2, especially on unstable mobile connections. If a visitor's browser supports it (Chrome, Firefox, Edge do), they automatically get the faster connection. |
+| **Always Online** | If GitHub Pages (our hosting) ever goes down, Cloudflare will serve a cached version of our site instead of showing an error. Visitors might see slightly old content, but the site stays up. |
+
+### Emergency: Site Under Attack
+
+If the website is extremely slow or showing errors and you suspect an attack:
+
+**Step 1: Enable "I'm Under Attack Mode"**
+1. Login to [Cloudflare Dashboard](https://dash.cloudflare.com)
+2. Select `lcnitd.co.in`
+3. Go to **Security** → **Settings**
+4. Toggle **"I'm Under Attack Mode"** ON
+
+> **Warning:** This shows a 5-second JavaScript challenge to ALL visitors. Only enable during actual attacks!
+
+**Step 2: Monitor**
+- Check **Security** → **Analytics** to see blocked threats
+- Wait for attack traffic to subside
+
+**Step 3: Disable When Safe**
+- Once traffic normalizes, turn OFF "Under Attack Mode"
+- Normal visitors won't see the challenge anymore
+
+**Contact:** Tech Heads have Cloudflare dashboard access.
+
+---
+*Maintained by The Literary Circle*
