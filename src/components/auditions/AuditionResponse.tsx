@@ -5,6 +5,13 @@ import { X, Send, SkipForward } from 'lucide-react';
 import type { UserData } from '../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import gunImage from '../../assets/auditions/gun.png';
+import gunshotSound from '../../assets/sounds/gunshot.mp3';
+
+const playGunshot = () => {
+    const audio = new Audio(gunshotSound);
+    audio.volume = 0.3;
+    audio.play().catch(() => { });
+};
 
 interface Question {
     id: string;
@@ -91,6 +98,7 @@ export function AuditionResponse({ user, onClose }: AuditionResponseProps) {
 
     const triggerGunshot = () => {
         setFiring(true);
+        playGunshot();
         setTimeout(() => setFiring(false), 150);
     };
 

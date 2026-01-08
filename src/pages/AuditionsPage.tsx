@@ -10,6 +10,13 @@ import { ResponseLibrary } from '../components/auditions/ResponseLibrary';
 import '@fontsource/delicious-handrawn';
 import auditionsBgVideo from '../assets/auditions/auditions-bg.webm';
 import gunImage from '../assets/auditions/gun.png';
+import gunshotSound from '../assets/sounds/gunshot.mp3';
+
+const playGunshot = () => {
+    const audio = new Audio(gunshotSound);
+    audio.volume = 0.3;
+    audio.play().catch(() => { });
+};
 
 function VideoBackground() {
     return (
@@ -110,6 +117,7 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
                 letterTimers.push(setTimeout(() => {
                     setShotFired(true);
                     setCurrentLetterIndex(i);
+                    playGunshot();
                     setTimeout(() => setShotFired(false), 80);
                 }, i * LETTER_DELAY));
             }
