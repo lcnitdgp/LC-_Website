@@ -284,37 +284,7 @@ export function AuditionResponse({ user, onClose }: AuditionResponseProps) {
 
                 <AnimatePresence>
                     {animState === 'cracking' && (
-                        <>
-                            <motion.div
-                                key="crack-top"
-                                initial={{ clipPath: 'polygon(0 0, 100% 0, 100% 45%, 0 55%)' }}
-                                animate={{
-                                    y: 1500,
-                                    rotate: -15,
-                                    x: -300,
-                                    opacity: 0
-                                }}
-                                transition={{ duration: 1.6, ease: "easeIn" }}
-                                className="absolute inset-0 bg-zinc-900 border-2 border-amber-600 rounded-lg p-6 md:p-10 pointer-events-none z-20"
-                            >
-                                <Content question={currentQuestion} currentIndex={currentIndex} total={unansweredQuestions.length} />
-                            </motion.div>
-
-                            <motion.div
-                                key="crack-bottom"
-                                initial={{ clipPath: 'polygon(0 55%, 100% 45%, 100% 100%, 0 100%)' }}
-                                animate={{
-                                    y: 1500,
-                                    rotate: 25,
-                                    x: 300,
-                                    opacity: 0
-                                }}
-                                transition={{ duration: 1.6, ease: "easeIn" }}
-                                className="absolute inset-0 bg-zinc-900 border-2 border-amber-600 rounded-lg p-6 md:p-10 pointer-events-none z-20"
-                            >
-                                <Content question={currentQuestion} currentIndex={currentIndex} total={unansweredQuestions.length} showInput={showInput} currentAnswer={currentAnswer} />
-                            </motion.div>
-                        </>
+                        <Shards />
                     )}
                 </AnimatePresence>
 
@@ -419,3 +389,97 @@ const Content = ({ question, currentIndex, total, showInput, currentAnswer, onAn
         )}
     </>
 );
+
+const Shards = () => {
+    // Generate a fixed number of shards with random trajectories
+    const shards = Array.from({ length: 40 }).map((_, i) => {
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = 800 + Math.random() * 800; // High velocity for explosion
+        const rotate = Math.random() * 720 - 360;
+
+        // Ensure accurate mix of types
+        const typeRand = Math.random();
+
+        let hasText = false;
+        let hasBorder = false;
+
+        if (typeRand > 0.25 && typeRand <= 0.5) {
+            hasText = true;
+        } else if (typeRand > 0.5 && typeRand <= 0.75) {
+            hasBorder = true;
+        } else if (typeRand > 0.75) {
+            hasText = true;
+            hasBorder = true;
+        }
+
+        // Random border side if has border
+        const borderClass = hasBorder ?
+            ['border-t-4', 'border-b-4', 'border-l-4', 'border-r-4'].at(Math.floor(Math.random() * 4)) : '';
+
+        return {
+            id: i,
+            x: Math.cos(angle) * velocity,
+            y: Math.sin(angle) * velocity,
+            rotation: rotate,
+            scale: 0.5 + Math.random() * 0.5,
+            width: 30 + Math.random() * 50, // Slightly larger base size
+            height: 30 + Math.random() * 50,
+            delay: Math.random() * 0.1,
+            hasText,
+            borderClass,
+            hasBorder,
+            // Random properties for the text patch
+            patchWidth: 30 + Math.random() * 50 + '%',
+            patchHeight: 10 + Math.random() * 40 + '%',
+            patchRotation: Math.random() * 90 - 45
+        };
+    });
+
+    return (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-50">
+            {shards.map((shard) => (
+                <motion.div
+                    key={shard.id}
+                    initial={{
+                        opacity: 1,
+                        x: 0,
+                        y: 0,
+                        rotate: 0,
+                        scale: 1
+                    }}
+                    animate={{
+                        opacity: 0,
+                        x: shard.x,
+                        y: shard.y + 500, // Add gravity effect
+                        rotate: shard.rotation,
+                        scale: shard.scale
+                    }}
+                    transition={{
+                        duration: 1.2,
+                        ease: [0.22, 1, 0.36, 1], // Custom easing for explosive start
+                        delay: shard.delay
+                    }}
+                    className={`absolute bg-zinc-800 overflow-hidden flex items-center justify-center
+                        ${shard.borderClass} ${shard.hasBorder ? 'border-amber-600' : ''}`}
+                    style={{
+                        width: shard.width,
+                        height: shard.height,
+                        clipPath: 'polygon(0% 0%, 100% 20%, 80% 100%, 10% 80%)', // Jagged shape
+                        boxShadow: '0 0 10px rgba(0,0,0,0.5)'
+                    }}
+                >
+                    {shard.hasText && (
+                        <div
+                            className="bg-amber-50/60 rounded-sm"
+                            style={{
+                                width: shard.patchWidth,
+                                height: shard.patchHeight,
+                                transform: `rotate(${shard.patchRotation}deg)`
+                            }}
+                        />
+                    )}
+                </motion.div>
+            ))}
+        </div>
+    );
+};
