@@ -10,6 +10,7 @@ import { SEO } from '../components/SEO';
 // @ts-ignore 
 import '@fontsource/delicious-handrawn';
 import auditionsBgVideo from '../assets/auditions/auditions-bg.webm';
+import auditionsBgPoster from '../assets/auditions/auditions-bg-poster.webp';
 import gunImage from '../assets/auditions/gun.webp';
 import gunshotSound from '../assets/sounds/gunshot.mp3';
 
@@ -26,6 +27,8 @@ function VideoBackground() {
             loop
             muted
             playsInline
+            preload="auto"
+            poster={auditionsBgPoster}
             className="absolute inset-0 w-full h-full object-cover -z-10"
         >
             <source src={auditionsBgVideo} type="video/webm" />
@@ -93,6 +96,14 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
     const [phase, setPhase] = useState<'rolling' | 'shooting' | 'burning' | 'falling' | 'complete'>('rolling');
     const [currentLetterIndex, setCurrentLetterIndex] = useState(-1);
     const [shotFired, setShotFired] = useState(false);
+
+    useEffect(() => {
+        const img = new Image();
+        img.src = gunImage;
+
+        const audio = new Audio(gunshotSound);
+        audio.preload = 'auto';
+    }, []);
 
     useEffect(() => {
         const timers: ReturnType<typeof setTimeout>[] = [];
