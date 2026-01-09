@@ -44,7 +44,7 @@ function AccessDenied({ role }: { role: string }) {
                         <p className="text-lg text-gray-300 font-spectral leading-relaxed">
                             {isLCite
                                 ? "This section is reserved for the most elite members of the circle. You aren't elite enough yet."
-                                : "Only the most members of the Circle can go past this."
+                                : "Only the members of the circle are allowed beyond this."
                             }
                         </p>
                     </motion.div>

@@ -42,8 +42,8 @@ function AccessDeniedModal({ isOpen, onClose, role }: { isOpen: boolean; onClose
 
                             <p className="text-gray-300 font-spectral leading-relaxed mb-6">
                                 {isLCite
-                                    ? "This section is reserved for the most elite members of the circle. You aren't elite enough yet."
-                                    : "Only the most members of the Circle can go past this."
+                                    ? "This section is reserved for the most elite members of the Circle. You aren't elite enough yet."
+                                    : "Only the members of the Circle are allowed beyond this."
                                 }
                             </p>
 
