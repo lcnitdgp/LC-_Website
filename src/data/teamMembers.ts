@@ -317,8 +317,8 @@ export const teamMembers: TeamMember[] = [
         name: 'Akanksha',
         role: 'Second Year',
         year: 'Second Year',
-        image1: 'images/team/2028/Akanksha /Formal.jpg',
-        image2: 'images/team/2028/Akanksha /Informal.jpg',
+        image1: 'images/team/2028/Akanksha/Formal.jpg',
+        image2: 'images/team/2028/Akanksha/Informal.jpg',
         social: {
             instagram: 'akankshaa.55'
         },
@@ -370,8 +370,8 @@ export const teamMembers: TeamMember[] = [
         name: 'Hemant',
         role: 'Second Year',
         year: 'Second Year',
-        image1: 'images/team/2028/Hemant /Informal.jpg',
-        image2: 'images/team/2028/Hemant /Informal.jpg',
+        image1: 'images/team/2028/Hemant/Informal.jpg',
+        image2: 'images/team/2028/Hemant/Informal.jpg',
         social: {
             instagram: 'hemant_saini017'
         },
@@ -414,8 +414,8 @@ export const teamMembers: TeamMember[] = [
         name: 'Supriya',
         role: 'Second Year',
         year: 'Second Year',
-        image1: 'images/team/2028/Supriya /formal.jpg',
-        image2: 'images/team/2028/Supriya /informal.jpg',
+        image1: 'images/team/2028/Supriya/formal.jpg',
+        image2: 'images/team/2028/Supriya/informal.jpg',
         social: {
             instagram: 'sumire_viola_'
         },
