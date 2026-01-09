@@ -15,7 +15,7 @@ import gunshotSound from '../assets/sounds/gunshot.mp3';
 
 const playGunshot = () => {
     const audio = new Audio(gunshotSound);
-    audio.volume = 0.3;
+    audio.volume = 0.24;
     audio.play().catch(() => { });
 };
 
