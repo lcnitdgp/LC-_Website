@@ -1,11 +1,15 @@
-import { X, Building2, Hash, Phone, FileText, Mail } from 'lucide-react';
+import { useState } from 'react';
+import { X, Building2, Hash, Phone, FileText, Mail, UserPlus, UserMinus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
 import type { UserData } from '../../context/AuthContext';
 
 interface MemberDetailsModalProps {
     member: UserData | null;
     isOpen: boolean;
     onClose: () => void;
+    onRoleChange?: (userId: string, newRole: string) => void;
 }
 
 function formatName(name: string): string {
@@ -34,11 +38,38 @@ function FieldDisplay({ icon: Icon, label, value }: { icon: typeof Building2; la
     );
 }
 
-export function MemberDetailsModal({ member, isOpen, onClose }: MemberDetailsModalProps) {
+export function MemberDetailsModal({ member, isOpen, onClose, onRoleChange }: MemberDetailsModalProps) {
+    const [isUpdating, setIsUpdating] = useState(false);
+
     if (!member) return null;
 
-    const isLCite = member.role !== 'student';
+    const isLCite = member.role === 'LCite';
+    const isStudent = member.role === 'student';
+    const canChangeRole = isLCite || isStudent;
     const formattedName = formatName(member.name);
+
+    const handleRoleChange = async () => {
+        if (!member || isUpdating) return;
+
+        setIsUpdating(true);
+        const newRole = isStudent ? 'LCite' : 'student';
+
+        try {
+            await updateDoc(doc(db, 'Users', member.userId), {
+                role: newRole
+            });
+
+            if (onRoleChange) {
+                onRoleChange(member.userId, newRole);
+            }
+
+            onClose();
+        } catch (error) {
+            console.error('Error updating role:', error);
+        } finally {
+            setIsUpdating(false);
+        }
+    };
 
     return (
         <AnimatePresence>
@@ -116,6 +147,30 @@ export function MemberDetailsModal({ member, isOpen, onClose }: MemberDetailsMod
                                 label="Email"
                                 value={member.email}
                             />
+
+                            {canChangeRole && (
+                                <div className="mt-6 pt-4 border-t border-gray-200">
+                                    {isStudent ? (
+                                        <button
+                                            onClick={handleRoleChange}
+                                            disabled={isUpdating}
+                                            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            <UserPlus className="w-5 h-5" />
+                                            {isUpdating ? 'Promoting...' : 'Promote to LCite'}
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={handleRoleChange}
+                                            disabled={isUpdating}
+                                            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-medium rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            <UserMinus className="w-5 h-5" />
+                                            {isUpdating ? 'Removing...' : 'Kick from LC'}
+                                        </button>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </motion.div>
                 </motion.div>

@@ -134,6 +134,12 @@ export function MembersDashboardPage() {
         setIsModalOpen(true);
     };
 
+    const handleRoleChange = (userId: string, newRole: string) => {
+        setAllMembers(prev =>
+            prev.map(m => m.userId === userId ? { ...m, role: newRole } : m)
+        );
+    };
+
     if (isLoading) {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -256,7 +262,9 @@ export function MembersDashboardPage() {
                     setIsModalOpen(false);
                     setSelectedMember(null);
                 }}
+                onRoleChange={handleRoleChange}
             />
         </div>
     );
 }
+
