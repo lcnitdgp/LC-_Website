@@ -298,6 +298,7 @@ export const teamMembers: TeamMember[] = [
         image1: 'images/team/2028/Aarambhika/Formal.jpg',
         image2: 'images/team/2028/Aarambhika/Informal.jpg',
         social: {
+            facebook: 'https://www.facebook.com/profile.php?id=61572889787995',
             instagram: '_aarambhika',
         },
     },
@@ -309,6 +310,7 @@ export const teamMembers: TeamMember[] = [
         image1: 'images/team/2028/Aastha/Formal.jpg',
         image2: 'images/team/2028/Aastha/Informal.jpg',
         social: {
+            facebook: 'https://www.facebook.com/profile.php?id=61573149995163',
             instagram: '_aastha284_'
         },
     },
@@ -331,6 +333,7 @@ export const teamMembers: TeamMember[] = [
         image1: 'images/team/2028/Alisha/Formal.jpg',
         image2: 'images/team/2028/Alisha/Informal.jpg',
         social: {
+            facebook: 'https://www.facebook.com/profile.php?id=61573003152311',
             instagram: 'gattodonaaa'
         },
     },
@@ -363,16 +366,19 @@ export const teamMembers: TeamMember[] = [
         year: 'Second Year',
         image1: 'images/team/2028/Harshita/Formal_.jpg',
         image2: 'images/team/2028/Harshita/Informal_.jpg',
-        social: {},
+        social: {
+            instagram: 'harshi_b02'
+        },
     },
     {
         id: 'hemant',
         name: 'Hemant',
         role: 'Second Year',
         year: 'Second Year',
-        image1: 'images/team/2028/Hemant/Informal.jpg',
+        image1: 'images/team/2028/Hemant/Formal.jpg',
         image2: 'images/team/2028/Hemant/Informal.jpg',
         social: {
+            facebook: 'https://www.facebook.com/profile.php?id=61573529002964',
             instagram: 'hemant_saini017'
         },
     },
@@ -439,6 +445,7 @@ export const teamMembers: TeamMember[] = [
         image1: 'images/team/2028/Yayen/Formal.jpg',
         image2: 'images/team/2028/Yayen/Informal.jpg',
         social: {
+            facebook: 'https://www.facebook.com/profile.php?id=61573138655657',
             instagram: 'yayensaini'
         },
     },
