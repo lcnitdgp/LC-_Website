@@ -151,6 +151,16 @@ export function Header() {
                                     </a>
                                 </li>
                                 <li>
+                                    <a
+                                        href="https://darkestwhiteblog.wordpress.com/"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
+                                    >
+                                        Blog
+                                    </a>
+                                </li>
+                                <li>
                                     <button
                                         onClick={handleMembersClick}
                                         className="flex items-center gap-1.5 font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
@@ -216,6 +226,17 @@ export function Header() {
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
                                         Auditions
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="https://darkestwhiteblog.wordpress.com/"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="block font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                    >
+                                        Blog
                                     </a>
                                 </li>
                                 <li>
