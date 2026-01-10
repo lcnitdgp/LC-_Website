@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -18,4 +19,19 @@ const analytics = getAnalytics(app);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-export { app, analytics, db, auth };
+declare global {
+    interface Window {
+        FIREBASE_APPCHECK_DEBUG_TOKEN?: boolean | string;
+    }
+}
+
+if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    window.FIREBASE_APPCHECK_DEBUG_TOKEN = true;
+}
+
+const appCheck = initializeAppCheck(app, {
+    provider: new ReCaptchaV3Provider('6Ldyz0UsAAAAAOSbUiuVzaUroOwJ2qNh63yz6cFN'),
+    isTokenAutoRefreshEnabled: true
+});
+
+export { app, analytics, db, auth, appCheck };
