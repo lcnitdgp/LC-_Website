@@ -53,15 +53,67 @@ git config --global user.email "your.email@example.com"
     ```bash
     cd lc-website
     ```
+### Step 4: Configure Firebase (Required)
 
-### Step 4: Install Dependencies
+> ⚠️ **This step is mandatory.**  
+> The website will **NOT run** and will show a **blank screen** if Firebase is not configured.
+
+---
+
+#### 4.1 Sign in to Firebase
+1. Go to the Firebase Console:  
+   https://console.firebase.google.com
+2. Sign in using your **Google account**
+
+---
+
+#### 4.2 Create a Firebase Project
+1. Click **Add project**
+2. Enter a project name (e.g. `lc-website`)
+3. Disable **Gemini and Google Analytics** (optional)
+4. Click **Create project**
+
+---
+
+#### 4.3 Add a Web App
+1. Inside the project dashboard, click **Add app** followed by **</> Web**
+2. Give the app a nickname (e.g. `lc-website-web`)
+3. ❌ Do **NOT** enable Firebase Hosting
+4. Click **Register app**
+5. Firebase will show a configuration object like this:
+
+```js
+const firebaseConfig = {
+  apiKey: "AIzaSyB-exampleKey123456",
+  authDomain: "lc-website.firebaseapp.com",
+  projectId: "lc-website",
+  storageBucket: "lc-website.appspot.com",
+  messagingSenderId: "123456789012",
+  appId: "1:123456789012:web:abc123def456",
+  measurementId: "G-ABCDEF1234"
+};
+```
+#### 4.4 Create a `.env` File
+The required environment variables are already defined in `.env.example` in the root directory.
+
+1. Copy the example environment file:
+   ```bash
+   cp .env.example .env
+    ```
+
+Open the .env file and replace the placeholder values with
+the Firebase configuration shown in the Firebase Console.
+
+⚠️ Do NOT add quotes
+
+### Step 5: Install Dependencies
 This downloads all the external code libraries we use (like React, Tailwind).
 ```bash
 npm install
 ```
 *Wait for it to finish. You might see a new `node_modules` folder appear.*
 
-### Step 5: Run the Project Locally
+### Step 6: Run the Project Locally
 This starts a "local server" so you can see the website on your computer.
 ```bash
 npm run dev
