@@ -161,7 +161,23 @@ Here is the stack our website is built upen. You need to get familiar with it fi
 
 ---
 
-## 📂 4. Codebase Structure
+## 🏗️ 4. System Architecture
+![System Architecture](public/architecture_diagram.png)
+
+Our application connects several services to deliver a secure and fast experience:
+
+*   **Users** access the site via `lcnitd.co.in`.
+*   **GoDaddy** resolves the domain to Cloudflare's servers.
+*   **Cloudflare** acts as a shield, providing DDoS protection and CDN caching before requests reach our host.
+*   **GitHub Pages** hosts our static React frontend bundle.
+*   **React App** runs in the user's browser, handling the UI and logic.
+*   **Firebase** provides backend services:
+    *   **App Check** verifies that requests come from our legitimate app.
+    *   **Firestore** stores user data and authentication state.
+
+---
+
+## 📂 5. Codebase Structure
 
 Understanding where files live is 90% of the work.
 
