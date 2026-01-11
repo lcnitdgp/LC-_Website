@@ -10,6 +10,17 @@ interface PDFViewerModalProps {
 }
 
 export function PDFViewerModal({ isOpen, onClose, pdfUrl, title }: PDFViewerModalProps) {
+    const [isMobile, setIsMobile] = React.useState(false);
+
+    React.useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
     React.useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden';
@@ -20,6 +31,10 @@ export function PDFViewerModal({ isOpen, onClose, pdfUrl, title }: PDFViewerModa
             document.body.style.overflow = 'unset';
         };
     }, [isOpen]);
+
+    const fullPdfUrl = pdfUrl.startsWith('http')
+        ? pdfUrl
+        : `${window.location.origin}${pdfUrl}`;
 
     return (
         <AnimatePresence>
@@ -52,20 +67,28 @@ export function PDFViewerModal({ isOpen, onClose, pdfUrl, title }: PDFViewerModa
                         </div>
 
                         <div className="flex-grow bg-gray-200 w-full h-full relative">
-                            <object
-                                data={pdfUrl}
-                                type="application/pdf"
-                                className="w-full h-full"
-                            >
-                                <div className="flex items-center justify-center h-full">
-                                    <p className="text-gray-600">
-                                        Unable to display PDF.
-                                        <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="text-primary-600 underline ml-1">
-                                            Download instead
-                                        </a>
-                                    </p>
-                                </div>
-                            </object>
+                            {isMobile ? (
+                                <iframe
+                                    src={`https://docs.google.com/gview?url=${encodeURIComponent(fullPdfUrl)}&embedded=true`}
+                                    className="w-full h-full border-none"
+                                    title="PDF Viewer"
+                                />
+                            ) : (
+                                <object
+                                    data={pdfUrl}
+                                    type="application/pdf"
+                                    className="w-full h-full"
+                                >
+                                    <div className="flex items-center justify-center h-full">
+                                        <p className="text-gray-600">
+                                            Unable to display PDF.
+                                            <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="text-primary-600 underline ml-1">
+                                                Download instead
+                                            </a>
+                                        </p>
+                                    </div>
+                                </object>
+                            )}
                         </div>
                     </motion.div>
                 </div>
