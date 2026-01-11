@@ -152,6 +152,14 @@ export function Header() {
                                 </li>
                                 <li>
                                     <a
+                                        href="#/dejavu"
+                                        className="font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
+                                    >
+                                        Déjà Vu
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
                                         href="https://darkestwhiteblog.wordpress.com/"
                                         target="_blank"
                                         rel="noopener noreferrer"
@@ -226,6 +234,15 @@ export function Header() {
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
                                         Auditions
+                                    </a>
+                                </li>
+                                <li>
+                                    <a
+                                        href="#/dejavu"
+                                        className="block font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                    >
+                                        Déjà Vu
                                     </a>
                                 </li>
                                 <li>
