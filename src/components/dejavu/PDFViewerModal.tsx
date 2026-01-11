@@ -68,11 +68,26 @@ export function PDFViewerModal({ isOpen, onClose, pdfUrl, title }: PDFViewerModa
 
                         <div className="flex-grow bg-gray-200 w-full h-full relative">
                             {isMobile ? (
-                                <iframe
-                                    src={`https://docs.google.com/gview?url=${encodeURIComponent(fullPdfUrl)}&embedded=true`}
-                                    className="w-full h-full border-none"
-                                    title="PDF Viewer"
-                                />
+                                <div className="flex flex-col h-full w-full">
+                                    <iframe
+                                        src={`https://docs.google.com/gview?url=${encodeURIComponent(fullPdfUrl)}&embedded=true`}
+                                        className="flex-grow w-full border-none"
+                                        title="PDF Viewer"
+                                    />
+                                    {title.includes('2015') && (
+                                        <div className="bg-gray-800 p-4 flex justify-center shrink-0">
+                                            <a
+                                                href={fullPdfUrl}
+                                                download
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-6 rounded-lg transition-colors flex items-center gap-2"
+                                            >
+                                                Download {title} (PDF)
+                                            </a>
+                                        </div>
+                                    )}
+                                </div>
                             ) : (
                                 <object
                                     data={pdfUrl}
