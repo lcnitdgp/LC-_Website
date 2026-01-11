@@ -6,7 +6,7 @@ Even if you have never coded before or used Git, follow this guide step-by-step,
 
 ---
 
-## 🚫 1. DO NOT TOUCH (Danger Zone)
+## 1. DO NOT TOUCH (Danger Zone)
 
 These files are critical for the project to run. **Modifying them directly can break the entire website.**
 
@@ -20,7 +20,7 @@ These files are critical for the project to run. **Modifying them directly can b
 
 ---
 
-## 🛠️ 2. How to Setup the Project (Step-by-Step for Beginners)
+## 2. How to Setup the Project (Step-by-Step for Beginners)
 
 Follow these steps exactly. If you get stuck, ask a senior!
 
@@ -122,7 +122,7 @@ You will see a link like `http://localhost:5173`. **Ctrl+Click** (or Cmd+Click) 
 
 ---
 
-## 💻 3. Tech Stack & Learning Roadmap
+## 3. Tech Stack & Learning Roadmap
 
 Here is the stack our website is built upen. You need to get familiar with it first. 
 
@@ -132,7 +132,7 @@ Here is the stack our website is built upen. You need to get familiar with it fi
 *   **Tailwind CSS**: A utility-first CSS framework for styling.
 *   **Vite**: The build tool (makes our site run fast).
 
-### 🗺️ Learning Roadmap (For Absolute Beginners)
+### Learning Roadmap (For Absolute Beginners)
 
 **Phase 1: The Basics**
 *   **HTML/CSS**: Structure and Style.
@@ -161,7 +161,7 @@ Here is the stack our website is built upen. You need to get familiar with it fi
 
 ---
 
-## 🏗️ 4. System Architecture
+## 4. System Architecture
 ![System Architecture](public/architecture_diagram.png)
 
 Our application connects several services to deliver a secure and fast experience:
@@ -209,7 +209,7 @@ Understanding where files live is 90% of the work.
 
 ---
 
-## 📝 5. Commit & Contribution Rules
+## 6. Commit & Contribution Rules
 
 **Rules to live by:**
 1.  **NEVER push directly to `master`**. The `master` branch is production. If you break it, the site breaks.
@@ -257,7 +257,7 @@ git push origin add-naivedyam-bio
 
 ---
 
-## 🔐 6. Authentication Workflow
+## 7. Authentication Workflow
 
 The website uses Firebase Authentication with Google Sign-In for NIT Durgapur students.
 
@@ -296,7 +296,7 @@ flowchart TD
 - Users can login with UserID + Password after setting it
 
 
-## 🛡️ 7. Cloudflare Protection
+## 8. Cloudflare Protection
 
 Our website uses **Cloudflare** for security and performance. Think of it as a security guard + speed booster sitting between visitors and our site.
 
