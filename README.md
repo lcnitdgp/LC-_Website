@@ -162,7 +162,7 @@ Here is the stack our website is built upen. You need to get familiar with it fi
 ---
 
 ## 4. System Architecture
-![System Architecture](public/architecture_diagram.png)
+![System Architecture](public/system_architecture.png)
 
 Our application connects several services to deliver a secure and fast experience:
 
