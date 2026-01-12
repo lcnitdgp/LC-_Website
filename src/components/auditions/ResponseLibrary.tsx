@@ -233,7 +233,7 @@ function DossierReader({ dossier, onClose }: { dossier: Dossier, onClose: () => 
 
             <motion.div
                 layoutId={`card-${dossier.userId}`}
-                className="w-full max-w-6xl max-h-[90vh] md:aspect-[2/1] bg-[#f4e4bc] rounded-sm shadow-2xl flex flex-col md:flex-row overflow-hidden relative border-4 border-[#8c7b5b] font-[Special_Elite]"
+                className="w-full max-w-6xl h-[550px] md:h-[600px] bg-[#f4e4bc] rounded-sm shadow-2xl flex flex-col md:flex-row overflow-hidden relative border-4 border-[#8c7b5b] font-[Special_Elite]"
                 style={{
                     backgroundImage: "url('https://www.transparenttextures.com/patterns/aged-paper.png')",
                     boxShadow: "0 0 50px rgba(0,0,0,0.8)"
