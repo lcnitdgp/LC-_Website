@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import mysteriousManImage from '../../assets/auditions/mysterious-man.webp';
 
 interface ResponseData {
@@ -31,6 +31,13 @@ export function ResponseLibrary({ onClose }: { onClose: () => void }) {
     const [dossiers, setDossiers] = useState<Dossier[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedDossier, setSelectedDossier] = useState<Dossier | null>(null);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const filteredDossiers = dossiers.filter(dossier => {
+        if (!searchQuery.trim()) return true;
+        const name = dossier.userProfile?.name?.toLowerCase() || '';
+        return name.includes(searchQuery.toLowerCase());
+    });
 
     useEffect(() => {
         const fetchData = async () => {
@@ -78,10 +85,20 @@ export function ResponseLibrary({ onClose }: { onClose: () => void }) {
 
     return (
         <div className="fixed inset-0 bg-black/95 z-50 overflow-y-auto font-special-elite">
-            <div className="sticky top-0 bg-zinc-900/90 backdrop-blur-md border-b border-zinc-800 p-4 flex justify-end items-center z-10">
+            <div className="sticky top-0 bg-zinc-900/90 backdrop-blur-md border-b border-zinc-800 p-4 flex justify-between items-center z-10">
+                <div className="relative flex-1 max-w-md">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-zinc-500" />
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Search by name..."
+                        className="w-full pl-10 pr-4 py-2 bg-zinc-800 border border-zinc-700 rounded-lg text-white placeholder-zinc-500 focus:outline-none focus:border-amber-600 transition-colors"
+                    />
+                </div>
                 <button
                     onClick={onClose}
-                    className="p-2 hover:bg-zinc-800 rounded-full transition-colors text-zinc-400 hover:text-white"
+                    className="p-2 hover:bg-zinc-800 rounded-full transition-colors text-zinc-400 hover:text-white ml-4"
                 >
                     <X size={24} />
                 </button>
@@ -94,13 +111,19 @@ export function ResponseLibrary({ onClose }: { onClose: () => void }) {
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                        {dossiers.map(dossier => (
-                            <DossierCard
-                                key={dossier.userId}
-                                dossier={dossier}
-                                onClick={() => setSelectedDossier(dossier)}
-                            />
-                        ))}
+                        {filteredDossiers.length === 0 ? (
+                            <div className="col-span-full text-center py-12 text-zinc-500">
+                                No results found for "{searchQuery}"
+                            </div>
+                        ) : (
+                            filteredDossiers.map(dossier => (
+                                <DossierCard
+                                    key={dossier.userId}
+                                    dossier={dossier}
+                                    onClick={() => setSelectedDossier(dossier)}
+                                />
+                            ))
+                        )}
                     </div>
                 )}
             </div>
