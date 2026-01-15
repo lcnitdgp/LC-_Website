@@ -131,8 +131,6 @@ export function AlumniPage() {
                                 const isExpanded = expandedYears[year];
 
                                 const sortedMembers = [...members].sort((a, b) => {
-                                    if (a.isPresident && !b.isPresident) return -1;
-                                    if (!a.isPresident && b.isPresident) return 1;
                                     return a.name.localeCompare(b.name);
                                 });
 
