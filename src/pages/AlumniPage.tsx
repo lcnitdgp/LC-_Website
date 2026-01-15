@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, ChevronDown, Users } from 'lucide-react';
+import { Plus, ChevronDown, Users, X } from 'lucide-react';
 import { Header, Footer } from '../components/layout';
 import { SEO } from '../components/SEO';
 import { AlumniCard, AlumniFormModal, AlumniDetailsModal } from '../components/alumni';
@@ -15,6 +15,7 @@ export function AlumniPage() {
     const [expandedYears, setExpandedYears] = useState<Record<number, boolean>>({});
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+    const [showPrivacyAlert, setShowPrivacyAlert] = useState(false);
     const [editingMember, setEditingMember] = useState<AlumniMember | null>(null);
     const [selectedMember, setSelectedMember] = useState<AlumniMember | null>(null);
     const [selectedYearForAdd, setSelectedYearForAdd] = useState<number | undefined>(undefined);
@@ -180,6 +181,7 @@ export function AlumniPage() {
                                                                     onClick={handleCardClick}
                                                                     onEdit={handleEditClick}
                                                                     onDelete={handleDeleteClick}
+                                                                    onShowPrivacyAlert={() => setShowPrivacyAlert(true)}
                                                                 />
                                                             ))}
 
@@ -225,6 +227,48 @@ export function AlumniPage() {
                 onClose={() => setIsDetailsOpen(false)}
                 member={selectedMember}
             />
+
+            <AnimatePresence>
+                {showPrivacyAlert && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+                        onClick={() => setShowPrivacyAlert(false)}
+                    >
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            className="bg-white p-8 rounded-2xl max-w-sm w-full text-center relative shadow-2xl"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <button
+                                onClick={() => setShowPrivacyAlert(false)}
+                                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+                            >
+                                <X size={20} />
+                            </button>
+
+                            <h3 className="text-xl font-bold text-primary-900 mb-3 font-merriweather pt-4">
+                                Private Information
+                            </h3>
+
+                            <p className="text-gray-600 font-spectral mb-8 leading-relaxed">
+                                Alumni phone numbers are reserved for the members of the Circle.
+                            </p>
+
+                            <button
+                                onClick={() => setShowPrivacyAlert(false)}
+                                className="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 rounded-xl font-bold transition-all shadow-lg hover:shadow-primary-200"
+                            >
+                                Understood
+                            </button>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
