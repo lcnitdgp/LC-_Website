@@ -183,22 +183,41 @@ Understanding where files live is 90% of the work.
 
 ```
 /
-├── public/              # Static files (images, logos)
-│   ├── images/          # Team photos, backgrounds
-│   └── logo16.png       # Website favicon
-├── src/                 # source code - YOU WORK HERE 99% OF THE TIME
-│   ├── components/      # Reusable UI parts
-│   │   ├── layout/      # Header, Footer
-│   │   └── sections/    # Big page sections (Hero, About, Team)
-│   ├── data/            # Data files (easy to edit!)
-│   │   ├── siteConfig.ts  # Links, contact info, text
-│   │   └── teamMembers.ts # ✨ ADD NEW MEMBERS HERE ✨
-│   ├── types/           # TS definitions (types)
-│   ├── App.tsx          # Main Page assembly
-│   ├── main.tsx         # Entry point (connects React to HTML)
-│   └── index.css        # Global styles & Tailwind config
-├── index.html           # Main HTML file
-└── package.json         # Project settings
+├── public/                  # Static files, mostly images, PDFs, SEO stuff
+│   ├── images/              # Blog pics, team photos, sliders, random visuals
+│   ├── pdfs/                # DejaVu magazines (year-wise)
+│   ├── logo16.png           # Favicon / branding
+│   └── robots.txt           # SEO things
+│
+├── src/                     # Source code (you’ll be here 90% of the time)
+│   ├── components/          # Reusable UI components
+│   │   ├── layout/          # Header, footer, navbar stuff
+│   │   ├── sections/        # Big page sections (hero, about, team)
+│   │   ├── alumni/          # Alumni related UI
+│   │   ├── members/         # Member cards, modals, etc.
+│   │   ├── auditions/       # Audition flows
+│   │   ├── auth/            # Login, profile, auth modals
+│   │   └── dejavu/          # DejaVu bookshelf + PDFs
+│   │
+│   ├── pages/               # Pages / routes
+│   ├── data/                # Plain data files (easy to edit)
+│   ├── context/             # Global state (auth etc.)
+│   ├── services/            # Firebase / backend calls
+│   ├── utils/               # Helper functions
+│   ├── types/               # TypeScript types
+│   │
+│   ├── assets/              # Media used inside components
+│   ├── App.tsx              # Main app wrapper
+│   ├── main.tsx             # Entry point
+│   └── index.css            # Global styles
+│
+├── .github/                 # CI / GitHub Actions
+├── .env.example             # Env vars template
+├── index.html               # Vite entry HTML
+├── vite.config.ts           # Vite config
+├── tsconfig*.json           # TS configs
+├── package.json             # Dependencies & scripts
+└── README.md                # Docs
 ```
 
 ### Where do I make changes?
