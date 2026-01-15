@@ -16,6 +16,7 @@ export function AlumniCard({ member, onEdit, onDelete, onClick }: AlumniCardProp
     const { user } = useAuth();
     const isPresident = member.isPresident;
     const [showPhoneTooltip, setShowPhoneTooltip] = useState(false);
+    const [showDetails, setShowDetails] = useState(false);
     const [imageError, setImageError] = useState(false);
 
     const isStudent = !user || user.role === 'student';
@@ -24,6 +25,8 @@ export function AlumniCard({ member, onEdit, onDelete, onClick }: AlumniCardProp
     const canDelete = user && user.admin === true;
 
     const handleCardClick = () => {
+        setShowDetails(!showDetails);
+
         if (user?.admin) {
             onClick(member);
         }
@@ -66,7 +69,7 @@ export function AlumniCard({ member, onEdit, onDelete, onClick }: AlumniCardProp
                 )}
 
                 {(canEdit || canDelete) && (
-                    <div className="absolute top-3 right-3 z-20 flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
+                    <div className={`absolute top-3 right-3 z-20 flex gap-2 transition-opacity duration-200 ${showDetails ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
                         {canEdit && (
                             <button
                                 onClick={(e) => { e.stopPropagation(); onEdit(member); }}
@@ -89,77 +92,77 @@ export function AlumniCard({ member, onEdit, onDelete, onClick }: AlumniCardProp
                 )}
 
                 <div
-                    className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent pt-16 pb-4 px-4 text-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
+                    className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent pt-16 pb-4 px-4 text-center transition-all duration-300"
                 >
                     <div>
-                        <h3 className="font-merriweather font-bold text-lg text-white mb-0.5 shadow-black drop-shadow-md leading-tight">
+                        <h3 className="font-merriweather font-bold text-base md:text-lg text-white mb-0.5 shadow-black drop-shadow-md leading-tight">
                             {member.name}
                         </h3>
 
                         {member.workplace && (
-                            <p className="text-primary-200 font-spectral text-xs mb-2 line-clamp-1">
+                            <p className="text-primary-200 font-spectral text-[11px] md:text-xs line-clamp-1">
                                 {member.workplace}
                             </p>
                         )}
+                    </div>
+                </div>
 
-                        <div className="flex items-center justify-center gap-4 opacity-100 translate-y-0 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 transform md:translate-y-4 md:group-hover:translate-y-0 pb-1">
-                            {member.linkedinUrl && (
+                <div className={`absolute inset-0 flex items-center justify-center gap-4 z-10 transition-all duration-300 ${showDetails ? 'opacity-100 bg-black/40 backdrop-blur-sm pointer-events-auto' : 'opacity-0 group-hover:opacity-100 group-hover:bg-black/40 group-hover:backdrop-blur-sm pointer-events-none group-hover:pointer-events-auto'}`}>
+                    {member.linkedinUrl && (
+                        <a
+                            href={member.linkedinUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="p-3 bg-white/20 rounded-full hover:bg-primary-600 text-white transition-colors backdrop-blur-sm transform hover:scale-110 shadow-lg"
+                            title="LinkedIn Profile"
+                        >
+                            <Linkedin size={24} className="w-6 h-6" />
+                        </a>
+                    )}
+
+                    {member.phoneNumber && (
+                        <div
+                            className="relative"
+                            onMouseEnter={() => setShowPhoneTooltip(true)}
+                            onMouseLeave={() => setShowPhoneTooltip(false)}
+                        >
+                            {canSeePhone ? (
                                 <a
-                                    href={member.linkedinUrl}
+                                    href={getWhatsAppLink(member.phoneNumber)}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     onClick={(e) => e.stopPropagation()}
-                                    className="p-1.5 md:p-2 bg-white/20 rounded-full hover:bg-primary-600 text-white transition-colors backdrop-blur-sm"
-                                    title="LinkedIn Profile"
+                                    className="p-3 bg-white/20 rounded-full hover:bg-green-500 text-white transition-colors backdrop-blur-sm block transform hover:scale-110 shadow-lg"
+                                    aria-label="Contact on WhatsApp"
                                 >
-                                    <Linkedin size={16} className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                                    <FaWhatsapp size={24} className="w-6 h-6" />
                                 </a>
+                            ) : (
+                                <div className="p-3 bg-white/10 rounded-full text-white/50 cursor-not-allowed">
+                                    <FaWhatsapp size={24} className="w-6 h-6" />
+                                </div>
                             )}
 
-                            {member.phoneNumber && (
-                                <div
-                                    className="relative"
-                                    onMouseEnter={() => setShowPhoneTooltip(true)}
-                                    onMouseLeave={() => setShowPhoneTooltip(false)}
-                                >
-                                    {canSeePhone ? (
-                                        <a
-                                            href={getWhatsAppLink(member.phoneNumber)}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            onClick={(e) => e.stopPropagation()}
-                                            className="p-1.5 md:p-2 bg-white/20 rounded-full hover:bg-green-500 text-white transition-colors backdrop-blur-sm block"
-                                            aria-label="Contact on WhatsApp"
-                                        >
-                                            <FaWhatsapp size={16} className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                                        </a>
-                                    ) : (
-                                        <div className="p-1.5 md:p-2 bg-white/10 rounded-full text-white/50 cursor-not-allowed">
-                                            <FaWhatsapp size={16} className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                                        </div>
-                                    )}
+                            {canSeePhone && showPhoneTooltip && (
+                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-56 p-3 bg-black/90 text-white text-xs rounded-lg shadow-xl pointer-events-none z-50 text-center border border-white/10">
+                                    <div className="font-bold text-green-400 mb-1">Click to WhatsApp</div>
+                                    <div className="mb-1 opacity-90">{member.phoneNumber}</div>
+                                    <div className="text-[10px] text-gray-400 italic">
+                                        (Not on WhatsApp? Use this number to call)
+                                    </div>
+                                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black/90" />
+                                </div>
+                            )}
 
-                                    {canSeePhone && showPhoneTooltip && (
-                                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-56 p-3 bg-black/90 text-white text-xs rounded-lg shadow-xl pointer-events-none z-50 text-center border border-white/10">
-                                            <div className="font-bold text-green-400 mb-1">Click to WhatsApp</div>
-                                            <div className="mb-1 opacity-90">{member.phoneNumber}</div>
-                                            <div className="text-[10px] text-gray-400 italic">
-                                                (Not on WhatsApp? Use this number to call)
-                                            </div>
-                                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black/90" />
-                                        </div>
-                                    )}
-
-                                    {!canSeePhone && showPhoneTooltip && (
-                                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-black/90 text-white text-xs rounded shadow-lg pointer-events-none z-50 text-center">
-                                            Private Information! Alumni phone numbers are reserved for members of the Circle.
-                                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black/90" />
-                                        </div>
-                                    )}
+                            {!canSeePhone && showPhoneTooltip && (
+                                <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 md:w-48 md:static md:translate-x-0 md:translate-y-0 md:top-auto md:left-auto z-[100] md:absolute md:bottom-full md:left-1/2 md:-translate-x-1/2 md:mb-2 p-3 md:p-2 bg-black/90 text-white text-xs rounded-lg shadow-xl pointer-events-none text-center">
+                                    Private Information! Alumni phone numbers are reserved for members of the Circle.
+                                    <div className="hidden md:block absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-black/90" />
                                 </div>
                             )}
                         </div>
-                    </div>
+                    )}
                 </div>
             </div>
         </motion.div>

@@ -19,7 +19,6 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
     const [error, setError] = useState<string | null>(null);
     const [driveWarning, setDriveWarning] = useState<string | null>(null);
 
-    // Form State
     const [formData, setFormData] = useState({
         name: '',
         graduatingYear: year || 2025,

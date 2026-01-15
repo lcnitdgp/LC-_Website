@@ -86,7 +86,7 @@ export function AlumniPage() {
             <Header />
 
             <main className="pt-32 pb-20">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
                     <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
                         <motion.div
                             initial={{ opacity: 0, x: -20 }}
@@ -172,7 +172,7 @@ export function AlumniPage() {
                                                     className="overflow-hidden"
                                                 >
                                                     <div className="p-6 pt-0 border-t border-gray-100">
-                                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 pt-6">
+                                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 md:gap-6 pt-6">
                                                             {sortedMembers.map((member) => (
                                                                 <AlumniCard
                                                                     key={member.id}
