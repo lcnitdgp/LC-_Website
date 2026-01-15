@@ -47,14 +47,7 @@ export const alumniService = {
         try {
             const membersRef = collection(db, `alumni/${year}/members`);
 
-            // Ensure parent doc exists logic if needed, but subcollection writes are independent in Firestore
             const yearDocRef = doc(db, 'alumni', year.toString());
-            // We use a dynamic import for setDoc if we want to be safe about circular deps, 
-            // but standard import is fine here if available. 
-            // To keep it simple and avoid import errors, we can skip forcing the parent doc 
-            // creation if we trust the loop in getAllAlumni handles it (it iterates existing docs).
-            // BUT getAllAlumni iterates `yearDocs`. If `yearDoc` doesn't exist, it won't find the subcollection.
-            // So we MUST create the year doc.
 
             const { setDoc } = await import('firebase/firestore');
             await setDoc(yearDocRef, { hasMembers: true }, { merge: true });

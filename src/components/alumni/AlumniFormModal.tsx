@@ -8,8 +8,8 @@ import { useAuth } from '../../context';
 interface AlumniFormModalProps {
     isOpen: boolean;
     onClose: () => void;
-    editMember?: AlumniMember | null; // If present, we are in Edit mode
-    year?: number; // Pre-select year if adding to a specific section
+    editMember?: AlumniMember | null;
+    year?: number;
     onSuccess: () => void;
 }
 
@@ -42,7 +42,6 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
                 isPresident: editMember.isPresident
             });
         } else {
-            // Reset for Add Mode
             setFormData({
                 name: '',
                 graduatingYear: year || new Date().getFullYear(),
@@ -56,7 +55,6 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
         setDriveWarning(null);
     }, [editMember, year, isOpen]);
 
-    // Google Drive Link Logic
     const handlePhotoUrlChange = (url: string) => {
         setFormData(prev => ({ ...prev, photoUrl: url }));
         setDriveWarning(null);
@@ -64,19 +62,16 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
 
         if (!url) return;
 
-        // Check 1: Is it a Google Drive link?
         if (!url.includes('drive.google.com')) {
             setDriveWarning("Please upload a Google Drive link.");
             return;
         }
 
-        // Check 2: Is it a folder?
         if (url.includes('/folders/')) {
             setDriveWarning("This appears to be a Drive Folder link. Please use a link to a specific image file.");
             return;
         }
 
-        // Check 3: Is it a file?
         const fileIdMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
         if (!fileIdMatch) {
             setDriveWarning("This doesn't look like a valid file link. Please ensure it's a specific file URL.");
@@ -85,15 +80,12 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
 
         const fileId = fileIdMatch[1];
 
-        // Check 4: Auto-Convert
         const newUrl = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
 
-        // Only update if it's not already converted
         if (url !== newUrl) {
             setFormData(prev => ({ ...prev, photoUrl: newUrl }));
             setDriveWarning("IMPORTANT: Please ensure the file permission in Drive is set to 'Anyone with the link'.");
         } else {
-            // Even if already converted (e.g. editing), show the reminder if it looks like a drive link
             setDriveWarning("IMPORTANT: Please ensure the file permission in Drive is set to 'Anyone with the link'.");
         }
     };
@@ -112,11 +104,10 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
 
             const dataToSave = {
                 ...formData,
-                graduatingYear: Number(formData.graduatingYear) // Ensure number
+                graduatingYear: Number(formData.graduatingYear)
             };
 
             if (editMember && editMember.id) {
-                // UPDATE
                 await alumniService.updateAlumni(
                     editMember.graduatingYear,
                     editMember.id,
@@ -124,7 +115,6 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
                     user.name || user.userId
                 );
             } else {
-                // ADD
                 await alumniService.addAlumni(
                     dataToSave.graduatingYear,
                     {
@@ -164,7 +154,6 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
                         className="relative bg-white rounded-xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Header */}
                         <div className="flex items-center justify-between p-6 border-b border-gray-100">
                             <h2 className="text-xl font-merriweather font-bold text-gray-800">
                                 {editMember ? 'Edit Alumni' : 'Add New Alumni'}
@@ -174,7 +163,6 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
                             </button>
                         </div>
 
-                        {/* Form */}
                         <div className="p-6 overflow-y-auto">
                             {error && (
                                 <div className="mb-4 p-3 bg-red-50 text-red-600 rounded-lg flex items-center gap-2 text-sm">
@@ -252,14 +240,13 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
                                             value={formData.photoUrl}
                                             onChange={e => handlePhotoUrlChange(e.target.value)}
                                             className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:border-transparent transition-all ${driveWarning && driveWarning.includes('Folder') ? 'border-red-300 focus:ring-red-200 bg-red-50' :
-                                                    driveWarning && driveWarning.includes('IMPORTANT') ? 'border-green-300 focus:ring-green-200 bg-green-50' :
-                                                        'border-gray-300 focus:ring-primary-500'
+                                                driveWarning && driveWarning.includes('IMPORTANT') ? 'border-green-300 focus:ring-green-200 bg-green-50' :
+                                                    'border-gray-300 focus:ring-primary-500'
                                                 }`}
                                             placeholder="Paste image address or Google Drive link..."
                                         />
                                     </div>
 
-                                    {/* Drive Logic Feedback */}
                                     {driveWarning && (
                                         <div className={`mt-2 text-xs flex items-start gap-1.5 ${driveWarning.includes('IMPORTANT') ? 'text-green-600' : 'text-amber-600'
                                             }`}>
@@ -292,7 +279,6 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
                             </form>
                         </div>
 
-                        {/* Footer */}
                         <div className="p-6 border-t border-gray-100 flex justify-end gap-3 bg-gray-50">
                             <button
                                 type="button"

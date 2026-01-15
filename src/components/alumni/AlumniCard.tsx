@@ -18,8 +18,6 @@ export function AlumniCard({ member, onEdit, onDelete, onClick }: AlumniCardProp
     const [showPhoneTooltip, setShowPhoneTooltip] = useState(false);
     const [imageError, setImageError] = useState(false);
 
-
-    // Permissions
     const isStudent = !user || user.role === 'student';
     const canSeePhone = !isStudent;
     const canEdit = user && user.role !== 'student';
@@ -31,9 +29,7 @@ export function AlumniCard({ member, onEdit, onDelete, onClick }: AlumniCardProp
         }
     };
 
-    // Helper for WhatsApp Link
     const getWhatsAppLink = (phone: string) => {
-        // Strip everything except digits
         const digits = phone.replace(/\D/g, '');
         return `https://wa.me/${digits}`;
     };
@@ -48,9 +44,7 @@ export function AlumniCard({ member, onEdit, onDelete, onClick }: AlumniCardProp
             onClick={handleCardClick}
 
         >
-            {/* Aspect Ratio 3:4 to match Team Cards */}
             <div className="relative aspect-[3/4] overflow-hidden bg-gray-100">
-                {/* Image */}
                 {!imageError && member.photoUrl ? (
                     <img
                         src={member.photoUrl}
@@ -65,14 +59,12 @@ export function AlumniCard({ member, onEdit, onDelete, onClick }: AlumniCardProp
                     </div>
                 )}
 
-                {/* President Badge */}
                 {isPresident && (
                     <div className="absolute top-3 left-3 bg-yellow-400 text-yellow-900 text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg z-10 uppercase tracking-wide">
                         President
                     </div>
                 )}
 
-                {/* Admin Actions (Edit/Delete) */}
                 {(canEdit || canDelete) && (
                     <div className="absolute top-3 right-3 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                         {canEdit && (
@@ -96,7 +88,6 @@ export function AlumniCard({ member, onEdit, onDelete, onClick }: AlumniCardProp
                     </div>
                 )}
 
-                {/* Info Overlay - Always visible at bottom, expands on hover */}
                 <div
                     className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-300 flex flex-col justify-end p-5 text-center"
                 >
@@ -111,7 +102,6 @@ export function AlumniCard({ member, onEdit, onDelete, onClick }: AlumniCardProp
                             </p>
                         )}
 
-                        {/* Social Icons - Reveal on hover */}
                         <div className="flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0 pb-2">
                             {member.linkedinUrl && (
                                 <a
@@ -130,7 +120,6 @@ export function AlumniCard({ member, onEdit, onDelete, onClick }: AlumniCardProp
                                 <div
                                     className="relative"
                                     onMouseEnter={() => setShowPhoneTooltip(true)}
-                                    // Tooltip stays a bit longer to allow reading if needed, but simple hover out works
                                     onMouseLeave={() => setShowPhoneTooltip(false)}
                                 >
                                     {canSeePhone ? (
@@ -150,7 +139,6 @@ export function AlumniCard({ member, onEdit, onDelete, onClick }: AlumniCardProp
                                         </div>
                                     )}
 
-                                    {/* Detailed Tooltip */}
                                     {canSeePhone && showPhoneTooltip && (
                                         <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-56 p-3 bg-black/90 text-white text-xs rounded-lg shadow-xl pointer-events-none z-50 text-center border border-white/10">
                                             <div className="font-bold text-green-400 mb-1">Click to WhatsApp</div>

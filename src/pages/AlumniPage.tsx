@@ -13,7 +13,6 @@ export function AlumniPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [alumniByYear, setAlumniByYear] = useState<Record<number, AlumniMember[]>>({});
     const [expandedYears, setExpandedYears] = useState<Record<number, boolean>>({});
-    // Modals
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [editingMember, setEditingMember] = useState<AlumniMember | null>(null);
@@ -32,7 +31,6 @@ export function AlumniPage() {
             const data = await alumniService.getAllAlumni();
             setAlumniByYear(data);
 
-            // Auto expand the most recent year
             const years = Object.keys(data).map(Number).sort((a, b) => b - a);
             if (years.length > 0) {
                 setExpandedYears(prev => ({ ...prev, [years[0]]: true }));
@@ -77,10 +75,7 @@ export function AlumniPage() {
 
     const sortedYears = Object.keys(alumniByYear)
         .map(Number)
-        .sort((a, b) => b - a); // Newest first
-
-    // Optional client-side search filtering could go here if needed,
-    // but for now we just show the structure.
+        .sort((a, b) => b - a);
 
     return (
         <div className="min-h-screen bg-gray-50 font-sans">
@@ -92,7 +87,6 @@ export function AlumniPage() {
 
             <main className="pt-32 pb-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    {/* Page Header */}
                     <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
                         <motion.div
                             initial={{ opacity: 0, x: -20 }}
@@ -119,7 +113,6 @@ export function AlumniPage() {
                         )}
                     </div>
 
-                    {/* Content */}
                     {isLoading ? (
                         <div className="flex justify-center py-20">
                             <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-600 border-t-transparent"></div>
@@ -136,7 +129,6 @@ export function AlumniPage() {
                                 const members = alumniByYear[year];
                                 const isExpanded = expandedYears[year];
 
-                                // Sort members: President first, then alphabetical
                                 const sortedMembers = [...members].sort((a, b) => {
                                     if (a.isPresident && !b.isPresident) return -1;
                                     if (!a.isPresident && b.isPresident) return 1;
@@ -191,7 +183,6 @@ export function AlumniPage() {
                                                                 />
                                                             ))}
 
-                                                            {/* Quick Add Button for this year */}
                                                             {canAdd && (
                                                                 <button
                                                                     onClick={() => {

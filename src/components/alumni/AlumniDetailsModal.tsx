@@ -40,7 +40,6 @@ export function AlumniDetailsModal({ member, isOpen, onClose }: AlumniDetailsMod
                         className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Header Image/Gradient */}
                         <div className="h-32 bg-gradient-to-r from-primary-600 to-primary-800 relative">
                             <button
                                 onClick={onClose}
@@ -50,7 +49,6 @@ export function AlumniDetailsModal({ member, isOpen, onClose }: AlumniDetailsMod
                             </button>
                         </div>
 
-                        {/* Profile Image - Overlapping */}
                         <div className="px-8 -mt-16 flex justify-between items-end">
                             <div className="relative">
                                 <div className={`w-32 h-32 rounded-xl overflow-hidden border-4 bg-white shadow-lg ${member.isPresident ? 'border-yellow-400' : 'border-white'
@@ -75,7 +73,6 @@ export function AlumniDetailsModal({ member, isOpen, onClose }: AlumniDetailsMod
                             </div>
                         </div>
 
-                        {/* Content */}
                         <div className="p-8 overflow-y-auto">
                             <div className="mb-6">
                                 <h2 className="text-2xl font-merriweather text-gray-900 font-bold">
@@ -131,7 +128,6 @@ export function AlumniDetailsModal({ member, isOpen, onClose }: AlumniDetailsMod
                                 )}
                             </div>
 
-                            {/* Admin Metadata Section */}
                             <div className="mt-8 pt-6 border-t border-gray-100">
                                 <div className="flex items-center gap-2 mb-4">
                                     <Info size={16} className="text-gray-400" />
