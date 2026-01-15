@@ -23,6 +23,7 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
         name: '',
         graduatingYear: year || 2025,
         linkedinUrl: '',
+        email: '',
         workplace: '',
         phoneNumber: '',
         photoUrl: '',
@@ -35,6 +36,7 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
                 name: editMember.name,
                 graduatingYear: editMember.graduatingYear,
                 linkedinUrl: editMember.linkedinUrl || '',
+                email: editMember.email || '',
                 workplace: editMember.workplace || '',
                 phoneNumber: editMember.phoneNumber || '',
                 photoUrl: editMember.photoUrl || '',
@@ -45,6 +47,7 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
                 name: '',
                 graduatingYear: year || 2025,
                 linkedinUrl: '',
+                email: '',
                 workplace: '',
                 phoneNumber: '',
                 photoUrl: '',
@@ -217,6 +220,17 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
                                         onChange={e => setFormData({ ...formData, linkedinUrl: e.target.value })}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                                         placeholder="https://linkedin.com/in/..."
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                                    <input
+                                        type="email"
+                                        value={formData.email}
+                                        onChange={e => setFormData({ ...formData, email: e.target.value })}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                                        placeholder="user@example.com"
                                     />
                                 </div>
 

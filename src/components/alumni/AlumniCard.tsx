@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Linkedin, Edit2, Trash2, User } from 'lucide-react';
+import { Linkedin, Edit2, Trash2, User, Mail } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import type { AlumniMember } from '../../types/alumni';
 import { useAuth } from '../../context';
@@ -95,12 +95,12 @@ export function AlumniCard({ member, onEdit, onDelete, onClick, onShowPrivacyAle
                     className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent pt-16 pb-4 px-4 text-center transition-all duration-300"
                 >
                     <div>
-                        <h3 className="font-merriweather font-bold text-base md:text-lg text-white mb-0.5 shadow-black drop-shadow-md leading-tight">
+                        <h3 className="font-merriweather font-bold text-base md:text-lg text-white mb-0.5 shadow-black drop-shadow-md leading-tight w-full break-words">
                             {member.name}
                         </h3>
 
                         {member.workplace && (
-                            <p className="text-primary-200 font-spectral text-[11px] md:text-xs line-clamp-1">
+                            <p className="text-primary-200 font-spectral text-[11px] md:text-xs line-clamp-3 w-full break-words leading-tight px-1">
                                 {member.workplace}
                             </p>
                         )}
@@ -118,6 +118,17 @@ export function AlumniCard({ member, onEdit, onDelete, onClick, onShowPrivacyAle
                             title="LinkedIn Profile"
                         >
                             <Linkedin size={24} className="w-6 h-6" />
+                        </a>
+                    )}
+
+                    {member.email && (
+                        <a
+                            href={`mailto:${member.email}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="p-3 bg-white/20 rounded-full hover:bg-primary-600 text-white transition-colors backdrop-blur-sm transform hover:scale-110 shadow-lg"
+                            title="Send Email"
+                        >
+                            <Mail size={24} className="w-6 h-6" />
                         </a>
                     )}
 

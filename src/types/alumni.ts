@@ -3,6 +3,7 @@ export interface AlumniMember {
     name: string;
     graduatingYear: number;
     linkedinUrl?: string;
+    email?: string;
     workplace?: string;
     phoneNumber?: string;
     photoUrl?: string;
