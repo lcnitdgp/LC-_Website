@@ -66,53 +66,53 @@ export function AlumniCard({ member, onEdit, onDelete, onClick }: AlumniCardProp
                 )}
 
                 {(canEdit || canDelete) && (
-                    <div className="absolute top-3 right-3 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <div className="absolute top-3 right-3 z-20 flex gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
                         {canEdit && (
                             <button
                                 onClick={(e) => { e.stopPropagation(); onEdit(member); }}
-                                className="p-2 bg-white/90 text-gray-600 hover:text-primary-600 rounded-full shadow-md hover:shadow-lg transition-all"
+                                className="p-1.5 md:p-2 bg-white/90 text-gray-600 hover:text-primary-600 rounded-full shadow-md hover:shadow-lg transition-all"
                                 title="Edit Member"
                             >
-                                <Edit2 size={16} />
+                                <Edit2 className="w-3.5 h-3.5 md:w-4 md:h-4" />
                             </button>
                         )}
                         {canDelete && (
                             <button
                                 onClick={(e) => { e.stopPropagation(); onDelete(member); }}
-                                className="p-2 bg-white/90 text-red-500 hover:text-red-600 rounded-full shadow-md hover:shadow-lg transition-all"
+                                className="p-1.5 md:p-2 bg-white/90 text-red-500 hover:text-red-600 rounded-full shadow-md hover:shadow-lg transition-all"
                                 title="Delete Member"
                             >
-                                <Trash2 size={16} />
+                                <Trash2 className="w-3.5 h-3.5 md:w-4 md:h-4" />
                             </button>
                         )}
                     </div>
                 )}
 
                 <div
-                    className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-300 flex flex-col justify-end p-5 text-center"
+                    className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent pt-16 pb-4 px-4 text-center transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
                 >
-                    <div className="transform transition-transform duration-300 translate-y-2 group-hover:translate-y-0">
-                        <h3 className="font-merriweather font-bold text-xl text-white mb-1 shadow-black drop-shadow-md">
+                    <div>
+                        <h3 className="font-merriweather font-bold text-lg text-white mb-0.5 shadow-black drop-shadow-md leading-tight">
                             {member.name}
                         </h3>
 
                         {member.workplace && (
-                            <p className="text-primary-200 font-spectral text-sm mb-3 line-clamp-2">
+                            <p className="text-primary-200 font-spectral text-xs mb-2 line-clamp-1">
                                 {member.workplace}
                             </p>
                         )}
 
-                        <div className="flex items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0 pb-2">
+                        <div className="flex items-center justify-center gap-4 opacity-100 translate-y-0 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 transform md:translate-y-4 md:group-hover:translate-y-0 pb-1">
                             {member.linkedinUrl && (
                                 <a
                                     href={member.linkedinUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     onClick={(e) => e.stopPropagation()}
-                                    className="p-2 bg-white/20 rounded-full hover:bg-primary-600 text-white transition-colors backdrop-blur-sm"
+                                    className="p-1.5 md:p-2 bg-white/20 rounded-full hover:bg-primary-600 text-white transition-colors backdrop-blur-sm"
                                     title="LinkedIn Profile"
                                 >
-                                    <Linkedin size={18} />
+                                    <Linkedin size={16} className="w-3.5 h-3.5 md:w-4 md:h-4" />
                                 </a>
                             )}
 
@@ -128,14 +128,14 @@ export function AlumniCard({ member, onEdit, onDelete, onClick }: AlumniCardProp
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             onClick={(e) => e.stopPropagation()}
-                                            className="p-2 bg-white/20 rounded-full hover:bg-green-500 text-white transition-colors backdrop-blur-sm block"
+                                            className="p-1.5 md:p-2 bg-white/20 rounded-full hover:bg-green-500 text-white transition-colors backdrop-blur-sm block"
                                             aria-label="Contact on WhatsApp"
                                         >
-                                            <FaWhatsapp size={18} />
+                                            <FaWhatsapp size={16} className="w-3.5 h-3.5 md:w-4 md:h-4" />
                                         </a>
                                     ) : (
-                                        <div className="p-2 bg-white/10 rounded-full text-white/50 cursor-not-allowed">
-                                            <FaWhatsapp size={18} />
+                                        <div className="p-1.5 md:p-2 bg-white/10 rounded-full text-white/50 cursor-not-allowed">
+                                            <FaWhatsapp size={16} className="w-3.5 h-3.5 md:w-4 md:h-4" />
                                         </div>
                                     )}
 

@@ -22,7 +22,7 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
     // Form State
     const [formData, setFormData] = useState({
         name: '',
-        graduatingYear: year || new Date().getFullYear(),
+        graduatingYear: year || 2025,
         linkedinUrl: '',
         workplace: '',
         phoneNumber: '',
@@ -44,7 +44,7 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
         } else {
             setFormData({
                 name: '',
-                graduatingYear: year || new Date().getFullYear(),
+                graduatingYear: year || 2025,
                 linkedinUrl: '',
                 workplace: '',
                 phoneNumber: '',
@@ -181,7 +181,7 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
                                             value={formData.name}
                                             onChange={e => setFormData({ ...formData, name: e.target.value })}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                                            placeholder="John Doe"
+                                            placeholder="Full Name"
                                         />
                                     </div>
                                     <div>
@@ -192,7 +192,7 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
                                             value={formData.graduatingYear}
                                             onChange={e => setFormData({ ...formData, graduatingYear: Number(e.target.value) })}
                                             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                                            placeholder="2024"
+                                            placeholder="2025"
                                             disabled={!!editMember}
                                         />
                                         {editMember && <p className="text-xs text-gray-400 mt-1">Year cannot be changed</p>}
@@ -206,7 +206,7 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
                                         value={formData.workplace}
                                         onChange={e => setFormData({ ...formData, workplace: e.target.value })}
                                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                                        placeholder="Software Engineer at Google"
+                                        placeholder="Current Company/College name"
                                     />
                                 </div>
 
@@ -243,7 +243,7 @@ export function AlumniFormModal({ isOpen, onClose, editMember, year, onSuccess }
                                                 driveWarning && driveWarning.includes('IMPORTANT') ? 'border-green-300 focus:ring-green-200 bg-green-50' :
                                                     'border-gray-300 focus:ring-primary-500'
                                                 }`}
-                                            placeholder="Paste image address or Google Drive link..."
+                                            placeholder="Google Drive Link of the Image."
                                         />
                                     </div>
 

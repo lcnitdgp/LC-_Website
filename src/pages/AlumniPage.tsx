@@ -172,7 +172,7 @@ export function AlumniPage() {
                                                     className="overflow-hidden"
                                                 >
                                                     <div className="p-6 pt-0 border-t border-gray-100">
-                                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 pt-6">
+                                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 pt-6">
                                                             {sortedMembers.map((member) => (
                                                                 <AlumniCard
                                                                     key={member.id}
