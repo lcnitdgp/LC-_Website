@@ -185,20 +185,36 @@ Understanding where files live is 90% of the work.
 /
 ├── public/              # Static files (images, logos)
 │   ├── images/          # Team photos, backgrounds
-│   └── logo16.png       # Website favicon
+│   └── pdfs/dejavu      # Icons
 ├── src/                 # source code - YOU WORK HERE 99% OF THE TIME
-│   ├── components/      # Reusable UI parts
-│   │   ├── layout/      # Header, Footer
-│   │   └── sections/    # Big page sections (Hero, About, Team)
+|   ├── assets/              # Images and Audios
+|   ├── components/          # Reusable UI components
+│   │   ├── alumni/          # Alumni
+│   │   ├── auditions/       # Auditions
+│   │   ├── auth/            # Login, Profile
+│   │   ├── common/          # Common
+│   │   ├── dejavu/          # Books
+│   │   ├── layout/          # Header, Footer, Navbar
+│   │   ├── members/         # Members
+│   │   └── sections/        # Sections
+|   ├── context/         # Authentication
 │   ├── data/            # Data files (easy to edit!)
 │   │   ├── siteConfig.ts  # Links, contact info, text
 │   │   └── teamMembers.ts # ✨ ADD NEW MEMBERS HERE ✨
+|   ├── firebase/        # Backend
+|   ├── pages/           # Pages
+|   ├── services/        # Object containing functions
+|   |   ├── alumniService.ts    # Functions to modify Alumni
 │   ├── types/           # TS definitions (types)
+|   |   ├── alumni.ts    # Alumni details
+│   │   └── team.ts #    # Team Member details
+|   ├── utils/           # Utility function
 │   ├── App.tsx          # Main Page assembly
 │   ├── main.tsx         # Entry point (connects React to HTML)
 │   └── index.css        # Global styles & Tailwind config
 ├── index.html           # Main HTML file
 └── package.json         # Project settings
+└── README.md            # Documentation
 ```
 
 ### Where do I make changes?
