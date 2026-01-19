@@ -179,26 +179,107 @@ Our application connects several services to deliver a secure and fast experienc
 
 ## 📂 5. Codebase Structure
 
-Understanding where files live is 90% of the work.
 
 ```
 /
-├── public/              # Static files (images, logos)
-│   ├── images/          # Team photos, backgrounds
-│   └── logo16.png       # Website favicon
-├── src/                 # source code - YOU WORK HERE 99% OF THE TIME
-│   ├── components/      # Reusable UI parts
-│   │   ├── layout/      # Header, Footer
-│   │   └── sections/    # Big page sections (Hero, About, Team)
-│   ├── data/            # Data files (easy to edit!)
-│   │   ├── siteConfig.ts  # Links, contact info, text
-│   │   └── teamMembers.ts # ✨ ADD NEW MEMBERS HERE ✨
-│   ├── types/           # TS definitions (types)
-│   ├── App.tsx          # Main Page assembly
-│   ├── main.tsx         # Entry point (connects React to HTML)
-│   └── index.css        # Global styles & Tailwind config
-├── index.html           # Main HTML file
-└── package.json         # Project settings
+├── public/                  
+│   This folder contains files that are served directly by the browser.
+│   Nothing here goes through React or Vite processing.
+│
+│   ├── images/              
+│   All general images used across the site, such as blog visuals,
+│   team photos, sliders, and other static graphics.
+│
+│   ├── pdfs/                
+│   Stores DejaVu magazine PDFs, organised year-wise for easy access.
+│
+│   ├── logo16.png           
+│   The site’s favicon and main branding icon.
+│
+│   └── robots.txt           
+│   Helps search engines understand how to crawl the website.
+│
+├── src/                     
+│   This is where most of the development happens.
+│   It contains all React components, logic, and styling.
+│
+│   ├── components/          
+│   Reusable building blocks that are used across different pages.
+│
+│   │   ├── layout/          
+│   Common layout elements like the header, footer, and navigation bar.
+│
+│   │   ├── sections/        
+│   Larger page sections such as Hero, About, Team, etc.
+│
+│   │   ├── alumni/          
+│   Components related to displaying alumni information and profiles.
+│
+│   │   ├── members/         
+│   UI elements for members, including cards, modals, and details.
+│
+│   │   ├── auditions/       
+│   Components that handle audition forms, steps, and user flows.
+│
+│   │   ├── auth/            
+│   Authentication-related components like login, signup, and profiles.
+│
+│   │   └── dejavu/          
+│   Components for browsing and viewing DejaVu magazines and PDFs.
+│
+│   ├── pages/               
+│   Page-level components that are connected to routes in the app.
+│
+│   ├── data/                
+│   Simple data files used to store content that doesn’t change often.
+│
+│   ├── context/             
+│   Global state management using React Context
+│   (for example, authentication state).
+│
+│   ├── services/            
+│   Handles communication with external services like Firebase
+│   or other backend APIs.
+│
+│   ├── utils/               
+│   Helper functions that are used in multiple places in the app.
+│
+│   ├── types/               
+│   Central place for TypeScript types and interfaces.
+│
+│   ├── assets/              
+│   Images and media that are imported directly into components.
+│
+│   ├── App.tsx              
+│   The main wrapper component that defines routing and layout.
+│
+│   ├── main.tsx             
+│   The entry point where the React app is mounted to the DOM.
+│
+│   └── index.css            
+│   Global styles that apply to the entire application.
+│
+├── .github/                 
+│   GitHub-related configuration such as CI workflows and actions.
+│
+├── .env.example             
+│   Sample environment variables file to help with local setup.
+│
+├── index.html               
+│   Base HTML file used by Vite to load the React application.
+│
+├── vite.config.ts           
+│   Configuration file for Vite’s build and development setup.
+│
+├── tsconfig*.json           
+│   TypeScript configuration files for different environments.
+│
+├── package.json             
+│   Lists project dependencies, scripts, and basic project metadata.
+│
+└── README.md                
+│   Project documentation, setup instructions, and codebase overview.
+
 ```
 
 ### Where do I make changes?
