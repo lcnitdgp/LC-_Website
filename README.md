@@ -155,9 +155,51 @@ Here is the stack our website is built upen. You need to get familiar with it fi
 
 **Phase 3: Level Up**
 *   **TypeScript**: Safer JavaScript.
-    *   [TypeScript for Beginners](https://www.youtube.com/watch?v=d56mG7DezGs)
+    *   [TypeScript for Beginners (Hindi) – CodeWithHarry](https://youtu.be/d56mG7DezGs?si=wgjHYUw2Cw6tnglx)
+    *   [TypeScript for Beginners (English) – FreeCodeCamp](https://youtu.be/30LWjhZzg50?si=m3kM3NhrLMVZ1Uho)
+
 
 *   **NOTE**: This is enough. Now you are good enough to add your first feature.
+*   **Phase 4: Backend & Infrastructure Basics**
+
+*   **Firebase (Backend as a Service)**
+    Firebase is used for authentication, database, and security rules in this project.  
+    Focus especially on **Firestore**.
+
+    **Recommended Resources:**
+    *   📘 Firebase Official Documentation  
+        https://firebase.google.com/docs
+    *   📘 Firestore Official Guide  
+        https://firebase.google.com/docs/firestore
+    *   🎥 Firebase in 100 Seconds – Fireship  
+        https://www.youtube.com/watch?v=vAoB4VbhRzM
+    *   🎥 Firebase Full Course (Beginner Friendly) – Net Ninja  
+        https://www.youtube.com/playlist?list=PL4cUxeGkcC9jERUGvbudErNCeSZHWUVlb
+
+    **What to learn:**
+    * Firestore collections & documents
+    * CRUD operations
+    * Firebase Authentication
+    * Basic security rules
+
+*   **Cloudflare (Security & Performance Layer)**
+    Cloudflare is used to protect and accelerate the website before traffic reaches GitHub Pages.
+
+    **Recommended Resources:**
+    *   📘 Cloudflare Learning Center  
+        https://www.cloudflare.com/learning/
+    *   🌐 What is Cloudflare?  
+        https://www.cloudflare.com/learning/what-is-cloudflare/
+    *   🔐 Cloudflare Security Basics  
+        https://www.cloudflare.com/learning/security/
+    *   🎥 Cloudflare Explained – ByteByteGo  
+        https://www.youtube.com/watch?v=0eRrXq7xJxA
+
+    **What to understand:**
+    * DNS & CDN basics
+    * DDoS protection
+    * Web Application Firewall (WAF)
+
 
 ---
 
