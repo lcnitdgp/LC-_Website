@@ -182,7 +182,6 @@ Our application connects several services to deliver a secure and fast experienc
 Understanding where files live is 90% of the work.
 
 ```
-/ # Root of the LC-_Website project
 ├── .env.example                 # Example environment variables file
 ├── .gitignore                   # Git ignore rules
 ├── .npmrc                       # NPM configuration
