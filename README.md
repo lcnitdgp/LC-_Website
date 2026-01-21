@@ -214,18 +214,25 @@ Understanding where files live is 90% of the work.
 │   │   │   ├── comment-img1.png                          # Comment image 1
 │   │   │   ├── comment-img2.png                          # Comment image 2
 │   │   │   └── single-blog.jpg                           # Single blog post image
-│   │   └── dejavu/ # Images for DejaVu section (yearly)
-│   │       ├── 2013.png                          # 2013 DejaVu image
-│   │       ├── 2014.png                          # 2014 DejaVu image
-│   │       ├── 2015.png                          # 2015 DejaVu image
-│   │       ├── 2016.png                          # 2016 DejaVu image
-│   │       └── 2017.png                          # 2017 DejaVu image
-│   ├── pdfs/                             # PDF files directory
-│   │   └── dejavu/                               # DejaVu-related PDFs (may be empty or for future use)
-│   └── slider/                           # Slider/carousel images
-│       ├── 201.jpg                               # Slider image 1
-│       ├── 91.jpg                                # Slider image 2
-│       └── a8.jpg                                # Slider image 3
+│   │   ├── dejavu/ # Images for DejaVu section (yearly)
+│   │   │   ├── 2013.png                          # 2013 DejaVu image
+│   │   │   ├── 2014.png                          # 2014 DejaVu image
+│   │   │   ├── 2015.png                          # 2015 DejaVu image
+│   │   │   ├── 2016.png                          # 2016 DejaVu image
+│   │   │   └── 2017.png                          # 2017 DejaVu image
+│   │   ├── team/                             # Team member images
+│   │   └── slider/                           # Slider/carousel images
+│   │       ├── 201.jpg                               # Slider image 1
+│   │       ├── 91.jpg                                # Slider image 2
+│   │       └── a8.jpg                                # Slider image 3
+│   └── pdfs/                             # PDF files directory
+│      └── dejavu/                               # DejaVu-related PDFs
+│           ├── 2013_compressed.pdf                   # Dejavu pdf 2013
+│           ├── 2014_compressed.pdf                   # Dejavu pdf 2014
+│           ├── 2015_compressed.pdf                   # Dejavu pdf 2015
+│           ├── 2016_compressed.pdf                   # Dejavu pdf 2016
+│           └── 2017_compressed.pdf                   # Dejavu pdf 2017
+│
 └── src/                                  # Source code - YOU WORK HERE 99% OF THE TIME
     ├── App.tsx                                   # Main app component assembly
     ├── SEO.tsx                                   # Component for handling SEO metadata
