@@ -188,94 +188,195 @@ Our application connects several services to deliver a secure and fast experienc
 │
 │   ├── images/              
 │   All general images used across the site, such as blog visuals,
-│   team photos, sliders, and other static graphics.
+│   team photos, sliders, and other static graphics. 
 │
 │   ├── pdfs/                
 │   Stores DejaVu magazine PDFs, organised year-wise for easy access.
+|   |   ├── 2013/
+         spring 2013 ,literary cum festival
+|   |   ├── 2014/
+|       creative writings and literary prices by club members.
+|   |   ├── 2015/
+|           collection of poems,stories,and articles by the club
+|   |   ├── 2016/
+|        annua magazine featuring members literary works.
+|   |   ├── 2017/
+|        stories,poems,and creative articles by the club.
 │
 │   ├── logo16.png           
 │   The site’s favicon and main branding icon.
 │
 │   └── robots.txt           
-│   Helps search engines understand how to crawl the website.
+│   Helps search engines understand how to crawl the website.Robots.txt allowing all user-agents and linking to the site sitemap.
 │
 ├── src/                     
 │   This is where most of the development happens.
-│   It contains all React components, logic, and styling.
+│   It contains all React components, logic, and stylingand contains various sub folders in it .
 │
 │   ├── components/          
 │   Reusable building blocks that are used across different pages.
 │
 │   │   ├── layout/          
 │   Common layout elements like the header, footer, and navigation bar.
+|     |   |  ├── header/
+            Responsive React header with navigation, mobile menu, login/profile modals, password setup, and access control for members.
+|     |  ├── footer/
+          Editable React footer component fetching, displaying, and allowing admin users to update site info and social links.
+|     |   ├── index/
+           Exports Header and Footer components for site layout and navigation. 
 │
 │   │   ├── sections/        
 │   Larger page sections such as Hero, About, Team, etc.
-│
-│   │   ├── alumni/          
+|               ├─aboutsection/
+|                 A dynamic, Firestore-backed “About Us” section with animated display and admin-only inline editing, version tracking, and live content updates.
+|               ├─herosection/
+|                 A full-screen, animated hero component with Firestore-backed content and admin-only inline editing for headline and tagline text.
+|               ├─teammembercard/
+│                An animated profile card for team members that flips on hover to reveal a secondary image, role, and social media links.
+|               ├─teamsection/
+|                A Firestore-backed, animated team showcase section that displays members by year with editable titles and integrated TeamMemberCard profiles.
+|                ├─index/
+|                 Central export file that consolidates all main landing page components—Hero, About, TeamSection, and TeamMemberCard—for easy imports.
+|                ├─SEO/
+|                A reusable component that manages page metadata and structured data using react-helmet-async for optimized SEO and social sharing.
+│   |  ├── alumni/          
 │   Components related to displaying alumni information and profiles.
-│
+|              ├── alumni card/
+              An animated, role-aware profile card component that displays alumni details with conditional contact access, admin edit/delete controls, and interactive social links.
+│              ├── alumnidetailsmodal/
+|               An animated modal component that presents complete alumni profiles with photo, role, contact links, and record metadata in a polished, accessible layout.
+|              ├── alumniform modal/
+|              A secure, role-based modal form for adding or editing alumni records with validation, Google Drive image handling, and service-backed persistence.
+|              ├── index/
+|              Central export file that aggregates and re-exports all alumni-related UI components for clean and simplified imports. 
+              
 │   │   ├── members/         
 │   UI elements for members, including cards, modals, and details.
+|                ├── membercard/
+|                  Animated profile card displaying a member’s name and role, with special highlighting for LCite members and click interaction.
+|                 ├── memberdetailsmodal/
+|                  Modal to view a member’s profile details and promote/demote their role (Student ↔ LCite) with Firebase updates.
+|                  ├── index/
+|                  Exports member UI components for listing members and viewing/updating detailed member profiles via modal.
 │
 │   │   ├── auditions/       
 │   Components that handle audition forms, steps, and user flows.
-│
+|                  ├── auditionresponse/ 
+|                  Interactive, animated audition questionnaire that fetches questions from Firestore, records user responses with skip/submit flow, tracks completion       |                   status, and delivers a cinematic UX with sound and motion effects.
+|                  ├── Questionslists/ 
+|                  A real-time, Firestore-backed admin interface to view, add, edit, and delete audition questions with role-based permissions, batch-syncing updates to all |                   user responses, and a cinematic “confidential dossier” themed UI with animations.
+|                   ├── ResponseLibrary/ 
+                    A real-time Firestore-backed interface to add, edit, review, and securely manage audition questions with role-based controls.
 │   │   ├── auth/            
 │   Authentication-related components like login, signup, and profiles.
+|                ├── Loginmodal/
+|                 An animated authentication modal supporting User ID/password and institute Google login with loading states, error handling, and intruder access alerts.
+|                ├── Setpasswordmodal/
+|                An animated modal prompting users to securely set or skip setting their account password with validation and error handling.
+|                ├── userprofilemodal/
+|                An animated modal for viewing and updating user details (academic info, password) with save feedback and logout support.
+|                ├── index/
+|                 Exports login, password setup, and user profile management modals for authentication and account handling.
 │
 │   │   └── dejavu/          
 │   Components for browsing and viewing DejaVu magazines and PDFs.
+|             └── book/
+|              Animated book component with 3D hover effects, displaying a cover image and handling click interactions.
+|              └── BookShelf/
+|              Responsive bookshelf layout component that positions and animates book items with calibrated mobile offsets and a background shelf image.
+|              └── DejaVuSection/
+|               Animated “Déjà Vu” section header with an ornate vintage plaque design for the archives page.
+|             └── PDFviewermodal/
+|               Responsive modal PDF viewer with animated transitions, mobile-friendly fallback, and download support.
 │
 │   ├── pages/               
 │   Page-level components that are connected to routes in the app.
+|            ├── alumnipage/
+|               A dynamic, Firestore-powered page displaying alumni by year with expandable sections, add/edit/delete functionality, privacy alerts, and modals for detailed                 view and form submissions.
+|            ├── auditionspage/
+|            An interactive, video-backed page for Literary Circle auditions, featuring animated title effects, user authentication, profile completion checks, and dynamic |            question/response workflows for eligible students.
+|            ├── DejaVuPage/
+|             Displays a digital bookshelf of Déjà Vu yearbooks with interactive book previews and PDF viewing modal.
+|            ├── HomePage/
+|              Renders the Literary Circle homepage with Hero, About, Team sections, SEO, Header/Footer, and an Auditions promo modal for new students.
+|            ├── Membersdasboardpage/
+|              Admin dashboard to view, manage, and categorize all Literary Circle members by year, with member details modal, section toggles, access control, and loading  |              states.
+|            ├── index/
+|             Central export hub for all major site pages including Home, Auditions, Members Dashboard, Déjà Vu, and Alumni pages.
 │
 │   ├── data/                
 │   Simple data files used to store content that doesn’t change often.
+|           ├── siteConfig/   
+|             Central configuration for The Literary Circle website, including name, description, navigation, social links, contact info, and about content.
+|            ├── teamMember/
+|              An array of TeamMember objects with complete profile details, plus helper functions to filter members by year (FinalYear, ThirdYear, SecondYear).
 │
 │   ├── context/             
 │   Global state management using React Context
 │   (for example, authentication state).
-│
+|          ├── Authcontext/ 
+|          React context managing Firebase authentication, Google sign-in, credential login, user state, profile updates, password setup, and session persistence.
+|          ├── index/ 
+│          Re-exports AuthProvider, useAuth, and UserData type for centralized authentication handling.
 │   ├── services/            
 │   Handles communication with external services like Firebase
 │   or other backend APIs.
+|         ├── alumniservices/
+|         A Firestore-backed service providing functions to fetch, add, update, and delete alumni records organized by graduating year.  
 │
-│   ├── utils/               
+│  ├── utils/               
 │   Helper functions that are used in multiple places in the app.
+|           ├── authutils/ 
+|           Utility functions to validate institute emails, extract user IDs, and generate standardized NIT Durgapur email addresses based on name, registration number, and |            department.
+|           ├── index/
+|             Central export file that re-exports all authentication-related utility functions for streamlined imports.
 │
 │   ├── types/               
 │   Central place for TypeScript types and interfaces.
+|        ├── alumni/
+|         TypeScript interface defining the structure of an alumni record, including personal info, contact details, presidency status, and audit metadata.
+|        ├── team/
+|        Defines TeamMember and SocialLinks interfaces for team profiles, including name, role, year, images, social media, and optional last edited info.
+|   ├── firebase/
+| Firebase configuration & helpers
+|           ├── config/
+|             Firebase initialized with Firestore, Auth, Analytics, and App Check (ReCaptcha v3) using environment variables.
+|            ├── migrateteam/
+|            Migrates predefined team members to Firestore in batch and marks migration as complete if not already done.
+|            ├── index/
+|            Re-exports Firebase app, analytics, Firestore database, and authentication instances from the config file.
+|
+ 
 │
 │   ├── assets/              
 │   Images and media that are imported directly into components.
 │
 │   ├── App.tsx              
-│   The main wrapper component that defines routing and layout.
+|   Main App component setting up routing, authentication context, and migrating team members to Firestore on load.
 │
 │   ├── main.tsx             
-│   The entry point where the React app is mounted to the DOM.
+│   Entry point rendering the React app with StrictMode and HelmetProvider, importing global CSS.
 │
 │   └── index.css            
-│   Global styles that apply to the entire application.
+│   Global CSS setup with Google Fonts, Tailwind integration, custom theme colors, fonts, animations, and utility classes for typography, buttons, and components.
 │
 ├── .github/                 
 │   GitHub-related configuration such as CI workflows and actions.
 │
 ├── .env.example             
-│   Sample environment variables file to help with local setup.
+│   Environment variables for Firebase configuration in the Vite project.
 │
 ├── index.html               
-│   Base HTML file used by Vite to load the React application.
+│   HTML template for The Literary Circle website with meta tags, favicon, Google Fonts, and root div for React app.
 │
 ├── vite.config.ts           
-│   Configuration file for Vite’s build and development setup.
+│   Vite configuration with React plugin enabled and base path set to root.
 │
 ├── tsconfig*.json           
-│   TypeScript configuration files for different environments.
+│   TypeScript configuration targeting ES2022 with React JSX, strict type checking, bundler-friendly module resolution, and linting rules enabled for the src folder.
 │
 ├── package.json             
-│   Lists project dependencies, scripts, and basic project metadata.
+│   Project setup using Vite with React, TypeScript, TailwindCSS, Firebase, Framer Motion, and various dev tools for linting, building, and previewing.
 │
 └── README.md                
 │   Project documentation, setup instructions, and codebase overview.
