@@ -122,7 +122,7 @@ export function Header() {
                     <div className="flex items-center justify-between">
                         <a href="#" className="flex items-center">
                             <img
-                                src="images/team/LClogo.png"
+                                src="images/team/LClogo.webp"
                                 alt="The Literary Circle Logo"
                                 className="h-12 w-auto"
                             />
