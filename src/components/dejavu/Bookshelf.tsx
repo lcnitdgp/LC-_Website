@@ -19,6 +19,14 @@ const MOBILE_OFFSETS = [
     { x: '-60.6px', y: '-151.9px' },  // 2017 (Index 4)
 ];
 
+const MOBILE_OFFSETS_SHORT = [
+     { x: '60.5px', y: '-284.7px' },   // 2013 (Index 0)
+    { x: '226.8px', y: '-284.7px' },  // 2014 (Index 1)
+    { x: '-126.5px', y: '-151.9px' }, // 2015 (Index 2)
+    { x: '-93.6px', y: '-151.9px' },  // 2016 (Index 3)
+    { x: '-60.6px', y: '-151.9px' },  // 2017 (Index 4)
+];
+
 export function Bookshelf({ children }: BookshelfProps) {
     return (
         <div className="relative w-full h-full min-h-[600px] overflow-hidden md:scale-125 lg:scale-135 md:origin-[center_35%] transition-transform duration-500">
@@ -45,18 +53,26 @@ export function Bookshelf({ children }: BookshelfProps) {
             </div>
 
             {/* Book Container */}
+            <style>{`
+                @media (max-height: 720px) {
+                    .book-container-adjust {
+                        --books-top: calc(78% + 25px);
+                    }
+                }
+            `}</style>
             <div
                 className="absolute w-full flex items-end justify-center px-4 sm:px-8 gap-2 sm:gap-3 md:gap-4
                            transform translate-x-0 translate-y-[-100%]
-                           md:translate-x-[-137px] md:translate-y-[calc(-100%-173px)]"
+                           md:translate-x-[-137px] md:translate-y-[calc(-100%-173px)] book-container-adjust"
                 style={{
-                    top: '78%',
+                    top: 'var(--books-top, 78%)',
                     height: '250px',
                     paddingBottom: '40px'
                 }}
             >
                 {React.Children.map(children, (child, index) => {
                     const mobileOffset = MOBILE_OFFSETS[index] || { x: '0px', y: '0px' };
+                    const mobileOffsetShort = MOBILE_OFFSETS_SHORT[index] || mobileOffset;
 
                     return (
                         <div
@@ -84,11 +100,18 @@ export function Bookshelf({ children }: BookshelfProps) {
                                 .book-wrapper-${index} {
                                     transform: translate(${mobileOffset.x}, ${mobileOffset.y});
                                 }
+                                @media (max-height: 747px) {
+                                    .book-wrapper-${index} {
+                                        transform: translate(${mobileOffsetShort.x}, ${mobileOffsetShort.y});
+                                    }
+                                }
                                 @media (min-width: 768px) {
                                     .book-wrapper-${index} {
                                         transform: translateX(${index * 20}px) translateY(0px);
                                     }
                                 }
+                                  
+        }
                             `}</style>
                             <div className={`transition-transform duration-300 book-wrapper-${index}`}>
                                 <div className="relative transition-transform hover:-translate-y-2 duration-300 origin-bottom">
@@ -103,3 +126,4 @@ export function Bookshelf({ children }: BookshelfProps) {
         </div>
     );
 }
+    
