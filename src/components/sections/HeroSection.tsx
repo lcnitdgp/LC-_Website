@@ -147,24 +147,21 @@ export function HeroSection() {
 
             <div className="relative z-10 text-center px-4 max-w-5xl mx-auto">
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 1, y: 0 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 0.2 }}
                     className="space-y-6"
                 >
                     <h1 className="text-5xl md:text-7xl lg:text-8xl font-cormorant text-white leading-tight">
                         <motion.span
-                            initial={{ opacity: 0 }}
+                            initial={{ opacity: 1 }}
                             animate={{ opacity: 1 }}
-                            transition={{ duration: 1, delay: 0.5 }}
                             className="block"
                         >
                             {renderEditableText('line1', content.line1, 'text-5xl md:text-7xl lg:text-8xl font-cormorant text-white')}
                         </motion.span>
                         <motion.span
-                            initial={{ opacity: 0 }}
+                            initial={{ opacity: 1 }}
                             animate={{ opacity: 1 }}
-                            transition={{ duration: 1, delay: 1 }}
                             className="block text-primary-300 italic"
                         >
                             {renderEditableText('line2', content.line2, 'text-5xl md:text-7xl lg:text-8xl font-cormorant text-primary-300 italic')}
