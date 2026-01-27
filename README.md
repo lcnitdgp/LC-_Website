@@ -223,6 +223,131 @@ Our application connects several services to deliver a secure and fast experienc
 
 
 ```
+├── .env.example                 # Example environment variables file
+├── .gitignore                   # Git ignore rules
+├── .npmrc                       # NPM configuration
+├── README.md                    # Project documentation and instructions
+├── index.html                   # Main HTML entry point
+├── package-lock.json            # NPM lock file for dependencies
+├── package.json                 # Project metadata, scripts, and dependencies
+├── pnpm-lock.yaml               # PNPM lock file for dependencies
+├── postcss.config.js            # PostCSS configuration for styling
+├── tsconfig.app.json            # TypeScript configuration for the app
+├── tsconfig.json                # Main TypeScript configuration
+├── tsconfig.node.json           # TypeScript configuration for Node.js
+├── vite.config.ts               # Vite build tool configuration
+├── .github/                     # GitHub-specific configurations
+│   └── workflows/               # CI/CD workflow definitions
+│       └── pages.yaml           # Workflow for deploying to GitHub Pages
+├── public/                      # Static files served directly (images, logos, etc.)
+│   ├── apple-touch-icon.png              # Apple touch icon for web app
+│   ├── empty_wooden_bookshelf_bg.png     # Background image for bookshelf
+│   ├── logo16.png                        # Small logo icon
+│   ├── robots.txt                        # Robots exclusion standard file
+│   ├── sitemap.xml                       # XML sitemap for SEO
+│   ├── system_architecture.png           # Diagram of system architecture
+│   ├── images/                           # General images for the site
+│   │   ├── blog/                                 # Images related to blog posts
+│   │   │   ├── blog-img1.jpg                             # Blog image 1
+│   │   │   ├── blog-img2.jpg                             # Blog image 2
+│   │   │   ├── blog-img3.jpg                             # Blog image 3
+│   │   │   ├── comment-img1.png                          # Comment image 1
+│   │   │   ├── comment-img2.png                          # Comment image 2
+│   │   │   └── single-blog.jpg                           # Single blog post image
+│   │   ├── dejavu/ # Images for DejaVu section (yearly)
+│   │   │   ├── 2013.png                          # 2013 DejaVu image
+│   │   │   ├── 2014.png                          # 2014 DejaVu image
+│   │   │   ├── 2015.png                          # 2015 DejaVu image
+│   │   │   ├── 2016.png                          # 2016 DejaVu image
+│   │   │   └── 2017.png                          # 2017 DejaVu image
+│   │   ├── team/                             # Team member images
+│   │   └── slider/                           # Slider/carousel images
+│   │       ├── 201.jpg                               # Slider image 1
+│   │       ├── 91.jpg                                # Slider image 2
+│   │       └── a8.jpg                                # Slider image 3
+│   └── pdfs/                             # PDF files directory
+│      └── dejavu/                               # DejaVu-related PDFs
+│           ├── 2013_compressed.pdf                   # Dejavu pdf 2013
+│           ├── 2014_compressed.pdf                   # Dejavu pdf 2014
+│           ├── 2015_compressed.pdf                   # Dejavu pdf 2015
+│           ├── 2016_compressed.pdf                   # Dejavu pdf 2016
+│           └── 2017_compressed.pdf                   # Dejavu pdf 2017
+│
+└── src/                                  # Source code - YOU WORK HERE 99% OF THE TIME
+    ├── App.tsx                                   # Main app component assembly
+    ├── SEO.tsx                                   # Component for handling SEO metadata
+    ├── index.css                                 # Global styles and Tailwind CSS configuration
+    ├── main.tsx                                  # Entry point (connects React to HTML)
+    ├── assets/                                   # Images and audio assets used in the app
+    │   ├── auditions/                                    # Assets for auditions section
+    │   │   ├── auditions-bg-poster.webp                          # Auditions background poster
+    │   │   ├── auditions-bg.webm                                 # Auditions background video
+    │   │   ├── gun.webp                                          # Gun image
+    │   │   └── mysterious-man.webp                               # Mysterious man image
+    │   └── sounds/                                       # Audio files
+    │       └── gunshot.mp3                                       # Gunshot sound effect
+    ├── components/                               # Reusable UI components
+    │   ├── alumni/                                       # Components for alumni features
+    │   │   ├── AlumniCard.tsx                                    # Card for displaying alumni
+    │   │   ├── AlumniDetailsModal.tsx                            # Modal for alumni details
+    │   │   ├── AlumniFormModal.tsx                               # Modal for alumni form
+    │   │   └── index.ts                                          # Export index for alumni components
+    │   ├── auditions/                                    # Components for auditions
+    │   │   ├── AuditionResponse.tsx                              # Response component for auditions
+    │   │   ├── QuestionsList.tsx                                 # List of questions
+    │   │   └── ResponseLibrary.tsx                               # Library of responses
+    │   ├── auth/                                         # Authentication-related components
+    │   │   ├── LoginModal.tsx                                    # Login modal
+    │   │   ├── SetPasswordModal.tsx                              # Set password modal
+    │   │   ├── UserProfileModal.tsx                              # User profile modal
+    │   │   └── index.ts                                          # Export index for auth components
+    │   ├── common/                                       # Common utility components
+    │   │   ├── EditableText.tsx                                  # Editable text component
+    │   │   └── index.ts                                          # Export index for common components
+    │   ├── dejavu/                                       # Components for DejaVu section
+    │   │   ├── Book.tsx                                          # Book component
+    │   │   ├── Bookshelf.tsx                                     # Bookshelf display
+    │   │   ├── DejaVuSection.tsx                                 # DejaVu section wrapper
+    │   │   └── PDFViewerModal.tsx                                # Modal for viewing PDFs
+    │   ├── layout/                                       # Layout components like header and footer
+    │   │   ├── Footer.tsx                                        # Footer component
+    │   │   ├── Header.tsx                                        # Header component
+    │   │   └── index.ts                                          # Export index for layout
+    │   ├── members/                                      # Components for members
+    │   │   ├── MemberCard.tsx                                    # Member card
+    │   │   ├── MemberDetailsModal.tsx                            # Member details modal
+    │   │   └── index.ts                                          # Export index for members
+    │   └── sections/                                     # Sectional components for pages
+    │       ├── AboutSection.tsx                                  # About section
+    │       ├── HeroSection.tsx                                   # Hero/banner section
+    │       ├── TeamMemberCard.tsx                                # Team member card
+    │       ├── TeamSection.tsx                                   # Team section
+    │       └── index.ts                                          # Export index for sections
+    ├── context/                                  # React context providers
+    │   ├── AuthContext.tsx                               # Authentication context
+    │   └── index.ts                                      # Export index for contexts
+    ├── data/                                     # Data files (easy to edit!)
+    │   ├── siteConfig.ts                                 # Site links, contact info, text content
+    │   └── teamMembers.ts                                # ✨ ADD NEW MEMBERS HERE ✨
+    ├── firebase/                                 # Firebase backend integration
+    │   ├── config.ts                                     # Firebase configuration
+    │   ├── index.ts                                      # Firebase exports
+    │   └── migrateTeam.ts                                # Script to migrate team data
+    ├── pages/                                    # Page components
+    │   ├── AlumniPage.tsx                                # Alumni page
+    │   ├── AuditionsPage.tsx                             # Auditions page
+    │   ├── DejaVuPage.tsx                                # DejaVu page
+    │   ├── HomePage.tsx                                  # Home page
+    │   ├── MembersDashboardPage.tsx                      # Members dashboard
+    │   └── index.ts                                      # Export index for pages
+    ├── services/                                 # Service functions for API interactions
+    │   └── alumniService.ts                              # Functions to manage alumni data
+    ├── types/                                    # TypeScript type definitions
+    │   ├── alumni.ts                                     # Types for alumni
+    │   └── team.ts                                       # Types for team members
+    └── utils/                                    # Utility functions
+        ├── authUtils.ts                                  # Authentication utilities
+        └── index.ts                                      # Export index for utils
 /
 ├── public/                  
 │   This folder contains files that are served directly by the browser.
