@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogIn, AlertCircle, Hash, FileText, GraduationCap, Save, Users, Heart, Phone } from 'lucide-react';
+import { Users } from 'lucide-react';
 import { useAuth } from '../context';
-import { LoginModal } from '../components/auth';
+
 import { QuestionsList } from '../components/auditions/QuestionsList';
-import { AuditionResponse } from '../components/auditions/AuditionResponse';
 import { ResponseLibrary } from '../components/auditions/ResponseLibrary';
 import { SEO } from '../components/SEO';
 // @ts-ignore 
@@ -36,23 +35,7 @@ function VideoBackground() {
     );
 }
 
-const DEPARTMENTS = [
-    'Biotechnology',
-    'Chemical',
-    'Chemistry',
-    'Civil',
-    'Computer Science',
-    'Electronics and Communication',
-    'Electrical',
-    'Mathematics and Computing',
-    'Mechanical',
-    'Metallurgy',
-] as const;
 
-interface MissingField {
-    label: string;
-    field: string;
-}
 
 const TITLE_LINES = ["LITERARY", "CIRCLE", "AUDITIONS"];
 const TITLE_TEXT = TITLE_LINES.join("");
@@ -300,36 +283,14 @@ function LoadingAnimation({ onComplete }: { onComplete: () => void }) {
 }
 
 export function AuditionsPage() {
-    const { user, isLoading, updateUser } = useAuth();
-    const [showLoginModal, setShowLoginModal] = useState(false);
-    const [showForm, setShowForm] = useState(false);
+    const { user, isLoading } = useAuth();
     const [animationComplete, setAnimationComplete] = useState(false);
-    const [formData, setFormData] = useState({
-        rollNumber: '',
-        registrationNumber: '',
-        department: '',
-        phoneNumber: '',
-    });
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
     const [showQuestions, setShowQuestions] = useState(false);
     const [showResponses, setShowResponses] = useState(false);
-    const [showAuditioning, setShowAuditioning] = useState(false);
 
     useEffect(() => {
         // Document title and meta tags are now handled by the SEO component
     }, []);
-
-    useEffect(() => {
-        if (user) {
-            setFormData({
-                rollNumber: user.rollNumber || '',
-                registrationNumber: user.registrationNumber || '',
-                department: user.department || '',
-                phoneNumber: user.phoneNumber || '',
-            });
-        }
-    }, [user]);
 
     const formatFirstName = (fullName: string | undefined): string => {
         if (!fullName) return 'there';
@@ -337,74 +298,13 @@ export function AuditionsPage() {
         return firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
     };
 
-    const getMissingFields = (): MissingField[] => {
-        if (!user) return [];
-
-        const fields: MissingField[] = [];
-        if (!user.rollNumber?.trim()) fields.push({ label: 'Roll Number', field: 'rollNumber' });
-        if (!user.registrationNumber?.trim()) fields.push({ label: 'Registration Number', field: 'registrationNumber' });
-        if (!user.department?.trim()) fields.push({ label: 'Department', field: 'department' });
-        if (!user.phoneNumber?.trim()) fields.push({ label: 'Phone Number', field: 'phoneNumber' });
-
-        return fields;
-    };
-
-    const formatMissingFieldsMessage = (fields: MissingField[]): string => {
-        if (fields.length === 0) return '';
-        if (fields.length === 1) return fields[0].label;
-        if (fields.length === 2) return `${fields[0].label} and ${fields[1].label}`;
-
-        const allButLast = fields.slice(0, -1).map(f => f.label).join(', ');
-        const last = fields[fields.length - 1].label;
-        return `${allButLast}, and ${last}`;
-    };
-
-    const handleInputChange = (field: string, value: string) => {
-        if (field === 'rollNumber' || field === 'registrationNumber') {
-            value = value.toUpperCase();
-        }
-        setFormData(prev => ({ ...prev, [field]: value }));
-        setMessage(null);
-    };
-
-    const handleSave = async () => {
-        if (!formData.rollNumber.trim() || !formData.registrationNumber.trim() || !formData.department.trim() || !formData.phoneNumber.trim()) {
-            setMessage({ type: 'error', text: 'Please fill in all fields' });
-            return;
-        }
-
-        setIsSubmitting(true);
-        setMessage(null);
-
-        const result = await updateUser({
-            rollNumber: formData.rollNumber,
-            registrationNumber: formData.registrationNumber,
-            department: formData.department,
-            phoneNumber: formData.phoneNumber,
-        });
-
-        if (result.success) {
-            setMessage({ type: 'success', text: 'Profile updated successfully!' });
-            setShowForm(false);
-        } else {
-            setMessage({ type: 'error', text: result.error || 'Failed to update profile' });
-        }
-
-        setIsSubmitting(false);
-    };
-
-    const missingFields = getMissingFields();
-    const isProfileComplete = user && missingFields.length === 0;
     const isNotStudent = user && user.role !== 'student';
-    const isNotFirstYear = user && user.role === 'student' && !user.userId?.startsWith('25');
+
 
     if (isLoading || !animationComplete) {
         return (
             <>
-                <LoginModal
-                    isOpen={showLoginModal}
-                    onClose={() => setShowLoginModal(false)}
-                />
+
                 <div className="min-h-screen relative overflow-hidden">
                     <VideoBackground />
                     <div className="min-h-screen bg-black/40 relative z-10">
@@ -414,55 +314,6 @@ export function AuditionsPage() {
                             url="https://www.lcnitd.co.in/#/auditions"
                         />
                         <LoadingAnimation onComplete={() => setAnimationComplete(true)} />
-                    </div>
-                </div>
-            </>
-        );
-    }
-
-    if (!user) {
-        return (
-            <>
-                <LoginModal
-                    isOpen={showLoginModal}
-                    onClose={() => setShowLoginModal(false)}
-                />
-                <div className="min-h-screen relative overflow-hidden">
-                    <VideoBackground />
-                    <div className="min-h-screen bg-black/50 relative z-10">
-                        <SEO
-                            title="Join the Circle"
-                            description="Auditions for The Literary Circle, NIT Durgapur. Join the premier literary society!"
-                            url="https://www.lcnitd.co.in/#/auditions"
-                        />
-                        <PersistentTitle />
-                        <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.6 }}
-                                className="text-center"
-                            >
-                                <div className="bg-black/40 backdrop-blur-md rounded-2xl p-8 md:p-12 border border-amber-500/20">
-                                    <div className="flex items-center justify-center gap-3 mb-6">
-                                        <AlertCircle className="w-8 h-8 text-yellow-400" />
-                                        <h2 className="text-2xl font-merriweather text-amber-100">
-                                            Authentication Required
-                                        </h2>
-                                    </div>
-                                    <p className="text-amber-200/80 font-spectral mb-8">
-                                        You must be logged in to proceed with the auditions.
-                                    </p>
-                                    <button
-                                        onClick={() => setShowLoginModal(true)}
-                                        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white rounded-lg font-medium transition-all shadow-lg shadow-orange-500/30"
-                                    >
-                                        <LogIn size={20} />
-                                        Login to Continue
-                                    </button>
-                                </div>
-                            </motion.div>
-                        </div>
                     </div>
                 </div>
             </>
@@ -532,186 +383,16 @@ export function AuditionsPage() {
         );
     }
 
-    if (isNotFirstYear) {
-        return (
-            <div className="min-h-screen relative overflow-hidden">
-                <VideoBackground />
-                <div className="min-h-screen bg-black/50 relative z-10">
-                    <SEO
-                        title="Join the Circle"
-                        description="Auditions for The Literary Circle, NIT Durgapur. Join the premier literary society!"
-                        url="https://www.lcnitd.co.in/#/auditions"
-                    />
-                    <PersistentTitle />
-                    <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6 }}
-                            className="text-center"
-                        >
-                            <div className="bg-black/40 backdrop-blur-md rounded-2xl p-8 md:p-12 border border-amber-500/20">
-                                <div className="flex items-center justify-center gap-3 mb-6">
-                                    <Heart className="w-8 h-8 text-pink-400" />
-                                    <h2 className="text-2xl font-merriweather text-amber-100">
-                                        We Appreciate You!
-                                    </h2>
-                                </div>
-                                <p className="text-amber-200/90 font-spectral text-lg leading-relaxed">
-                                    Hey <span className="text-orange-400 font-semibold">{formatFirstName(user.name)}</span>. We really appreciate your interest in joining the Circle. However, we only take 1st years in our <span className="text-orange-400">Inner Circle</span>. But don't lose heart — you can still be a part of the bigger <span className="text-orange-400">Outer Circle</span> by actively participating in our events! Stay tuned for <span className="font-semibold text-amber-100">NITMUN</span> and <span className="font-semibold text-amber-100">Verve</span>!
-                                </p>
-                            </div>
-                        </motion.div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    if (!isProfileComplete) {
-        return (
-            <div className="min-h-screen relative overflow-hidden">
-                <VideoBackground />
-                <div className="min-h-screen bg-black/50 relative z-10">
-                    <SEO
-                        title="Join the Circle"
-                        description="Auditions for The Literary Circle, NIT Durgapur. Join the premier literary society!"
-                        url="https://www.lcnitd.co.in/#/auditions"
-                    />
-                    <PersistentTitle />
-                    <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6 }}
-                            className="text-center"
-                        >
-
-                            <div className="bg-black/40 backdrop-blur-md rounded-2xl p-8 md:p-12 border border-amber-500/20">
-                                <p className="text-amber-200/90 font-spectral mb-8 text-lg">
-                                    Hey <span className="text-orange-400 font-semibold">{formatFirstName(user.name)}</span>! We are glad you are so excited to join the circle but please add your{' '}
-                                    <span className="text-orange-300">{formatMissingFieldsMessage(missingFields)}</span> first!
-                                </p>
-
-                                {!showForm ? (
-                                    <button
-                                        onClick={() => setShowForm(true)}
-                                        className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white rounded-lg font-medium transition-all shadow-lg shadow-orange-500/30"
-                                    >
-                                        Add Missing Information
-                                    </button>
-                                ) : (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        className="bg-black/30 rounded-xl p-6 mt-6 text-left border border-amber-500/10"
-                                    >
-                                        <h3 className="text-lg font-semibold text-amber-100 mb-6 text-center">Complete Your Information</h3>
-
-                                        <div className="space-y-4">
-                                            <div>
-                                                <label className="flex items-center text-sm font-medium text-amber-200 mb-2">
-                                                    <Hash className="w-4 h-4 mr-2 text-orange-400" />
-                                                    Roll Number
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    value={formData.rollNumber}
-                                                    onChange={e => handleInputChange('rollNumber', e.target.value)}
-                                                    placeholder="Enter roll number"
-                                                    className="w-full px-4 py-3 border border-amber-500/30 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all duration-200 bg-black/30 text-white font-spectral uppercase placeholder-amber-200/50"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <label className="flex items-center text-sm font-medium text-amber-200 mb-2">
-                                                    <FileText className="w-4 h-4 mr-2 text-orange-400" />
-                                                    Registration Number
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    value={formData.registrationNumber}
-                                                    onChange={e => handleInputChange('registrationNumber', e.target.value)}
-                                                    placeholder="Enter registration number"
-                                                    className="w-full px-4 py-3 border border-amber-500/30 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all duration-200 bg-black/30 text-white font-spectral uppercase placeholder-amber-200/50"
-                                                />
-                                            </div>
-
-                                            <div>
-                                                <label className="flex items-center text-sm font-medium text-amber-200 mb-2">
-                                                    <GraduationCap className="w-4 h-4 mr-2 text-orange-400" />
-                                                    Department
-                                                </label>
-                                                <select
-                                                    value={formData.department}
-                                                    onChange={e => handleInputChange('department', e.target.value)}
-                                                    className="w-full px-4 py-3 border border-amber-500/30 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all duration-200 bg-black/30 text-white font-spectral appearance-none cursor-pointer"
-                                                >
-                                                    <option value="" className="bg-gray-900">Select department</option>
-                                                    {DEPARTMENTS.map(dept => (
-                                                        <option key={dept} value={dept} className="bg-gray-900">{dept}</option>
-                                                    ))}
-                                                </select>
-                                            </div>
-
-                                            <div>
-                                                <label className="flex items-center text-sm font-medium text-amber-200 mb-2">
-                                                    <Phone className="w-4 h-4 mr-2 text-orange-400" />
-                                                    Phone Number
-                                                </label>
-                                                <input
-                                                    type="tel"
-                                                    value={formData.phoneNumber}
-                                                    onChange={e => handleInputChange('phoneNumber', e.target.value)}
-                                                    placeholder="Enter phone number"
-                                                    className="w-full px-4 py-3 border border-amber-500/30 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all duration-200 bg-black/30 text-white font-spectral placeholder-amber-200/50"
-                                                />
-                                            </div>
-
-                                            {message && (
-                                                <div className={`text-sm text-center py-2 rounded-lg ${message.type === 'success' ? 'text-green-400 bg-green-500/20' : 'text-red-400 bg-red-500/20'
-                                                    }`}>
-                                                    {message.text}
-                                                </div>
-                                            )}
-
-                                            <div className="flex gap-3 pt-2">
-                                                <button
-                                                    onClick={() => setShowForm(false)}
-                                                    className="flex-1 py-3 bg-gray-700 text-white font-medium rounded-lg hover:bg-gray-600 transition-all duration-200"
-                                                >
-                                                    Cancel
-                                                </button>
-                                                <button
-                                                    onClick={handleSave}
-                                                    disabled={isSubmitting}
-                                                    className="flex-1 py-3 bg-gradient-to-r from-amber-600 to-orange-600 text-white font-semibold rounded-lg shadow-lg hover:from-amber-700 hover:to-orange-700 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50"
-                                                >
-                                                    <Save className="w-5 h-5" />
-                                                    {isSubmitting ? 'Saving...' : 'Save'}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </motion.div>
-                                )}
-                            </div>
-                        </motion.div>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
+    // Default view (for students, logged out users, etc.): Display the generic "Auditions Over" message
     return (
         <div className="min-h-screen relative overflow-hidden">
-            <SEO
-                title="Join the Circle"
-                description="Auditions for The Literary Circle, NIT Durgapur. Join the premier literary society!"
-                url="https://www.lcnitd.co.in/#/auditions"
-                keywords={["Auditions", "Literary Circle", "LC", "Join LC", "NIT Durgapur", "nit", "NIT", "nitdgp", "NITD", "nit clubs", "nit dgp clubs", "join nit clubs"]}
-            />
             <VideoBackground />
             <div className="min-h-screen bg-black/50 relative z-10">
+                <SEO
+                    title="Auditions Closed - The Literary Circle"
+                    description="Auditions for The Literary Circle, NIT Durgapur are now closed. Stay tuned for our upcoming events!"
+                    url="https://www.lcnitd.co.in/#/auditions"
+                />
                 <PersistentTitle />
                 <div className="max-w-4xl mx-auto px-4 pt-[280px] md:pt-[700px] pb-20">
                     <motion.div
@@ -720,32 +401,19 @@ export function AuditionsPage() {
                         transition={{ duration: 0.6 }}
                         className="text-center"
                     >
-
                         <div className="bg-black/40 backdrop-blur-md rounded-2xl p-8 md:p-12 border border-amber-500/20">
                             <div className="flex items-center justify-center gap-3 mb-6">
-
                                 <h2 className="text-2xl font-merriweather text-amber-100">
-                                    Hey {formatFirstName(user.name)}!
+                                    {user ? `Hey ${formatFirstName(user?.name)}!` : 'Hello there!'}
                                 </h2>
                             </div>
-                            <p className="text-amber-200/90 font-spectral mb-8 text-lg">
-                                Do you have what it takes to be an LCite? Answer the questions below to find out! And just to let you know, the Circle respects your individuality, freedom and privacy. So if you're uncomfortable with any question, just skip it! No one judges you for it in the Circle! But if you change your mind and decide to comeback to it, just reload the page and all the unanswered questions appear again!
+                            <p className="text-amber-200/90 font-spectral mb-8 text-lg leading-relaxed">
+                                The Circle has expanded. Auditions are over. But don't lose heart! We can be connected through our events. Hope to see you there!
                             </p>
-
-                            <button
-                                onClick={() => setShowAuditioning(true)}
-                                className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-lg font-medium transition-all shadow-lg shadow-red-500/30 group transform hover:scale-105 duration-200"
-                            >
-                                <span className="font-merriweather text-lg">Hit Me</span>
-                            </button>
                         </div>
                     </motion.div>
                 </div>
             </div>
-
-            {showAuditioning && user && (
-                <AuditionResponse user={user} onClose={() => setShowAuditioning(false)} />
-            )}
         </div>
     );
 }
