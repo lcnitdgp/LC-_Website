@@ -135,7 +135,7 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
   return (
     <div className="bg-black min-h-screen text-zinc-300 font-sans selection:bg-primary-500/30">
       {/* Hero Section */}
-      <div className="relative w-full h-screen h-[100dvh] overflow-hidden flex flex-col items-center justify-end pb-12">
+      <div className="relative w-full h-screen h-[100dvh] overflow-hidden flex flex-col items-center justify-end pb-32 md:pb-12">
         <motion.div style={{ opacity: videoOpacity }} className="absolute inset-0 z-0">
           <video
             src={nitmunxivvideo}
@@ -164,7 +164,7 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
           transition={{ delay: 2, duration: 1 }}
           className="relative z-10 flex flex-col items-center gap-2 text-white/70 hover:text-white transition-colors group cursor-pointer"
         >
-          <span className="text-sm font-medium tracking-widest uppercase">Discover NITMUN XIV</span>
+          <span className="text-sm font-medium tracking-widest uppercase">Scroll Below</span>
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
