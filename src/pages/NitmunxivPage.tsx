@@ -164,8 +164,7 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
           transition={{ delay: 2, duration: 1 }}
           className="relative z-10 flex flex-col items-center gap-2 text-white/70 hover:text-white transition-colors group cursor-pointer"
         >
-          <span className="text-sm font-medium tracking-widest uppercase hidden md:block">Discover NITMUN XIV</span>
-          <span className="text-sm font-medium tracking-widest uppercase md:hidden">Scroll Below</span>
+          <span className="text-sm font-medium tracking-widest uppercase">Scroll Below</span>
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
