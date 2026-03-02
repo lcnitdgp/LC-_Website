@@ -1,176 +1,558 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
+import { Mail, X, ArrowLeft, Key, LogIn, Phone, User, Hash, Building2, GraduationCap, CheckCircle2, ChevronDown } from 'lucide-react';
 
 const extractRegNumber = (email: string) => {
     const match = email.match(/\.([^.@]+)@/);
-    if (match && match[1]) {
-        return match[1].toLowerCase();
-    }
+    if (match && match[1]) return match[1].toLowerCase();
     return email.split('@')[0].toLowerCase();
 };
+
+const getYearOfStudy = (regNum: string) => {
+    const yearDigits = regNum.substring(0, 2);
+    switch (yearDigits) {
+        case '25': return '1st Year';
+        case '24': return '2nd Year';
+        case '23': return '3rd Year';
+        case '22': return '4th Year';
+        case '21': return '5th Year';
+        default: return 'Other';
+    }
+};
+
+type ModalView = 'selection' | 'inhouse-form' | 'outhouse-form' | 'login-form' | 'success' | 'already-registered';
 
 interface Props {
     isOpen: boolean;
     onClose: () => void;
 }
 
+const inputClass = "w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all duration-200 bg-white/80 font-spectral text-gray-800 placeholder-gray-400";
+const inputWithIconClass = "w-full pl-11 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all duration-200 bg-white/80 font-spectral text-gray-800 placeholder-gray-400";
+const labelClass = "flex items-center text-sm font-medium text-gray-700 mb-2";
+const iconClass = "w-4 h-4 mr-2 text-primary-500";
+const fieldIconClass = "absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-400 pointer-events-none";
+
 export function NitmunRegistrationModal({ isOpen, onClose }: Props) {
-    const navigate = useNavigate();
-    const { user } = useAuth();
-    const [isRegisteredInhouse, setIsRegisteredInhouse] = useState(false);
+    const { user, loginWithGoogle, loginWithCredentials, isLoading: isAuthLoading } = useAuth();
+
+    const [loginUserId, setLoginUserId] = useState('');
+    const [loginPassword, setLoginPassword] = useState('');
+    const [view, setView] = useState<ModalView>('selection');
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [showIntruderAlert, setShowIntruderAlert] = useState(false);
+    const [inhousePhone, setInhousePhone] = useState('');
+    const [outhouseData, setOuthouseData] = useState({
+        fullName: '', rollNumber: '', college: '', PhoneNumber: '', yearOfStudy: '', email: '',
+    });
 
     useEffect(() => {
-        const checkRegistration = async () => {
-            if (!user?.email || !isOpen) return;
-
+        if (!isOpen) return;
+        const determineView = async () => {
+            if (!user?.email) { setView('selection'); return; }
             try {
                 const userEmail = user.email.trim().toLowerCase();
-                if (!userEmail.endsWith('@nitdgp.ac.in')) return;
-
                 const regNumber = extractRegNumber(userEmail);
                 const docRef = doc(db, 'inhouse_registrations', regNumber);
                 const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    setIsRegisteredInhouse(true);
-                }
+                setView(docSnap.exists() ? 'already-registered' : 'inhouse-form');
             } catch (err) {
                 console.error("Error checking registration status", err);
+                setView('inhouse-form');
             }
         };
-
-        checkRegistration();
+        determineView();
     }, [user, isOpen]);
 
-    // Prevent scrolling when modal is open
     useEffect(() => {
-        if (isOpen) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = 'unset';
+        if (!isOpen) {
+            setError(null);
+            setIsSubmitting(false);
+            setShowIntruderAlert(false);
+            setInhousePhone('');
+            setOuthouseData({ fullName: '', rollNumber: '', college: '', PhoneNumber: '', yearOfStudy: '', email: '' });
+            setLoginUserId('');
+            setLoginPassword('');
         }
-        return () => {
-            document.body.style.overflow = 'unset';
-        };
     }, [isOpen]);
 
-    return (
-        <AnimatePresence>
-            {isOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    {/* Backdrop */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={onClose}
-                        className="absolute inset-0 bg-black/80 backdrop-blur-md"
-                    />
+    useEffect(() => {
+        document.body.style.overflow = isOpen ? 'hidden' : 'unset';
+        return () => { document.body.style.overflow = 'unset'; };
+    }, [isOpen]);
 
-                    {/* Modal Container */}
-                    <motion.div
-                        initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                        animate={{ scale: 1, opacity: 1, y: 0 }}
-                        exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                        transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-                        onClick={(e) => e.stopPropagation()}
-                        className="relative w-full max-w-2xl z-10 my-8"
+    const handleGoogleLogin = async () => {
+        setIsSubmitting(true);
+        setError(null);
+        const result = await loginWithGoogle();
+        if (!result.success) {
+            if (result.error?.includes('Intruder Alert')) setShowIntruderAlert(true);
+            else setError(result.error || 'Login failed. Please try again.');
+        }
+        setIsSubmitting(false);
+    };
+
+    const handleCredentialLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!loginUserId || !loginPassword) return;
+        setIsSubmitting(true);
+        setError(null);
+        const result = await loginWithCredentials(loginUserId, loginPassword);
+        if (!result.success) setError(result.error || 'Login failed. Please check your credentials.');
+        setIsSubmitting(false);
+    };
+
+    const handleInhouseSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!user || !user.email) return;
+        setIsSubmitting(true);
+        setError(null);
+        try {
+            const userEmail = user.email.trim().toLowerCase();
+            const regNumber = extractRegNumber(userEmail);
+            const yearDigits = regNumber.substring(0, 2);
+            const calculatedYear = getYearOfStudy(regNumber);
+            const docRef = doc(db, 'inhouse_registrations', regNumber);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) { setView('already-registered'); setIsSubmitting(false); return; }
+            const phoneQuery = query(collection(db, 'inhouse_registrations'), where('phoneNumber', '==', inhousePhone));
+            const phoneSnapshot = await getDocs(phoneQuery);
+            if (!phoneSnapshot.empty) { setError('This phone number is already registered.'); setIsSubmitting(false); return; }
+            await setDoc(docRef, {
+                phoneNumber: inhousePhone, fullName: user.name, email: userEmail,
+                regNumber, extractedYear: yearDigits, yearOfStudy: calculatedYear,
+                timestamp: new Date().toISOString(),
+            });
+            setView('success');
+        } catch (err: any) {
+            console.error('Error adding document: ', err);
+            setError(err.message || 'Something went wrong. Please try again.');
+        } finally { setIsSubmitting(false); }
+    };
+
+    const handleOuthouseSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setError(null);
+        try {
+            const userEmail = outhouseData.email.trim().toLowerCase();
+            const docRef = doc(db, 'outhouse_registrations', userEmail);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) { setError('This email is already registered.'); setIsSubmitting(false); return; }
+            const phoneQuery = query(collection(db, 'outhouse_registrations'), where('PhoneNumber', '==', outhouseData.PhoneNumber));
+            const phoneSnapshot = await getDocs(phoneQuery);
+            if (!phoneSnapshot.empty) { setError('This phone number is already registered.'); setIsSubmitting(false); return; }
+            await setDoc(docRef, { ...outhouseData, email: userEmail, timestamp: new Date().toISOString() });
+            setView('success');
+        } catch (err: any) {
+            console.error('Error adding document: ', err);
+            setError(err.message || 'Something went wrong. Please try again.');
+        } finally { setIsSubmitting(false); }
+    };
+
+    const handleOuthouseChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        setOuthouseData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    };
+
+    /* ─── Render Helpers ─── */
+
+    const renderSuccess = () => (
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="text-center py-6">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+                <CheckCircle2 className="w-8 h-8 text-green-600" />
+            </div>
+            <h3 className="text-xl font-cormorant font-semibold text-gray-800 mb-2">Registration Successful!</h3>
+            <p className="text-sm text-gray-500 font-spectral mb-6">
+                You are officially registered for NITMUN XIV. See you there!
+            </p>
+            <button onClick={onClose}
+                className="px-6 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]">
+                Done
+            </button>
+        </motion.div>
+    );
+
+    const renderAlreadyRegistered = () => (
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="text-center py-6">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-full mb-4">
+                <CheckCircle2 className="w-8 h-8 text-primary-600" />
+            </div>
+            <h3 className="text-xl font-cormorant font-semibold text-gray-800 mb-2">Already Registered</h3>
+            <p className="text-sm text-gray-500 font-spectral mb-6">
+                You've already registered for NITMUN{user?.name ? `, ${user.name}` : ''}! See you at the MUN.
+            </p>
+            <button onClick={onClose}
+                className="px-6 py-2.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]">
+                Done
+            </button>
+        </motion.div>
+    );
+
+    const renderInhouseForm = () => (
+        <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.25 }}>
+            {isAuthLoading ? (
+                <div className="flex flex-col items-center justify-center py-12 gap-3">
+                    <div className="w-8 h-8 border-2 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
+                    <span className="text-sm text-gray-400 font-spectral">Loading your profile…</span>
+                </div>
+            ) : !user ? (
+                <div className="py-2 space-y-6">
+                    <p className="text-sm text-gray-600 text-center font-spectral leading-relaxed">
+                        Please Sign Up with your institute email to register. If you had already signed up at{' '}
+                        <span className="text-primary-600 font-semibold">lcnitd.co.in</span> before, use your login credentials to login.
+                    </p>
+
+                    <div className="flex gap-3">
+                        <button
+                            onClick={() => { setError(null); setView('login-form'); }}
+                            className="flex-1 py-3 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-lg shadow-sm hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 flex items-center justify-center gap-2"
+                        >
+                            <LogIn className="w-4 h-4 text-primary-600" />
+                            Log In
+                        </button>
+                        <button
+                            onClick={handleGoogleLogin}
+                            disabled={isSubmitting}
+                            className="flex-1 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg shadow-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 transform hover:scale-[1.02] active:scale-[0.98]"
+                        >
+                            {isSubmitting ? (
+                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            ) : (
+                                <Mail className="w-4 h-4" />
+                            )}
+                            Sign Up
+                        </button>
+                    </div>
+                </div>
+            ) : (
+                <form onSubmit={handleInhouseSubmit} className="space-y-5">
+                    <p className="text-sm text-gray-600 text-center font-spectral">
+                        Hey <span className="text-primary-600 font-semibold">{user.name}</span>, enter your phone number to complete registration.
+                    </p>
+
+                    <div>
+                        <label htmlFor="inhousePhone" className={labelClass}>
+                            <Phone className={iconClass} />
+                            Phone Number
+                        </label>
+                        <div className="relative">
+                            <Phone className={fieldIconClass} />
+                            <input
+                                type="tel" id="inhousePhone" required
+                                value={inhousePhone} onChange={(e) => setInhousePhone(e.target.value)}
+                                pattern="[0-9]{10}" minLength={10} maxLength={10}
+                                className={inputWithIconClass}
+                                placeholder="10-digit WhatsApp number"
+                            />
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit" disabled={isSubmitting}
+                        className="w-full py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg shadow-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {/* Soft outer glow */}
-                        <div className="absolute -inset-1 rounded-[24px] bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 blur-xl opacity-50 animate-[pulse_3s_ease-in-out_infinite]"></div>
+                        {isSubmitting ? 'Registering...' : 'Complete Registration'}
+                    </button>
+                </form>
+            )}
+        </motion.div>
+    );
 
-                        {/* Crisp border line */}
-                        <div className="absolute -inset-[2px] rounded-[24px] bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500"></div>
+    const renderOuthouseForm = () => (
+        <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.25 }}>
+            <form onSubmit={handleOuthouseSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label htmlFor="fullName" className={labelClass}>
+                            <User className={iconClass} />
+                            Full Name
+                        </label>
+                        <input type="text" id="fullName" name="fullName" required
+                            value={outhouseData.fullName} onChange={handleOuthouseChange}
+                            className={inputClass} placeholder="Your full name" />
+                    </div>
+                    <div>
+                        <label htmlFor="rollNumber" className={labelClass}>
+                            <Hash className={iconClass} />
+                            Roll Number / ID
+                        </label>
+                        <input type="text" id="rollNumber" name="rollNumber" required
+                            value={outhouseData.rollNumber} onChange={handleOuthouseChange}
+                            className={inputClass} placeholder="e.g. 24CS101" />
+                    </div>
+                </div>
 
-                        {/* Main Content Card */}
-                        <div className="relative bg-[#09090b] rounded-[22px] p-8 md:p-12 shadow-2xl overflow-hidden h-full w-full">
-                            {/* Decorative subtle background grid or effects inside can go here */}
-                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(168,85,247,0.1),transparent_50%)]"></div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label htmlFor="outhousePhone" className={labelClass}>
+                            <Phone className={iconClass} />
+                            Phone Number
+                        </label>
+                        <input type="tel" id="outhousePhone" name="PhoneNumber" required
+                            value={outhouseData.PhoneNumber} onChange={handleOuthouseChange}
+                            pattern="[0-9]{10}" minLength={10} maxLength={10}
+                            className={inputClass} placeholder="10-digit number" />
+                    </div>
+                    <div>
+                        <label htmlFor="outhouseEmail" className={labelClass}>
+                            <Mail className={iconClass} />
+                            Email Address
+                        </label>
+                        <input type="email" id="outhouseEmail" name="email" required
+                            value={outhouseData.email} onChange={handleOuthouseChange}
+                            className={inputClass} placeholder="you@college.edu" />
+                    </div>
+                </div>
 
-                            <button
-                                onClick={onClose}
-                                className="absolute top-5 right-5 text-gray-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 p-2 rounded-full z-20 backdrop-blur-sm"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
+                <div>
+                    <label htmlFor="college" className={labelClass}>
+                        <Building2 className={iconClass} />
+                        College / Institute
+                    </label>
+                    <input type="text" id="college" name="college" required
+                        value={outhouseData.college} onChange={handleOuthouseChange}
+                        className={inputClass} placeholder="Your college name" />
+                </div>
+
+                <div>
+                    <label htmlFor="yearOfStudy" className={labelClass}>
+                        <GraduationCap className={iconClass} />
+                        Year of Study
+                    </label>
+                    <div className="relative">
+                        <select id="yearOfStudy" name="yearOfStudy" required
+                            value={outhouseData.yearOfStudy} onChange={handleOuthouseChange}
+                            className={`${inputClass} appearance-none cursor-pointer ${!outhouseData.yearOfStudy ? 'text-gray-400' : ''}`}
+                        >
+                            <option value="" disabled>Select your year</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                            <option value="5th Year">5th Year</option>
+                            <option value="Postgraduate">Postgraduate</option>
+                            <option value="Other">Other</option>
+                        </select>
+                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                    </div>
+                </div>
+
+                <div className="pt-1">
+                    <button
+                        type="submit" disabled={isSubmitting}
+                        className="w-full py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg shadow-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {isSubmitting ? 'Registering...' : 'Complete Registration'}
+                    </button>
+                </div>
+            </form>
+        </motion.div>
+    );
+
+    const renderSelection = () => (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="text-center py-4">
+            <p className="text-lg text-gray-700 font-spectral mb-6">
+                Are you a student of NIT Durgapur?
+            </p>
+            <div className="flex gap-3 max-w-xs mx-auto">
+                <button
+                    onClick={() => { setError(null); setView('inhouse-form'); }}
+                    className="flex-1 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg shadow-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+                >
+                    Yes
+                </button>
+                <button
+                    onClick={() => { setError(null); setView('outhouse-form'); }}
+                    className="flex-1 py-3 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-lg shadow-sm hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+                >
+                    No
+                </button>
+            </div>
+        </motion.div>
+    );
+
+    const renderLoginForm = () => (
+        <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.25 }}>
+            <form onSubmit={handleCredentialLogin} className="space-y-5">
+                <div>
+                    <label htmlFor="loginUserId" className={labelClass}>
+                        <User className={iconClass} />
+                        User ID
+                    </label>
+                    <input
+                        type="text" id="loginUserId" required
+                        value={loginUserId} onChange={(e) => setLoginUserId(e.target.value.toUpperCase())}
+                        className={`${inputClass} uppercase`} placeholder="Enter your User ID"
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="loginPassword" className={labelClass}>
+                        <Key className={iconClass} />
+                        Password
+                    </label>
+                    <input
+                        type="password" id="loginPassword" required
+                        value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)}
+                        className={inputClass} placeholder="Enter your password"
+                    />
+                </div>
+
+                <button
+                    type="submit" disabled={isSubmitting}
+                    className="w-full py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg shadow-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    {isSubmitting ? 'Logging in...' : 'Login'}
+                </button>
+            </form>
+        </motion.div>
+    );
+
+    const getTitle = () => {
+        if (view === 'success') return 'NITMUN XIV';
+        if (view === 'already-registered') return 'NITMUN XIV';
+        if (view === 'inhouse-form' || view === 'outhouse-form') return 'Registration for NITMUN';
+        if (view === 'login-form') return 'Welcome Back';
+        return 'Register for NITMUN XIV';
+    };
+
+    const getSubtitle = () => {
+        if (view === 'inhouse-form') return 'NIT Durgapur Delegate';
+        if (view === 'outhouse-form') return 'Other Institutes';
+        if (view === 'login-form') return 'Log in with your existing credentials';
+        if (view === 'success' || view === 'already-registered') return '';
+        return user ? 'Complete your registration' : '';
+    };
+
+    const showBackButton = (view === 'inhouse-form' || view === 'outhouse-form' || view === 'login-form') && !user;
+
+    return (
+        <>
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                        onClick={onClose}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                            transition={{ duration: 0.3, ease: 'easeOut' }}
+                            className="relative w-full max-w-lg bg-gradient-to-br from-white via-gray-50 to-primary-50 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
+                            onClick={e => e.stopPropagation()}
+                        >
+                            {/* Top accent bar */}
+                            <div className="h-2 bg-gradient-to-r from-primary-500 via-primary-600 to-primary-700" />
+
+                            {/* Close button */}
+                            <button onClick={onClose}
+                                className="absolute top-4 right-4 p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                                aria-label="Close modal">
+                                <X size={20} />
                             </button>
 
-                            <div className="relative z-10">
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.1 }}
-                                    className="text-center"
-                                >
-                                    <h2 className="text-4xl md:text-5xl font-black bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-400 to-amber-600 mb-2 tracking-tight pb-1">
-                                        Register for NITMUN XIV
-                                    </h2>
-                                    <p className="text-gray-400 mt-4 mb-10 text-lg font-medium">
-                                        Select your delegation type to proceed with registration
-                                    </p>
-                                </motion.div>
-
-                                <div className={`grid grid-cols-1 ${!isRegisteredInhouse ? 'md:grid-cols-2' : 'max-w-md mx-auto'} gap-6 w-full`}>
-                                    {/* IN-House Option */}
-                                    <motion.button
-                                        onClick={() => {
-                                            onClose();
-                                            navigate('/nitmunxiv/inhouse');
-                                        }}
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        className="w-full flex flex-col items-center justify-center p-8 bg-[#18181b] hover:bg-[#27272a] border border-[#27272a] hover:border-amber-500/50 rounded-2xl transition-all duration-300 group relative overflow-hidden"
-                                    >
-                                        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                                        <div className="mb-6 group-hover:scale-110 transition-transform duration-500">
-                                            <div className="w-16 h-16 rounded-full bg-black/50 border border-gray-800 flex items-center justify-center shadow-[0_0_15px_rgba(251,191,36,0.1)] group-hover:shadow-[0_0_20px_rgba(251,191,36,0.3)] group-hover:border-amber-500/50 transition-all duration-300">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400 group-hover:text-amber-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                                </svg>
-                                            </div>
-                                        </div>
-
-                                        <span className="text-3xl font-bold text-white group-hover:text-amber-400 transition-colors tracking-wide">IN-House</span>
-                                        <span className="text-sm text-gray-400 mt-3 font-medium tracking-widest uppercase">NITD Students</span>
-                                    </motion.button>
-
-                                    {/* OUT-House Option */}
-                                    {!isRegisteredInhouse && (
-                                        <motion.button
-                                            onClick={() => {
-                                                onClose();
-                                                navigate('/nitmunxiv/outhouse');
-                                            }}
-                                            whileHover={{ scale: 1.02 }}
-                                            whileTap={{ scale: 0.98 }}
-                                            className="w-full flex flex-col items-center justify-center p-8 bg-[#18181b] hover:bg-[#27272a] border border-[#27272a] hover:border-blue-500/50 rounded-2xl transition-all duration-300 group relative overflow-hidden"
+                            <div className="p-8">
+                                {/* Header */}
+                                <div className="text-center mb-6">
+                                    {showBackButton && (
+                                        <button
+                                            onClick={() => { setError(null); setView(view === 'login-form' ? 'inhouse-form' : 'selection'); }}
+                                            className="absolute top-14 left-6 p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors duration-200"
                                         >
-                                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                            <ArrowLeft size={18} />
+                                        </button>
+                                    )}
 
-                                            <div className="mb-6 group-hover:scale-110 transition-transform duration-500">
-                                                <div className="w-16 h-16 rounded-full bg-black/50 border border-gray-800 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.1)] group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] group-hover:border-blue-500/50 transition-all duration-300">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400 group-hover:text-blue-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                    </svg>
-                                                </div>
-                                            </div>
+                                    <div className="inline-flex items-center justify-center w-14 h-14 bg-primary-100 rounded-full mb-4">
+                                        {view === 'login-form' ? (
+                                            <LogIn className="w-7 h-7 text-primary-600" />
+                                        ) : view === 'success' ? (
+                                            <CheckCircle2 className="w-7 h-7 text-green-600" />
+                                        ) : view === 'already-registered' ? (
+                                            <CheckCircle2 className="w-7 h-7 text-primary-600" />
+                                        ) : (
+                                            <GraduationCap className="w-7 h-7 text-primary-600" />
+                                        )}
+                                    </div>
 
-                                            <span className="text-3xl font-bold text-white group-hover:text-blue-400 transition-colors tracking-wide">OUT-House</span>
-                                            <span className="text-sm text-gray-400 mt-3 font-medium tracking-widest uppercase">Other Institutes</span>
-                                        </motion.button>
+                                    <h2 className="text-2xl font-cormorant font-semibold text-gray-800">
+                                        {getTitle()}
+                                    </h2>
+                                    {getSubtitle() && (
+                                        <p className="text-sm text-gray-500 mt-2 font-spectral">{getSubtitle()}</p>
                                     )}
                                 </div>
+
+                                {/* Error */}
+                                {error && (
+                                    <div className="text-red-500 text-sm text-center py-2 px-4 bg-red-50 rounded-lg mb-5">
+                                        {error}
+                                    </div>
+                                )}
+
+                                {/* Content */}
+                                <AnimatePresence mode="wait">
+                                    {view === 'success' && renderSuccess()}
+                                    {view === 'already-registered' && renderAlreadyRegistered()}
+                                    {view === 'selection' && renderSelection()}
+                                    {view === 'inhouse-form' && renderInhouseForm()}
+                                    {view === 'outhouse-form' && renderOuthouseForm()}
+                                    {view === 'login-form' && renderLoginForm()}
+                                </AnimatePresence>
                             </div>
-                        </div>
+                        </motion.div>
                     </motion.div>
-                </div>
-            )}
-        </AnimatePresence>
+                )}
+            </AnimatePresence>
+
+            {/* Intruder Alert */}
+            <AnimatePresence>
+                {showIntruderAlert && (
+                    <motion.div
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+                        onClick={() => setShowIntruderAlert(false)}
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.8, y: 30 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.8, y: 30 }}
+                            transition={{ duration: 0.3, ease: 'easeOut' }}
+                            className="relative w-full max-w-md bg-gradient-to-br from-red-950 via-red-900 to-black rounded-2xl shadow-2xl overflow-hidden border border-red-500/50"
+                            onClick={e => e.stopPropagation()}
+                        >
+                            <div className="h-2 bg-gradient-to-r from-red-600 via-orange-500 to-red-600" />
+                            <button onClick={() => setShowIntruderAlert(false)}
+                                className="absolute top-4 right-4 p-2 text-red-300 hover:text-white hover:bg-red-800/50 rounded-full transition-colors duration-200"
+                                aria-label="Close">
+                                <X size={20} />
+                            </button>
+                            <div className="p-8 text-center">
+                                <div className="text-6xl mb-4">⚠️</div>
+                                <h2 className="text-3xl font-bold text-red-400 mb-4">Intruder Alert!</h2>
+                                <p className="text-gray-300 text-lg leading-relaxed mb-6">
+                                    Only NIT Durgapur students have the permission to access this.
+                                </p>
+                                <p className="text-gray-400 text-base">
+                                    If you are one, prove it by completing the auth from the browser in your <strong className="text-white">work profile</strong>!
+                                </p>
+                                <button onClick={() => setShowIntruderAlert(false)}
+                                    className="mt-8 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200">
+                                    Got it
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </>
     );
 }
