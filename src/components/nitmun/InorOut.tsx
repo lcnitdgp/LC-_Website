@@ -36,6 +36,30 @@ const labelClass = "flex items-center text-sm font-medium text-gray-700 mb-2";
 const iconClass = "w-4 h-4 mr-2 text-primary-500";
 const fieldIconClass = "absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-gray-400 pointer-events-none";
 
+const AIPPM_PORTFOLIOS = [
+    "Akhilesh Yadav", "Amit Shah", "Anurag Thakur", "Arvind Kejriwal", "Ashok Gehlot",
+    "Ashwini Vaishnaw", "Asaduddin Owaisi", "Bhagwant Maan", "Bhajan Lal Sharma", "Bhupendra Patel",
+    "Digvijaya Singh", "Devendra Fadnavis", "Dharmendra Pradhan", "Derek O’Brien", "Eknath Shinde",
+    "Farooq Abdullah", "Himanta Biswa Sarma", "Jagan Mohan Reddy", "Jyotiraditya Scindia", "K. Annamalai",
+    "K. Chandrashekar Rao", "K. T. Rama Rao", "Kapil Sibal", "Kiren Rijiju", "M. K. Stalin",
+    "Mahua Moitra", "Mallikarjun Kharge", "Mamata Banerjee", "Manish Sisodia", "Manohar Lal Khattar",
+    "Mohan Majhi", "Mohan Yadav", "Narendra Modi", "Nirmala Sitharaman", "Nitish Kumar",
+    "Nitin Gadkari", "N. Chandrababu Naidu", "Omar Abdullah", "P. Chidambaram", "Pinarayi Vijayan",
+    "Piyush Goyal", "Raghav Chadha", "Rahul Gandhi", "Rajnath Singh", "Revanth Reddy",
+    "S. Jaishankar", "Sharad Pawar", "Shashi Tharoor", "Shivraj Singh Chauhan", "Smriti Irani",
+    "Supriya Sule", "Tejashwi Yadav", "Uddhav Thackeray", "Yogi Adityanath"
+].sort();
+
+const UNHRC_PORTFOLIOS = [
+    "Angola", "Benin", "Burundi", "Côte d’Ivoire", "Democratic Republic of the Congo", "Egypt", "Ethiopia", "Gambia", "Ghana", "Kenya", "Malawi", "Mauritius", "South Africa",
+    "China (Major Actor)", "Iran (Islamic Republic of)", "India (Major Actor)", "Indonesia", "Iraq", "Japan", "Nepal", "Bangladesh (Major Actor)", "Pakistan (Major Actor)", "Sri Lanka", "Myanmar", "Thailand", "Viet Nam",
+    "Albania", "Bulgaria", "Czechia", "Estonia", "Russian Federation (Major Actor)", "Slovenia",
+    "Bolivia (Plurinational State of)", "Brazil", "Chile", "Colombia", "Cuba", "Dominican Republic", "Ecuador", "Mexico",
+    "France (Major Actor)", "United States of America (Major Actor)", "Italy", "Israel", "Spain", "Switzerland", "United Kingdom of Great Britain and Northern Ireland (Major Actor)"
+].sort();
+
+const COMMITTEES = ["AIPPM", "UNGA", "UNHRC"];
+
 export function NitmunRegistrationModal({ isOpen, onClose }: Props) {
     const { user, loginWithGoogle, loginWithCredentials, isLoading: isAuthLoading } = useAuth();
 
@@ -45,10 +69,20 @@ export function NitmunRegistrationModal({ isOpen, onClose }: Props) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [showIntruderAlert, setShowIntruderAlert] = useState(false);
+    const [role, setRole] = useState<'Delegate' | 'International Press' | null>(null);
     const [inhousePhone, setInhousePhone] = useState('');
     const [outhouseData, setOuthouseData] = useState({
         fullName: '', rollNumber: '', college: '', PhoneNumber: '', yearOfStudy: '', email: '',
     });
+    const [preferences, setPreferences] = useState({
+        committeePref1: '', portfolio1_1: '', portfolio1_2: '', portfolio1_3: '',
+        committeePref2: '', portfolio2_1: '', portfolio2_2: '', portfolio2_3: '',
+        committeePref3: '', portfolio3_1: '', portfolio3_2: '', portfolio3_3: ''
+    });
+
+    const handlePreferenceChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
+        setPreferences(prev => ({ ...prev, [e.target.name]: e.target.value }));
+    };
 
     useEffect(() => {
         if (!isOpen) return;
@@ -73,8 +107,14 @@ export function NitmunRegistrationModal({ isOpen, onClose }: Props) {
             setError(null);
             setIsSubmitting(false);
             setShowIntruderAlert(false);
+            setRole(null);
             setInhousePhone('');
             setOuthouseData({ fullName: '', rollNumber: '', college: '', PhoneNumber: '', yearOfStudy: '', email: '' });
+            setPreferences({
+                committeePref1: '', portfolio1_1: '', portfolio1_2: '', portfolio1_3: '',
+                committeePref2: '', portfolio2_1: '', portfolio2_2: '', portfolio2_3: '',
+                committeePref3: '', portfolio3_1: '', portfolio3_2: '', portfolio3_3: ''
+            });
             setLoginUserId('');
             setLoginPassword('');
         }
@@ -126,6 +166,8 @@ export function NitmunRegistrationModal({ isOpen, onClose }: Props) {
                 phoneNumber: inhousePhone, fullName: user.name, email: userEmail,
                 regNumber, extractedYear: yearDigits, yearOfStudy: calculatedYear,
                 timestamp: new Date().toISOString(),
+                role,
+                ...preferences
             });
             setView('success');
         } catch (err: any) {
@@ -146,7 +188,7 @@ export function NitmunRegistrationModal({ isOpen, onClose }: Props) {
             const phoneQuery = query(collection(db, 'outhouse_registrations'), where('PhoneNumber', '==', outhouseData.PhoneNumber));
             const phoneSnapshot = await getDocs(phoneQuery);
             if (!phoneSnapshot.empty) { setError('This phone number is already registered.'); setIsSubmitting(false); return; }
-            await setDoc(docRef, { ...outhouseData, email: userEmail, timestamp: new Date().toISOString() });
+            await setDoc(docRef, { ...outhouseData, ...preferences, role, email: userEmail, timestamp: new Date().toISOString() });
             setView('success');
         } catch (err: any) {
             console.error('Error adding document: ', err);
@@ -159,6 +201,87 @@ export function NitmunRegistrationModal({ isOpen, onClose }: Props) {
     };
 
     /* ─── Render Helpers ─── */
+
+    const renderPreferencesSection = () => (
+        <div className="space-y-6 mt-6 border-t border-gray-100 pt-6">
+            <h3 className="text-lg font-cormorant font-semibold text-gray-800">Committee Preferences</h3>
+
+            {[1, 2, 3].map((prefNum) => {
+                const committeeKey = `committeePref${prefNum}` as keyof typeof preferences;
+                const selectedCommittee = preferences[committeeKey];
+                const isAIPPM = selectedCommittee === 'AIPPM';
+                const isUNHRC = selectedCommittee === 'UNHRC';
+
+                return (
+                    <div key={prefNum} className="space-y-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
+                        <h4 className="font-medium text-gray-700 font-spectral text-sm">Preference {prefNum}</h4>
+
+                        <div>
+                            <label className={labelClass}>Committee</label>
+                            <div className="relative">
+                                <select
+                                    name={committeeKey} required
+                                    value={selectedCommittee} onChange={handlePreferenceChange}
+                                    className={`${inputClass} appearance-none cursor-pointer ${!selectedCommittee ? 'text-gray-400' : ''}`}
+                                >
+                                    <option value="" disabled>Select Committee</option>
+                                    {COMMITTEES.map(c => <option key={c} value={c}>{c}</option>)}
+                                </select>
+                                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                            </div>
+                        </div>
+
+                        {selectedCommittee && role !== 'International Press' && (
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                {[1, 2, 3].map((portNum) => {
+                                    const portKey = `portfolio${prefNum}_${portNum}` as keyof typeof preferences;
+                                    return (
+                                        <div key={portKey}>
+                                            <label className="text-xs font-medium text-gray-600 mb-1 block">
+                                                Portfolio {portNum}
+                                            </label>
+                                            {isAIPPM ? (
+                                                <div className="relative">
+                                                    <select
+                                                        name={portKey} required
+                                                        value={preferences[portKey]} onChange={handlePreferenceChange}
+                                                        className={`${inputClass} text-sm py-2 px-3 appearance-none cursor-pointer ${!preferences[portKey] ? 'text-gray-400' : ''}`}
+                                                    >
+                                                        <option value="" disabled>Select Portfolio</option>
+                                                        {AIPPM_PORTFOLIOS.map(p => <option key={p} value={p}>{p}</option>)}
+                                                    </select>
+                                                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                                                </div>
+                                            ) : isUNHRC ? (
+                                                <div className="relative">
+                                                    <select
+                                                        name={portKey} required
+                                                        value={preferences[portKey]} onChange={handlePreferenceChange}
+                                                        className={`${inputClass} text-sm py-2 px-3 appearance-none cursor-pointer ${!preferences[portKey] ? 'text-gray-400' : ''}`}
+                                                    >
+                                                        <option value="" disabled>Select State</option>
+                                                        {UNHRC_PORTFOLIOS.map(p => <option key={p} value={p}>{p}</option>)}
+                                                    </select>
+                                                    <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                                                </div>
+                                            ) : (
+                                                <input
+                                                    type="text" name={portKey} required
+                                                    value={preferences[portKey]} onChange={handlePreferenceChange}
+                                                    className={`${inputClass} text-sm py-2 px-3`}
+                                                    placeholder={`Portfolio ${portNum}`}
+                                                />
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                );
+            })}
+        </div>
+    );
 
     const renderSuccess = () => (
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="text-center py-6">
@@ -228,6 +351,26 @@ export function NitmunRegistrationModal({ isOpen, onClose }: Props) {
                         </button>
                     </div>
                 </div>
+            ) : !role ? (
+                <div className="text-center py-4 space-y-6">
+                    <p className="text-lg text-gray-700 font-spectral">
+                        How would you like to register?
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3 max-w-sm mx-auto">
+                        <button
+                            onClick={() => setRole('Delegate')}
+                            className="flex-1 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg shadow-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+                        >
+                            Delegate
+                        </button>
+                        <button
+                            onClick={() => setRole('International Press')}
+                            className="flex-1 py-3 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-lg shadow-sm hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+                        >
+                            International Press
+                        </button>
+                    </div>
+                </div>
             ) : (
                 <form onSubmit={handleInhouseSubmit} className="space-y-5">
                     <p className="text-sm text-gray-600 text-center font-spectral">
@@ -251,6 +394,8 @@ export function NitmunRegistrationModal({ isOpen, onClose }: Props) {
                         </div>
                     </div>
 
+                    {renderPreferencesSection()}
+
                     <button
                         type="submit" disabled={isSubmitting}
                         className="w-full py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg shadow-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
@@ -264,92 +409,116 @@ export function NitmunRegistrationModal({ isOpen, onClose }: Props) {
 
     const renderOuthouseForm = () => (
         <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }} transition={{ duration: 0.25 }}>
-            <form onSubmit={handleOuthouseSubmit} className="space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label htmlFor="fullName" className={labelClass}>
-                            <User className={iconClass} />
-                            Full Name
-                        </label>
-                        <input type="text" id="fullName" name="fullName" required
-                            value={outhouseData.fullName} onChange={handleOuthouseChange}
-                            className={inputClass} placeholder="Your full name" />
-                    </div>
-                    <div>
-                        <label htmlFor="rollNumber" className={labelClass}>
-                            <Hash className={iconClass} />
-                            Roll Number / ID
-                        </label>
-                        <input type="text" id="rollNumber" name="rollNumber" required
-                            value={outhouseData.rollNumber} onChange={handleOuthouseChange}
-                            className={inputClass} placeholder="e.g. 24CS101" />
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label htmlFor="outhousePhone" className={labelClass}>
-                            <Phone className={iconClass} />
-                            Phone Number
-                        </label>
-                        <input type="tel" id="outhousePhone" name="PhoneNumber" required
-                            value={outhouseData.PhoneNumber} onChange={handleOuthouseChange}
-                            pattern="[0-9]{10}" minLength={10} maxLength={10}
-                            className={inputClass} placeholder="10-digit number" />
-                    </div>
-                    <div>
-                        <label htmlFor="outhouseEmail" className={labelClass}>
-                            <Mail className={iconClass} />
-                            Email Address
-                        </label>
-                        <input type="email" id="outhouseEmail" name="email" required
-                            value={outhouseData.email} onChange={handleOuthouseChange}
-                            className={inputClass} placeholder="you@college.edu" />
-                    </div>
-                </div>
-
-                <div>
-                    <label htmlFor="college" className={labelClass}>
-                        <Building2 className={iconClass} />
-                        College / Institute
-                    </label>
-                    <input type="text" id="college" name="college" required
-                        value={outhouseData.college} onChange={handleOuthouseChange}
-                        className={inputClass} placeholder="Your college name" />
-                </div>
-
-                <div>
-                    <label htmlFor="yearOfStudy" className={labelClass}>
-                        <GraduationCap className={iconClass} />
-                        Year of Study
-                    </label>
-                    <div className="relative">
-                        <select id="yearOfStudy" name="yearOfStudy" required
-                            value={outhouseData.yearOfStudy} onChange={handleOuthouseChange}
-                            className={`${inputClass} appearance-none cursor-pointer ${!outhouseData.yearOfStudy ? 'text-gray-400' : ''}`}
+            {!role ? (
+                <div className="text-center py-4 space-y-6">
+                    <p className="text-lg text-gray-700 font-spectral">
+                        How would you like to register?
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3 max-w-sm mx-auto">
+                        <button
+                            onClick={() => setRole('Delegate')}
+                            className="flex-1 py-3 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg shadow-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
                         >
-                            <option value="" disabled>Select your year</option>
-                            <option value="1st Year">1st Year</option>
-                            <option value="2nd Year">2nd Year</option>
-                            <option value="3rd Year">3rd Year</option>
-                            <option value="4th Year">4th Year</option>
-                            <option value="5th Year">5th Year</option>
-                            <option value="Postgraduate">Postgraduate</option>
-                            <option value="Other">Other</option>
-                        </select>
-                        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                            Delegate
+                        </button>
+                        <button
+                            onClick={() => setRole('International Press')}
+                            className="flex-1 py-3 bg-white border-2 border-gray-200 text-gray-700 font-semibold rounded-lg shadow-sm hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+                        >
+                            International Press
+                        </button>
                     </div>
                 </div>
+            ) : (
+                <form onSubmit={handleOuthouseSubmit} className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label htmlFor="fullName" className={labelClass}>
+                                <User className={iconClass} />
+                                Full Name
+                            </label>
+                            <input type="text" id="fullName" name="fullName" required
+                                value={outhouseData.fullName} onChange={handleOuthouseChange}
+                                className={inputClass} placeholder="Your full name" />
+                        </div>
+                        <div>
+                            <label htmlFor="rollNumber" className={labelClass}>
+                                <Hash className={iconClass} />
+                                Roll Number / ID
+                            </label>
+                            <input type="text" id="rollNumber" name="rollNumber" required
+                                value={outhouseData.rollNumber} onChange={handleOuthouseChange}
+                                className={inputClass} placeholder="e.g. 24CS101" />
+                        </div>
+                    </div>
 
-                <div className="pt-1">
-                    <button
-                        type="submit" disabled={isSubmitting}
-                        className="w-full py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg shadow-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                        {isSubmitting ? 'Registering...' : 'Complete Registration'}
-                    </button>
-                </div>
-            </form>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label htmlFor="outhousePhone" className={labelClass}>
+                                <Phone className={iconClass} />
+                                Phone Number
+                            </label>
+                            <input type="tel" id="outhousePhone" name="PhoneNumber" required
+                                value={outhouseData.PhoneNumber} onChange={handleOuthouseChange}
+                                pattern="[0-9]{10}" minLength={10} maxLength={10}
+                                className={inputClass} placeholder="10-digit number" />
+                        </div>
+                        <div>
+                            <label htmlFor="outhouseEmail" className={labelClass}>
+                                <Mail className={iconClass} />
+                                Email Address
+                            </label>
+                            <input type="email" id="outhouseEmail" name="email" required
+                                value={outhouseData.email} onChange={handleOuthouseChange}
+                                className={inputClass} placeholder="you@college.edu" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label htmlFor="college" className={labelClass}>
+                            <Building2 className={iconClass} />
+                            College / Institute
+                        </label>
+                        <input type="text" id="college" name="college" required
+                            value={outhouseData.college} onChange={handleOuthouseChange}
+                            className={inputClass} placeholder="Your college name" />
+                    </div>
+
+                    <div>
+                        <label htmlFor="yearOfStudy" className={labelClass}>
+                            <GraduationCap className={iconClass} />
+                            Year of Study
+                        </label>
+                        <div className="relative">
+                            <select id="yearOfStudy" name="yearOfStudy" required
+                                value={outhouseData.yearOfStudy} onChange={handleOuthouseChange}
+                                className={`${inputClass} appearance-none cursor-pointer ${!outhouseData.yearOfStudy ? 'text-gray-400' : ''}`}
+                            >
+                                <option value="" disabled>Select your year</option>
+                                <option value="1st Year">1st Year</option>
+                                <option value="2nd Year">2nd Year</option>
+                                <option value="3rd Year">3rd Year</option>
+                                <option value="4th Year">4th Year</option>
+                                <option value="5th Year">5th Year</option>
+                                <option value="Postgraduate">Postgraduate</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                        </div>
+                    </div>
+
+                    {renderPreferencesSection()}
+
+                    <div className="pt-1">
+                        <button
+                            type="submit" disabled={isSubmitting}
+                            className="w-full py-3.5 bg-gradient-to-r from-primary-600 to-primary-700 text-white font-semibold rounded-lg shadow-lg hover:from-primary-700 hover:to-primary-800 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {isSubmitting ? 'Registering...' : 'Complete Registration'}
+                        </button>
+                    </div>
+                </form>
+            )}
         </motion.div>
     );
 
@@ -428,7 +597,7 @@ export function NitmunRegistrationModal({ isOpen, onClose }: Props) {
         return user ? 'Complete your registration' : '';
     };
 
-    const showBackButton = (view === 'inhouse-form' || view === 'outhouse-form' || view === 'login-form') && !user;
+    const showBackButton = view !== 'selection' && view !== 'success' && view !== 'already-registered';
 
     return (
         <>
@@ -463,7 +632,14 @@ export function NitmunRegistrationModal({ isOpen, onClose }: Props) {
                                 <div className="text-center mb-6">
                                     {showBackButton && (
                                         <button
-                                            onClick={() => { setError(null); setView(view === 'login-form' ? 'inhouse-form' : 'selection'); }}
+                                            onClick={() => {
+                                                setError(null);
+                                                if (role) {
+                                                    setRole(null);
+                                                } else {
+                                                    setView(view === 'login-form' ? 'inhouse-form' : 'selection');
+                                                }
+                                            }}
                                             className="absolute top-14 left-6 p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors duration-200"
                                         >
                                             <ArrowLeft size={18} />
