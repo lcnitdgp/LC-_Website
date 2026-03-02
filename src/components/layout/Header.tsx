@@ -144,6 +144,14 @@ export function Header() {
                                 ))}
                                 <li>
                                     <Link
+                                        to="/nitmunxiv"
+                                        className="font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
+                                    >
+                                        NITMUN
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
                                         to="/auditions"
                                         className="font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
                                     >
@@ -235,6 +243,15 @@ export function Header() {
                                         </a>
                                     </li>
                                 ))}
+                                <li>
+                                    <Link
+                                        to="/nitmunxiv"
+                                        className="block font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                    >
+                                        NITMUN
+                                    </Link>
+                                </li>
                                 <li>
                                     <Link
                                         to="/auditions"
