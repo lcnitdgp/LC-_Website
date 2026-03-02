@@ -4,7 +4,7 @@ import { doc, getDoc, setDoc, collection, query, where, getDocs } from 'firebase
 import { db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context';
-import { Mail, LogIn, X } from 'lucide-react';
+import { Mail, X } from 'lucide-react';
 
 const extractRegNumber = (email: string) => {
     const match = email.match(/\.([^.@]+)@/);
@@ -40,7 +40,6 @@ export function NitmunInhousePage() {
 
     const [formData, setFormData] = useState({
         phoneNumber: '',
-        hallNumber: '',
     });
 
     useEffect(() => {
@@ -162,36 +161,69 @@ export function NitmunInhousePage() {
     // 1. Success UI
     if (success || (hasRegistered && !isCheckingRegistration)) {
         return (
-            <div className="min-h-screen bg-[#09090b] flex items-center justify-center p-4">
+            <div className="min-h-screen bg-[#09090b] flex items-center justify-center p-4 relative overflow-hidden">
+                {/* Decorative background blurs */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[100px] pointer-events-none" />
+
                 <motion.div
-                    initial={{ scale: 0.9, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    className="bg-[#18181b] p-8 md:p-12 rounded-2xl border border-amber-500/30 shadow-[0_0_30px_rgba(251,191,36,0.15)] max-w-md w-full text-center"
+                    initial={{ scale: 0.8, opacity: 0, y: 30 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    transition={{ type: "spring", damping: 25, stiffness: 300 }}
+                    className="relative bg-gradient-to-br from-[#18181b] to-[#09090b] p-8 md:p-12 rounded-[2rem] border border-emerald-500/20 shadow-[0_0_50px_rgba(16,185,129,0.1)] max-w-md w-full text-center overflow-hidden"
                 >
-                    <div className="w-20 h-20 mx-auto bg-amber-500/20 rounded-full flex items-center justify-center mb-6">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                    </div>
-                    <h2 className="text-3xl font-bold text-white mb-2">
-                        {success ? 'Registration Successful!' : 'Already Registered!'}
-                    </h2>
-                    <p className="text-gray-400 mb-6">
-                        {success
-                            ? 'Thank you for registering for NITMUN XIV. See you there!'
-                            : 'You have already successfully registered for NITMUN XIV.'}
-                    </p>
-                    <p className="text-sm text-amber-400">
-                        {success && 'Redirecting back to NITMUN XIV in a few seconds...'}
-                    </p>
-                    {hasRegistered && !success && (
-                        <button
-                            onClick={() => navigate('/nitmunxiv')}
-                            className="mt-4 px-6 py-2 bg-amber-600/20 hover:bg-amber-600/30 text-amber-400 rounded-lg transition-colors"
-                        >
-                            Return to Homepage
-                        </button>
-                    )}
+                    {/* Inner glowing edge */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent opacity-50 pointer-events-none" />
+
+                    <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1, rotate: 360 }}
+                        transition={{ duration: 0.8, type: "spring", bounce: 0.5 }}
+                        className="w-24 h-24 mx-auto relative mb-8"
+                    >
+                        <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-xl animate-pulse" />
+                        <div className="relative w-full h-full bg-gradient-to-tr from-emerald-600 to-teal-400 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                    </motion.div>
+
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                    >
+                        <h2 className="text-3xl font-black bg-clip-text text-transparent bg-gradient-to-r from-emerald-300 via-teal-200 to-emerald-400 mb-3 tracking-tight">
+                            {success ? 'Registration Successful!' : 'Already Registered!'}
+                        </h2>
+                        <p className="text-gray-400 mb-8 leading-relaxed text-lg">
+                            {success
+                                ? 'Your credentials have been verified and you are officially registered for NITMUN XIV. See you there!'
+                                : 'You have already successfully registered for NITMUN XIV.'}
+                        </p>
+
+                        <div className="h-px w-full bg-gradient-to-r from-transparent via-gray-800 to-transparent mb-6" />
+
+                        {success ? (
+                            <div className="flex flex-col items-center gap-3">
+                                <div className="flex gap-2">
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '0ms' }} />
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '150ms' }} />
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-bounce" style={{ animationDelay: '300ms' }} />
+                                </div>
+                                <p className="text-sm text-emerald-400/80 font-medium tracking-wide">
+                                    Redirecting to Homepage...
+                                </p>
+                            </div>
+                        ) : (
+                            <button
+                                onClick={() => navigate('/nitmunxiv')}
+                                className="w-full px-6 py-3.5 bg-gradient-to-r from-emerald-600 to-teal-500 hover:from-emerald-500 hover:to-teal-400 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:-translate-y-0.5"
+                            >
+                                Return to Homepage
+                            </button>
+                        )}
+                    </motion.div>
                 </motion.div>
             </div>
         );
@@ -289,38 +321,22 @@ export function NitmunInhousePage() {
                                 </div>
                             </div>
 
-                            <div className="space-y-6">
-                                <div className="space-y-2">
-                                    <label htmlFor="phoneNumber" className="text-sm font-semibold text-gray-300 ml-1">Phone Number</label>
-                                    <input
-                                        type="tel"
-                                        id="phoneNumber"
-                                        name="phoneNumber"
-                                        required
-                                        value={formData.phoneNumber}
-                                        onChange={handleChange}
-                                        pattern="[0-9]{10}"
-                                        minLength={10}
-                                        maxLength={10}
-                                        title="Phone number must be exactly 10 digits"
-                                        className="w-full bg-[#09090b] border border-gray-800 rounded-xl px-4 py-3.5 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all duration-300"
-                                        placeholder="Enter your 10 digit WhatsApp number"
-                                    />
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label htmlFor="hallNumber" className="text-sm font-semibold text-gray-300 ml-1">Hall Number</label>
-                                    <input
-                                        type="text"
-                                        id="hallNumber"
-                                        name="hallNumber"
-                                        required
-                                        value={formData.hallNumber}
-                                        onChange={handleChange}
-                                        className="w-full bg-[#09090b] border border-gray-800 rounded-xl px-4 py-3.5 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all duration-300"
-                                        placeholder="e.g. Hall 14"
-                                    />
-                                </div>
+                            <div className="space-y-2">
+                                <label htmlFor="phoneNumber" className="text-sm font-semibold text-gray-300 ml-1">Phone Number</label>
+                                <input
+                                    type="tel"
+                                    id="phoneNumber"
+                                    name="phoneNumber"
+                                    required
+                                    value={formData.phoneNumber}
+                                    onChange={handleChange}
+                                    pattern="[0-9]{10}"
+                                    minLength={10}
+                                    maxLength={10}
+                                    title="Phone number must be exactly 10 digits"
+                                    className="w-full bg-[#09090b] border border-gray-800 rounded-xl px-4 py-3.5 text-white placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500/50 transition-all duration-300"
+                                    placeholder="Enter your 10 digit WhatsApp number"
+                                />
                             </div>
 
                             <div className="pt-6">
@@ -348,59 +364,61 @@ export function NitmunInhousePage() {
                         </form>
                     )}
                 </div>
-            </motion.div>
+            </motion.div >
 
             {/* 4. Intruder Alert Modal */}
             <AnimatePresence>
-                {showIntruderAlert && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
-                        onClick={() => setShowIntruderAlert(false)}
-                    >
+                {
+                    showIntruderAlert && (
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.8, y: 30 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.8, y: 30 }}
-                            transition={{ duration: 0.3, ease: 'easeOut' }}
-                            className="relative w-full max-w-md bg-gradient-to-br from-red-950 via-red-900 to-black rounded-2xl shadow-2xl overflow-hidden border border-red-500/50"
-                            onClick={e => e.stopPropagation()}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+                            onClick={() => setShowIntruderAlert(false)}
                         >
-                            <div className="h-2 bg-gradient-to-r from-red-600 via-orange-500 to-red-600" />
-
-                            <button
-                                onClick={() => setShowIntruderAlert(false)}
-                                className="absolute top-4 right-4 p-2 text-red-300 hover:text-white hover:bg-red-800/50 rounded-full transition-colors duration-200"
-                                aria-label="Close"
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.8, y: 30 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.8, y: 30 }}
+                                transition={{ duration: 0.3, ease: 'easeOut' }}
+                                className="relative w-full max-w-md bg-gradient-to-br from-red-950 via-red-900 to-black rounded-2xl shadow-2xl overflow-hidden border border-red-500/50"
+                                onClick={e => e.stopPropagation()}
                             >
-                                <X size={20} />
-                            </button>
+                                <div className="h-2 bg-gradient-to-r from-red-600 via-orange-500 to-red-600" />
 
-                            <div className="p-8 text-center">
-                                <div className="text-6xl mb-4">⚠️</div>
-                                <h2 className="text-3xl font-bold text-red-400 mb-4">
-                                    Access Denied!
-                                </h2>
-                                <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                                    Only NIT Durgapur students have the permission to access IN-House Registration.
-                                </p>
-                                <p className="text-gray-400 text-base">
-                                    You must sign-up with your College <strong className="text-white"> NITDGP Work Mail</strong>!
-                                </p>
                                 <button
                                     onClick={() => setShowIntruderAlert(false)}
-                                    className="mt-8 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200"
+                                    className="absolute top-4 right-4 p-2 text-red-300 hover:text-white hover:bg-red-800/50 rounded-full transition-colors duration-200"
+                                    aria-label="Close"
                                 >
-                                    Got it
+                                    <X size={20} />
                                 </button>
-                            </div>
+
+                                <div className="p-8 text-center">
+                                    <div className="text-6xl mb-4">⚠️</div>
+                                    <h2 className="text-3xl font-bold text-red-400 mb-4">
+                                        Access Denied!
+                                    </h2>
+                                    <p className="text-gray-300 text-lg leading-relaxed mb-6">
+                                        Only NIT Durgapur students have the permission to access IN-House Registration.
+                                    </p>
+                                    <p className="text-gray-400 text-base">
+                                        You must sign-up with your College <strong className="text-white"> NITDGP Work Mail</strong>!
+                                    </p>
+                                    <button
+                                        onClick={() => setShowIntruderAlert(false)}
+                                        className="mt-8 px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-200"
+                                    >
+                                        Got it
+                                    </button>
+                                </div>
+                            </motion.div>
                         </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </div>
+                    )
+                }
+            </AnimatePresence >
+        </div >
     );
 }

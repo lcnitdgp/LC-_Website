@@ -1,6 +1,17 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '../../context';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
+
+const extractRegNumber = (email: string) => {
+    const match = email.match(/\.([^.@]+)@/);
+    if (match && match[1]) {
+        return match[1].toLowerCase();
+    }
+    return email.split('@')[0].toLowerCase();
+};
 
 interface Props {
     isOpen: boolean;
@@ -9,6 +20,31 @@ interface Props {
 
 export function NitmunRegistrationModal({ isOpen, onClose }: Props) {
     const navigate = useNavigate();
+    const { user } = useAuth();
+    const [isRegisteredInhouse, setIsRegisteredInhouse] = useState(false);
+
+    useEffect(() => {
+        const checkRegistration = async () => {
+            if (!user?.email || !isOpen) return;
+
+            try {
+                const userEmail = user.email.trim().toLowerCase();
+                if (!userEmail.endsWith('@nitdgp.ac.in')) return;
+
+                const regNumber = extractRegNumber(userEmail);
+                const docRef = doc(db, 'inhouse_registrations', regNumber);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    setIsRegisteredInhouse(true);
+                }
+            } catch (err) {
+                console.error("Error checking registration status", err);
+            }
+        };
+
+        checkRegistration();
+    }, [user, isOpen]);
 
     // Prevent scrolling when modal is open
     useEffect(() => {
@@ -79,7 +115,7 @@ export function NitmunRegistrationModal({ isOpen, onClose }: Props) {
                                     </p>
                                 </motion.div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                                <div className={`grid grid-cols-1 ${!isRegisteredInhouse ? 'md:grid-cols-2' : 'max-w-md mx-auto'} gap-6 w-full`}>
                                     {/* IN-House Option */}
                                     <motion.button
                                         onClick={() => {
@@ -105,28 +141,30 @@ export function NitmunRegistrationModal({ isOpen, onClose }: Props) {
                                     </motion.button>
 
                                     {/* OUT-House Option */}
-                                    <motion.button
-                                        onClick={() => {
-                                            onClose();
-                                            navigate('/nitmunxiv/outhouse');
-                                        }}
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        className="w-full flex flex-col items-center justify-center p-8 bg-[#18181b] hover:bg-[#27272a] border border-[#27272a] hover:border-blue-500/50 rounded-2xl transition-all duration-300 group relative overflow-hidden"
-                                    >
-                                        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                    {!isRegisteredInhouse && (
+                                        <motion.button
+                                            onClick={() => {
+                                                onClose();
+                                                navigate('/nitmunxiv/outhouse');
+                                            }}
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            className="w-full flex flex-col items-center justify-center p-8 bg-[#18181b] hover:bg-[#27272a] border border-[#27272a] hover:border-blue-500/50 rounded-2xl transition-all duration-300 group relative overflow-hidden"
+                                        >
+                                            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-                                        <div className="mb-6 group-hover:scale-110 transition-transform duration-500">
-                                            <div className="w-16 h-16 rounded-full bg-black/50 border border-gray-800 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.1)] group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] group-hover:border-blue-500/50 transition-all duration-300">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400 group-hover:text-blue-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                                </svg>
+                                            <div className="mb-6 group-hover:scale-110 transition-transform duration-500">
+                                                <div className="w-16 h-16 rounded-full bg-black/50 border border-gray-800 flex items-center justify-center shadow-[0_0_15px_rgba(59,130,246,0.1)] group-hover:shadow-[0_0_20px_rgba(59,130,246,0.3)] group-hover:border-blue-500/50 transition-all duration-300">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-400 group-hover:text-blue-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        <span className="text-3xl font-bold text-white group-hover:text-blue-400 transition-colors tracking-wide">OUT-House</span>
-                                        <span className="text-sm text-gray-400 mt-3 font-medium tracking-widest uppercase">Other Institutes</span>
-                                    </motion.button>
+                                            <span className="text-3xl font-bold text-white group-hover:text-blue-400 transition-colors tracking-wide">OUT-House</span>
+                                            <span className="text-sm text-gray-400 mt-3 font-medium tracking-widest uppercase">Other Institutes</span>
+                                        </motion.button>
+                                    )}
                                 </div>
                             </div>
                         </div>
