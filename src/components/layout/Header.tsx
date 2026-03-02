@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Menu, X, LogIn, User, Users } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { siteConfig } from '../../data/siteConfig';
@@ -143,28 +143,28 @@ export function Header() {
                                     </li>
                                 ))}
                                 <li>
-                                    <a
-                                        href="#/auditions"
+                                    <Link
+                                        to="/auditions"
                                         className="font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
                                     >
                                         Auditions
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
-                                    <a
-                                        href="#/dejavu"
+                                    <Link
+                                        to="/dejavu"
                                         className="font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
                                     >
                                         Déjà Vu
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
-                                    <a
-                                        href="#/alumni"
+                                    <Link
+                                        to="/alumni"
                                         className="font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
                                     >
                                         Alumni
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
                                     <a
@@ -236,31 +236,31 @@ export function Header() {
                                     </li>
                                 ))}
                                 <li>
-                                    <a
-                                        href="#/auditions"
+                                    <Link
+                                        to="/auditions"
                                         className="block font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
                                         Auditions
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
-                                    <a
-                                        href="#/dejavu"
+                                    <Link
+                                        to="/dejavu"
                                         className="block font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
                                         Déjà Vu
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
-                                    <a
-                                        href="#/alumni"
+                                    <Link
+                                        to="/alumni"
                                         className="block font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
                                         Alumni
-                                    </a>
+                                    </Link>
                                 </li>
                                 <li>
                                     <a

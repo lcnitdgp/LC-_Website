@@ -3,3 +3,6 @@ export { AuditionsPage } from './AuditionsPage';
 export { MembersDashboardPage } from './MembersDashboardPage';
 export { DejaVuPage } from './DejaVuPage';
 export { AlumniPage } from './AlumniPage';
+export { NitmunxivPage } from "./NitmunxivPage";
+export { NitmunOuthousePage } from "./NitmunOuthousePage";
+export { NitmunInhousePage } from "./NitmunInhousePage";
