@@ -70,7 +70,7 @@ export function PDFViewerModal({ isOpen, onClose, pdfUrl, title }: PDFViewerModa
                             {isMobile ? (
                                 <div className="flex flex-col h-full w-full">
                                     <iframe
-                                        src={`https://docs.google.com/gview?url=${encodeURIComponent(fullPdfUrl)}&embedded=true`}
+                                        src={pdfUrl}
                                         className="flex-grow w-full border-none"
                                         title="PDF Viewer"
                                     />

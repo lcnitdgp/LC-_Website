@@ -4,9 +4,11 @@ import { db } from '../firebase';
 import { EditableText } from '../components/common';
 import nitmunxivvideo from '../assets/nitmunxiv/nitmunxiv-video.mp4';
 import nitmunxivDesktopVideo from '../assets/nitmunxiv/nitmunxiv-desktop-video.mp4';
+import nitmunxivLogo from '../assets/nitmunxiv/nitmunxiv-logo.png';
 import { NitmunRegistrationModal } from '../components/nitmun/InorOut';
 import { useAuth } from '../context';
 import { NitmunAdminPanel } from '../components/nitmun/NitmunAdminPanel';
+import { StudyGuidesModal } from '../components/nitmun/StudyGuidesModal';
 import { Shield, ChevronDown, BookOpen, Image as ImageIcon, Link as LinkIcon } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
@@ -15,6 +17,7 @@ const TARGET_DATE = new Date('2026-03-07T00:00:00+05:30').getTime();
 export function NitmunxivPage() {
   const [showModal, setShowModal] = useState(false);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
+  const [showStudyGuides, setShowStudyGuides] = useState(false);
   const { user } = useAuth();
 
   const [timeLeft, setTimeLeft] = useState({
@@ -27,6 +30,7 @@ export function NitmunxivPage() {
   const isAdmin = user && user.role !== 'student';
   const { scrollYProgress } = useScroll();
   const videoOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+  const bgLogoOpacity = useTransform(scrollYProgress, [0.1, 0.3], [0, 1]);
 
   // Dynamic Content States
   const defaultTlcText = `Literary Circle is the oldest club of NIT Durgapur, which gives the college an extra dimension of creative expression in the midst of technical unilateralism and gives the students of the college an opportunity to transcend the ordinary and mundane.
@@ -184,15 +188,24 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
         className="fixed top-0 inset-x-0 z-50 bg-black/80 backdrop-blur-xl border-b border-zinc-800 py-3 md:py-4 px-4 md:px-6"
       >
         <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <span className="text-lg md:text-xl font-bold font-serif tracking-widest text-white">NITMUN<span className="text-blue-500">XIV</span></span>
+          <div className="flex items-center gap-2 md:gap-3 shrink-0">
+            <img src={nitmunxivLogo} alt="NITMUN Logo" className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 object-contain drop-shadow-md" />
+            <span className="text-base sm:text-lg md:text-xl font-bold font-serif tracking-widest text-white">NITMUN<span className="text-blue-500">XIV</span></span>
           </div>
           <div className="flex items-center gap-2 md:gap-4">
-            <button className="flex items-center gap-2 px-2 md:px-4 py-2 text-sm text-zinc-400 hover:text-white transition-colors cursor-not-allowed" title="Study Guides (Coming Soon)">
+            <button
+              onClick={() => setShowStudyGuides(true)}
+              className="flex items-center gap-2 px-2 md:px-4 py-2 text-sm text-zinc-400 hover:text-white transition-colors"
+              title="Study Guides"
+            >
               <BookOpen className="w-5 h-5 md:w-4 md:h-4" />
               <span className="hidden md:inline">Study Guides</span>
             </button>
-            <button className="flex items-center gap-2 px-2 md:px-4 py-2 text-sm text-zinc-400 hover:text-white transition-colors cursor-not-allowed" title="Gallery (Coming Soon)">
+            <button
+              onClick={() => alert("Photo Gallery will be available soon!")}
+              className="flex items-center gap-2 px-2 md:px-4 py-2 text-sm text-zinc-400 hover:text-white transition-colors"
+              title="Gallery"
+            >
               <ImageIcon className="w-5 h-5 md:w-4 md:h-4" />
               <span className="hidden md:inline">Gallery</span>
             </button>
@@ -218,6 +231,11 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
           </div>
         </div>
       </motion.div>
+
+      {/* Background Logo Overlay */}
+      <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center overflow-hidden opacity-5 md:opacity-[0.07]">
+        <motion.img style={{ opacity: bgLogoOpacity }} src={nitmunxivLogo} alt="" className="w-[150%] md:w-full max-w-4xl object-contain" />
+      </div>
 
       {/* Content Sections */}
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-24 space-y-32">
@@ -323,39 +341,102 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
           className="flex justify-center"
         >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
+            {/* Study Guides Button */}
             <button
-              className="flex flex-col items-center gap-3 p-8 rounded-2xl bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 hover:border-zinc-700 transition-all group opacity-70 hover:opacity-100 cursor-not-allowed"
-              title="Coming Soon"
+              onClick={() => setShowStudyGuides(true)}
+              className="flex flex-col items-start gap-4 p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-blue-500/10 to-blue-900/20 border border-blue-500/20 hover:border-blue-400/50 hover:scale-[1.02] transition-all group overflow-hidden relative text-left"
+              title="Study Guides"
             >
-              <BookOpen className="w-8 h-8 text-zinc-500 group-hover:text-blue-400 transition-colors" />
-              <span className="font-semibold text-white tracking-wide">Study Guides</span>
-              <span className="text-xs text-zinc-500 uppercase tracking-wider font-bold">Coming Soon</span>
+              <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+                <BookOpen className="w-32 h-32 transform rotate-12" />
+              </div>
+              <div className="relative z-10 flex items-center justify-center w-14 h-14 rounded-xl bg-black/40 backdrop-blur-md border border-white/5 group-hover:bg-black/60 transition-colors">
+                <BookOpen className="w-7 h-7 text-blue-400" />
+              </div>
+              <div className="relative z-10 space-y-2 mt-2">
+                <h4 className="text-xl sm:text-2xl font-bold text-white group-hover:text-amber-50 transition-colors">
+                  Study Guides
+                </h4>
+                <p className="text-sm sm:text-base font-medium text-zinc-400 group-hover:text-zinc-300">
+                  Access comprehensive preparation materials for all committees
+                </p>
+              </div>
+              <div className="relative z-10 mt-auto pt-4 flex items-center text-sm font-bold uppercase tracking-wider text-blue-400/70 group-hover:text-blue-400 transition-colors">
+                Open Guides <span className="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
+              </div>
             </button>
 
+            {/* Photo Gallery Button */}
             <button
-              className="flex flex-col items-center gap-3 p-8 rounded-2xl bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 hover:border-zinc-700 transition-all group opacity-70 hover:opacity-100 cursor-not-allowed"
-              title="Coming Soon"
+              onClick={() => alert("Photo Gallery will be available soon!")}
+              className="flex flex-col items-start gap-4 p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-amber-500/10 to-amber-900/20 border border-amber-500/20 hover:border-amber-400/50 hover:scale-[1.02] transition-all group overflow-hidden relative text-left"
+              title="Photo Gallery"
             >
-              <ImageIcon className="w-8 h-8 text-zinc-500 group-hover:text-amber-400 transition-colors" />
-              <span className="font-semibold text-white tracking-wide">Photo Gallery</span>
-              <span className="text-xs text-zinc-500 uppercase tracking-wider font-bold">Coming Soon</span>
+              <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+                <ImageIcon className="w-32 h-32 transform rotate-12" />
+              </div>
+              <div className="relative z-10 flex items-center justify-center w-14 h-14 rounded-xl bg-black/40 backdrop-blur-md border border-white/5 group-hover:bg-black/60 transition-colors">
+                <ImageIcon className="w-7 h-7 text-amber-400" />
+              </div>
+              <div className="relative z-10 space-y-2 mt-2">
+                <h4 className="text-xl sm:text-2xl font-bold text-white group-hover:text-amber-50 transition-colors">
+                  Photo Gallery
+                </h4>
+                <p className="text-sm sm:text-base font-medium text-zinc-400 group-hover:text-zinc-300">
+                  Relive the most memorable moments and highlights of NITMUN
+                </p>
+              </div>
+              <div className="relative z-10 mt-auto pt-4 flex items-center text-sm font-bold uppercase tracking-wider text-amber-400/70 group-hover:text-amber-400 transition-colors">
+                View Gallery <span className="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
+              </div>
             </button>
 
+            {/* Register/Admin Button */}
             {isAdmin ? (
               <button
                 onClick={() => setShowAdminPanel(true)}
-                className="flex flex-col items-center justify-center gap-3 p-8 rounded-2xl bg-primary-600 border border-primary-500 hover:bg-primary-500 hover:border-primary-400 transition-all group shadow-[0_0_40px_-10px_rgba(239,68,68,0.4)]"
+                className="flex flex-col items-start gap-4 p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-primary-600/20 to-primary-900/30 border border-primary-500/30 hover:border-primary-400/60 hover:scale-[1.02] transition-all group overflow-hidden relative text-left shadow-[0_0_40px_-15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_40px_-10px_rgba(239,68,68,0.5)]"
               >
-                <Shield className="w-8 h-8 text-white" />
-                <span className="font-bold text-white tracking-wide text-lg text-center">View Registrations</span>
+                <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+                  <Shield className="w-32 h-32 transform rotate-12" />
+                </div>
+                <div className="relative z-10 flex items-center justify-center w-14 h-14 rounded-xl bg-black/40 backdrop-blur-md border border-white/5 group-hover:bg-black/60 transition-colors">
+                  <Shield className="w-7 h-7 text-primary-400" />
+                </div>
+                <div className="relative z-10 space-y-2 mt-2">
+                  <h4 className="text-xl sm:text-2xl font-bold text-white group-hover:text-amber-50 transition-colors">
+                    View Registrations
+                  </h4>
+                  <p className="text-sm sm:text-base font-medium text-zinc-400 group-hover:text-zinc-300">
+                    Manage and review all delegate registrations for the conference
+                  </p>
+                </div>
+                <div className="relative z-10 mt-auto pt-4 flex items-center text-sm font-bold uppercase tracking-wider text-primary-400/70 group-hover:text-primary-400 transition-colors">
+                  Open Dashboard <span className="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
+                </div>
               </button>
             ) : (
               <button
                 onClick={() => setShowModal(true)}
-                className="flex flex-col items-center justify-center gap-3 p-8 rounded-2xl bg-white border border-white hover:bg-zinc-200 hover:border-zinc-200 transition-all group shadow-[0_0_40px_-10px_rgba(255,255,255,0.3)]"
+                className="flex flex-col items-start gap-4 p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-emerald-900/20 border border-emerald-500/20 hover:border-emerald-400/50 hover:scale-[1.02] transition-all group overflow-hidden relative text-left shadow-[0_0_40px_-15px_rgba(16,185,129,0.2)] hover:shadow-[0_0_40px_-10px_rgba(16,185,129,0.3)]"
               >
-                <LinkIcon className="w-8 h-8 text-black" />
-                <span className="font-bold text-black tracking-wide text-lg text-center">Register Now</span>
+                <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+                  <LinkIcon className="w-32 h-32 transform rotate-12" />
+                </div>
+                <div className="relative z-10 flex items-center justify-center w-14 h-14 rounded-xl bg-black/40 backdrop-blur-md border border-white/5 group-hover:bg-black/60 transition-colors">
+                  <LinkIcon className="w-7 h-7 text-emerald-400" />
+                </div>
+                <div className="relative z-10 space-y-2 mt-2">
+                  <h4 className="text-xl sm:text-2xl font-bold text-white group-hover:text-amber-50 transition-colors">
+                    Register Now
+                  </h4>
+                  <p className="text-sm sm:text-base font-medium text-zinc-400 group-hover:text-zinc-300">
+                    Secure your spot and participate in the upcoming conference
+                  </p>
+                </div>
+                <div className="relative z-10 mt-auto pt-4 flex items-center text-sm font-bold uppercase tracking-wider text-emerald-400/70 group-hover:text-emerald-400 transition-colors">
+                  Register Here <span className="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
+                </div>
               </button>
             )}
           </div>
@@ -374,6 +455,11 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
       {isAdmin && showAdminPanel && (
         <NitmunAdminPanel onClose={() => setShowAdminPanel(false)} />
       )}
+
+      <StudyGuidesModal
+        isOpen={showStudyGuides}
+        onClose={() => setShowStudyGuides(false)}
+      />
     </div>
   );
 }
