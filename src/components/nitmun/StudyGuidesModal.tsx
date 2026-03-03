@@ -112,10 +112,12 @@ export function StudyGuidesModal({ isOpen, onClose }: StudyGuidesModalProps) {
                             <div className="flex-1 overflow-y-auto p-6 sm:p-8">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                                     {COMMITTEES.map((committee) => (
-                                        <button
+                                        <motion.button
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.95, filter: "brightness(0.9)" }}
                                             key={committee.id}
                                             onClick={() => handleOpenPdf(committee.pdfFile, committee.shortName)}
-                                            className={`flex flex-col items-start gap-4 p-6 rounded-2xl bg-gradient-to-br ${committee.color} border ${committee.borderColor} hover:scale-[1.02] transition-all group overflow-hidden relative text-left`}
+                                            className={`flex flex-col items-start gap-4 p-6 rounded-2xl bg-gradient-to-br ${committee.color} border ${committee.borderColor} transition-colors group overflow-hidden relative text-left`}
                                         >
                                             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                                                 <FileText className="w-24 h-24 transform rotate-12" />
@@ -137,7 +139,7 @@ export function StudyGuidesModal({ isOpen, onClose }: StudyGuidesModalProps) {
                                             <div className="relative z-10 mt-auto pt-4 flex items-center text-xs font-bold uppercase tracking-wider text-white/50 group-hover:text-white/80 transition-colors">
                                                 Read Study Guide <span className="ml-2">→</span>
                                             </div>
-                                        </button>
+                                        </motion.button>
                                     ))}
                                 </div>
                             </div>
