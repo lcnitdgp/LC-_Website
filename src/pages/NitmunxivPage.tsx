@@ -49,6 +49,7 @@ export function NitmunxivPage() {
   const [showStudyGuides, setShowStudyGuides] = useState(false);
   const [showGallery, setShowGallery] = useState(false);
   const [showAIAssistant, setShowAIAssistant] = useState(false);
+  const [showBotIntruderAlert, setShowBotIntruderAlert] = useState(false);
   const [preselectedCommittee, setPreselectedCommittee] = useState<string>('');
   const [isVideoFinished, setIsVideoFinished] = useState(false);
   const actionButtonsRef = useRef<HTMLDivElement>(null);
@@ -196,15 +197,19 @@ export function NitmunxivPage() {
           <div className="flex items-center gap-3 md:gap-6 font-antonio tracking-widest uppercase">
             <button
               onClick={() => setShowStudyGuides(true)}
-              className="text-sm md:text-base text-zinc-300 hover:text-white hover:underline decoration-2 underline-offset-4 transition-all"
+              title="Study Guides"
+              className="flex items-center justify-center text-sm md:text-base text-zinc-300 hover:text-white hover:underline decoration-2 underline-offset-4 transition-all"
             >
-              Study Guides
+              <BookOpen className="w-5 h-5 md:hidden" />
+              <span className="hidden md:inline">Study Guides</span>
             </button>
             <button
               onClick={() => setShowGallery(true)}
-              className="hidden md:block text-sm md:text-base text-zinc-300 hover:text-white hover:underline decoration-2 underline-offset-4 transition-all"
+              title="Gallery"
+              className="flex items-center justify-center text-sm md:text-base text-zinc-300 hover:text-white hover:underline decoration-2 underline-offset-4 transition-all"
             >
-              Gallery
+              <ImageIcon className="w-5 h-5 md:hidden" />
+              <span className="hidden md:inline">Gallery</span>
             </button>
             {isAdmin ? (
               <button
@@ -431,29 +436,42 @@ export function NitmunxivPage() {
             {/* Brutalist Pattern Overlay */}
             <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#000 2px, transparent 2px)', backgroundSize: '16px 16px' }}></div>
 
-            <h3 className="text-2xl md:text-4xl font-staatliches text-black uppercase mb-8 relative z-10 drop-shadow-[1px_1px_0_#fff]">
-              Commencing In
-            </h3>
+            {timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0 ? (
+              <div className="relative z-10 py-8">
+                <h3 className="text-6xl md:text-8xl font-staatliches text-black uppercase tracking-widest mb-4 drop-shadow-[4px_4px_0_#fff] animate-pulse">
+                  NITMUN IS ON!!!!
+                </h3>
+                <p className="text-xl md:text-3xl font-antonio font-bold text-white bg-black inline-block px-6 py-2 shadow-[4px_4px_0_#fff] -rotate-2">
+                  A Forum for the Formidable.
+                </p>
+              </div>
+            ) : (
+              <>
+                <h3 className="text-2xl md:text-4xl font-staatliches text-black uppercase mb-8 relative z-10 drop-shadow-[1px_1px_0_#fff]">
+                  Commencing In
+                </h3>
 
-            <div className="flex flex-wrap justify-center gap-4 md:gap-8 relative z-10">
-              {[
-                { label: 'Days', value: timeLeft.days },
-                { label: 'Hours', value: timeLeft.hours },
-                { label: 'Minutes', value: timeLeft.minutes },
-                { label: 'Seconds', value: timeLeft.seconds }
-              ].map((unit) => (
-                <div key={unit.label} className="flex flex-col items-center">
-                  <div className="w-20 h-24 md:w-32 md:h-36 bg-white border-[4px] border-black shadow-[4px_6px_0_#000] flex items-center justify-center rounded-xl relative overflow-hidden group">
-                    <span className="text-5xl md:text-7xl font-antonio font-bold text-black tracking-tighter">
-                      {unit.value.toString().padStart(2, '0')}
-                    </span>
-                  </div>
-                  <span className="text-base md:text-xl text-black font-antonio font-bold uppercase tracking-widest mt-4">
-                    {unit.label}
-                  </span>
+                <div className="flex flex-wrap justify-center gap-4 md:gap-8 relative z-10">
+                  {[
+                    { label: 'Days', value: timeLeft.days },
+                    { label: 'Hours', value: timeLeft.hours },
+                    { label: 'Minutes', value: timeLeft.minutes },
+                    { label: 'Seconds', value: timeLeft.seconds }
+                  ].map((unit) => (
+                    <div key={unit.label} className="flex flex-col items-center">
+                      <div className="w-20 h-24 md:w-32 md:h-36 bg-white border-[4px] border-black shadow-[4px_6px_0_#000] flex items-center justify-center rounded-xl relative overflow-hidden group">
+                        <span className="text-5xl md:text-7xl font-antonio font-bold text-black tracking-tighter">
+                          {unit.value.toString().padStart(2, '0')}
+                        </span>
+                      </div>
+                      <span className="text-base md:text-xl text-black font-antonio font-bold uppercase tracking-widest mt-4">
+                        {unit.label}
+                      </span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </>
+            )}
           </motion.section>
 
           {/* Grouped Bottom Sections */}
@@ -556,36 +574,40 @@ export function NitmunxivPage() {
               </a>
             </motion.section>
 
-            {/* AI Assistant Banner (Only for inhouse) */}
-            {isInhouseUser && (
-              <motion.section
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="pt-4"
+            {/* AI Assistant Banner (Visible to all) */}
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="pt-4"
+            >
+              <div
+                onClick={() => {
+                  if (isInhouseUser) {
+                    setShowAIAssistant(true);
+                  } else {
+                    setShowBotIntruderAlert(true);
+                  }
+                }}
+                className="group flex flex-col md:flex-row items-center justify-between gap-6 p-6 md:p-8 rounded-[20px] border-[5px] border-black bg-white shadow-[8px_10px_0_#000] hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_5px_0_#000] active:translate-x-3 active:translate-y-3 active:shadow-none transition-all cursor-pointer relative"
               >
-                <div
-                  onClick={() => setShowAIAssistant(true)}
-                  className="group flex flex-col md:flex-row items-center justify-between gap-6 p-6 md:p-8 rounded-[20px] border-[5px] border-black bg-white shadow-[8px_10px_0_#000] hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_5px_0_#000] active:translate-x-3 active:translate-y-3 active:shadow-none transition-all cursor-pointer relative"
-                >
-                  <div className="flex flex-col md:flex-row items-center gap-6 flex-1 text-center md:text-left">
-                    <div className="space-y-1">
-                      <h4 className="text-3xl md:text-4xl font-staatliches text-black uppercase tracking-wide">
-                        Confused about which committee to choose?
-                      </h4>
-                      <p className="text-sm md:text-lg text-black/70 font-mono font-bold">
-                        NITMUN AI is here to guide you to the best committee
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="hidden md:flex items-center gap-2 text-xl font-staatliches uppercase tracking-wider text-[#974B60] group-hover:text-[#c58715] transition-colors shrink-0">
-                    Ask NITMUN AI <span className="transform group-hover:translate-x-2 transition-transform text-2xl font-sans inline-block ml-2">→</span>
+                <div className="flex flex-col md:flex-row items-center gap-6 flex-1 text-center md:text-left">
+                  <div className="space-y-1">
+                    <h4 className="text-3xl md:text-4xl font-staatliches text-black uppercase tracking-wide">
+                      Confused about which committee to choose?
+                    </h4>
+                    <p className="text-sm md:text-lg text-black/70 font-mono font-bold">
+                      NITMUN AI is here to guide you to the best committee
+                    </p>
                   </div>
                 </div>
-              </motion.section>
-            )}
+
+                <div className="hidden md:flex items-center gap-2 text-xl font-staatliches uppercase tracking-wider text-[#974B60] group-hover:text-[#c58715] transition-colors shrink-0">
+                  Ask NITMUN AI <span className="transform group-hover:translate-x-2 transition-transform text-2xl font-sans inline-block ml-2">→</span>
+                </div>
+              </div>
+            </motion.section>
 
           </div>
 
@@ -643,6 +665,57 @@ export function NitmunxivPage() {
                   setShowModal(true);
                 }}
               />
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Bot Intruder Alert Modal */}
+      <AnimatePresence>
+        {showBotIntruderAlert && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, y: 30 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.8, y: 30 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="relative w-full max-w-md bg-black border-[6px] border-[#e08585] shadow-[10px_10px_0_#974B60] overflow-hidden p-2"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="border-[3px] border-dashed border-[#e08585] p-8 text-center relative h-full">
+                <button onClick={() => setShowBotIntruderAlert(false)}
+                  className="absolute top-4 right-4 p-2 bg-black text-[#e08585] hover:text-white hover:bg-[#e08585] border-2 border-[#e08585] transition-colors duration-200"
+                  aria-label="Close">
+                  <span className="stroke-[3] font-bold">X</span>
+                </button>
+
+                <div className="text-7xl mb-6 filter drop-shadow-[4px_4px_0_#e08585]">⚠️</div>
+                <h2 className="text-4xl md:text-5xl font-staatliches uppercase tracking-wide text-[#e08585] mb-4">Unauthorised Access</h2>
+
+                <div className="bg-[#e08585]/10 p-4 border-l-[4px] border-[#e08585] mb-6 inline-block text-left">
+                  <p className="text-zinc-200 font-mono font-bold leading-relaxed mb-2 text-sm">
+                    {">"} ERROR: Unauthorized Access Detected.
+                  </p>
+                  <p className="text-white font-mono text-xs">
+                    This feature is exclusively for NIT Durgapur students.
+                  </p>
+                </div>
+
+                <p className="text-gray-400 font-antonio text-lg tracking-wide uppercase">
+                  If you are one, please
+                  <strong className="text-white border-b-2 border-[#e08585] ml-2">sign in</strong> with your NIT Durgapur email ID.
+                </p>
+
+                <button
+                  onClick={() => {
+                    setShowBotIntruderAlert(false);
+                    setShowModal(true);
+                  }}
+                  className="mt-8 px-8 py-3 bg-[#e08585] text-black font-staatliches text-2xl uppercase tracking-widest border-[4px] border-black shadow-[4px_4px_0_#bb943a] hover:bg-[#ec9696] hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:translate-y-2 active:translate-x-2 transition-all w-full"
+                >
+                  Proceed to Login / Sign Up
+                </button>
+              </div>
             </motion.div>
           </div>
         )}
