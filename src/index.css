@@ -90,4 +90,36 @@
   .font-cormorant {
     font-family: var(--font-family-cormorant);
   }
+
+  .font-staatliches {
+    font-family: 'Staatliches', sans-serif;
+  }
+
+  .font-antonio {
+    font-family: 'Antonio', sans-serif;
+  }
 }
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 140s infinite linear;
+}
+
+.animate-marquee-slow {
+  animation: marquee 160s infinite linear;
+}
+
+.animate-marquee-slower {
+  animation: marquee 180s infinite linear;
+}
+
+@custom-variant hover (&:hover);

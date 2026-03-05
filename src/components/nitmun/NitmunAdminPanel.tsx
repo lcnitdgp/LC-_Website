@@ -58,6 +58,7 @@ export function NitmunAdminPanel({ onClose }: { onClose: () => void }) {
                         ...data,
                         phoneNumber: data.PhoneNumber || data.phoneNumber,
                         collegeName: data.college || data.collegeName,
+                        year: data.yearOfStudy || data.year,
                         timestamp: data.timestamp || data.submittedAt?.toDate?.()?.toISOString(), // Convert Firestore Timestamp to ISO string
                         type: 'inhouse' as const
                     };
@@ -71,6 +72,7 @@ export function NitmunAdminPanel({ onClose }: { onClose: () => void }) {
                         ...data,
                         phoneNumber: data.PhoneNumber || data.phoneNumber,
                         collegeName: data.college || data.collegeName,
+                        yearOfStudy: data.yearOfStudy,
                         timestamp: data.timestamp || data.submittedAt?.toDate?.()?.toISOString(), // Convert Firestore Timestamp to ISO string
                         type: 'outhouse' as const
                     };
@@ -100,36 +102,38 @@ export function NitmunAdminPanel({ onClose }: { onClose: () => void }) {
     });
 
     return (
-        <div className="fixed inset-0 bg-black/95 z-50 flex flex-col font-inter overflow-hidden">
+        <div className="fixed inset-0 bg-[#232020] z-50 flex flex-col font-inter overflow-hidden border-[8px] border-black shadow-[inset_0_0_0_4px_#bb943a]">
             {/* Header */}
-            <div className="bg-zinc-900 border-b border-zinc-800 p-4 shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="bg-[#bb943a] border-b-[6px] border-black p-4 shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-[0_4px_0_#000] z-10">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-6">
                     <div className="flex items-center justify-between sm:justify-start w-full sm:w-auto">
-                        <h2 className="text-xl font-bold bg-gradient-to-r from-primary-400 to-indigo-400 bg-clip-text text-transparent flex items-center gap-2">
-                            <Users className="text-primary-400" />
+                        <h2 className="text-3xl font-staatliches uppercase text-white flex items-center gap-3 drop-shadow-[2px_2px_0_#000] tracking-wider">
+                            <div className="bg-[#232020] p-2 border-[3px] border-black shadow-[3px_3px_0_#fff]">
+                                <Users className="text-white w-6 h-6" />
+                            </div>
                             NITMUN Records
                         </h2>
 
-                        <button onClick={onClose} className="text-zinc-400 hover:text-white p-2 rounded-full hover:bg-zinc-800 transition-colors sm:hidden">
-                            <X size={24} />
+                        <button onClick={onClose} className="w-10 h-10 bg-black text-white flex items-center justify-center border-[3px] border-black shadow-[3px_3px_0_#fff] hover:bg-white hover:text-black hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:translate-y-2 active:translate-x-2 transition-all sm:hidden">
+                            <X size={24} className="stroke-[3]" />
                         </button>
                     </div>
 
-                    <div className="bg-zinc-800 rounded-lg p-1 flex w-full sm:w-auto">
+                    <div className="flex gap-2 w-full sm:w-auto">
                         <button
                             onClick={() => setActiveTab('inhouse')}
-                            className={`flex-1 sm:flex-none px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${activeTab === 'inhouse'
-                                ? 'bg-zinc-700 text-white shadow-sm'
-                                : 'text-zinc-400 hover:text-white hover:bg-zinc-700/50'
+                            className={`flex-1 sm:flex-none px-6 py-2 border-[4px] border-black font-antonio font-bold uppercase tracking-widest transition-all ${activeTab === 'inhouse'
+                                ? 'bg-[#974B60] text-white shadow-[4px_4px_0_#000] translate-x-1 translate-y-1'
+                                : 'bg-[#e0b0ac] text-black shadow-[4px_4px_0_#000] hover:bg-[#c89894] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[6px_6px_0_#000]'
                                 }`}
                         >
                             In-house
                         </button>
                         <button
                             onClick={() => setActiveTab('outhouse')}
-                            className={`flex-1 sm:flex-none px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${activeTab === 'outhouse'
-                                ? 'bg-zinc-700 text-white shadow-sm'
-                                : 'text-zinc-400 hover:text-white hover:bg-zinc-700/50'
+                            className={`flex-1 sm:flex-none px-6 py-2 border-[4px] border-black font-antonio font-bold uppercase tracking-widest transition-all ${activeTab === 'outhouse'
+                                ? 'bg-[#974B60] text-white shadow-[4px_4px_0_#000] translate-x-1 translate-y-1'
+                                : 'bg-[#e0b0ac] text-black shadow-[4px_4px_0_#000] hover:bg-[#c89894] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[6px_6px_0_#000]'
                                 }`}
                         >
                             Out-house
@@ -139,30 +143,34 @@ export function NitmunAdminPanel({ onClose }: { onClose: () => void }) {
 
                 <div className="flex items-center gap-4 w-full sm:w-auto">
                     <div className="relative flex-1 sm:flex-none">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-black stroke-[3]" />
                         <input
                             type="text"
-                            placeholder="Search name, phone, email..."
+                            placeholder="SEARCH NAME, PHONE..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="bg-zinc-800 border border-zinc-700 rounded-lg pl-9 pr-4 py-2 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-primary-500 w-full sm:w-64"
+                            className="bg-[#e0b0ac] border-[4px] border-black shadow-[4px_4px_0_#000] rounded-none pl-12 pr-4 py-3 text-black font-mono font-bold placeholder-black/60 focus:outline-none focus:bg-[#c89894] focus:border-black transition-colors w-full sm:w-72 uppercase"
                         />
                     </div>
-                    <button onClick={onClose} className="text-zinc-400 hover:text-white p-2 rounded-full hover:bg-zinc-800 transition-colors hidden sm:block">
-                        <X size={24} />
+                    <button onClick={onClose} className="w-12 h-12 bg-[#232020] text-white hidden sm:flex items-center justify-center border-[4px] border-black shadow-[4px_4px_0_#fff] hover:bg-black hover:text-[#bb943a] hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:translate-y-2 active:translate-x-2 transition-all">
+                        <X size={24} className="stroke-[3]" />
                     </button>
                 </div>
             </div>
 
             {/* List View */}
-            <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-black">
-                <div className="max-w-7xl mx-auto">
+            <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-[#232020] relative">
+                {/* Brutalist Noise Overlay */}
+                <div className="absolute inset-0 opacity-[0.25] mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
+
+                <div className="max-w-7xl mx-auto relative z-10">
                     {loading ? (
-                        <div className="flex items-center justify-center h-64">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+                        <div className="flex flex-col items-center justify-center h-64 gap-4">
+                            <div className="w-16 h-16 border-[6px] border-black border-t-[#bb943a] animate-spin shadow-[4px_4px_0_#000]"></div>
+                            <span className="text-2xl font-staatliches uppercase tracking-widest text-white drop-shadow-[2px_2px_0_#bb943a]">Loading Records...</span>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                             <AnimatePresence>
                                 {filteredRegistrations.map((reg) => (
                                     <motion.div
@@ -172,56 +180,53 @@ export function NitmunAdminPanel({ onClose }: { onClose: () => void }) {
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0, scale: 0.95 }}
                                         onClick={() => setSelectedReg(reg)}
-                                        className="group relative cursor-pointer bg-zinc-900 border border-zinc-700 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-red-900/30 hover:-translate-y-2 hover:border-red-800/50"
+                                        className="group relative cursor-pointer bg-[#312e2e] border-[5px] border-black shadow-[8px_10px_0_#000] transition-all duration-200 hover:-translate-y-2 hover:-translate-x-2 hover:shadow-[12px_14px_0_#bb943a] active:translate-y-2 active:translate-x-2 active:shadow-none"
                                     >
-                                        <div className="absolute top-3 right-3 rotate-12 opacity-40 group-hover:opacity-70 transition-opacity pointer-events-none z-10">
-                                            <div className="border-2 border-red-700 text-red-700 px-2 py-1 text-[10px] font-black uppercase tracking-tighter bg-zinc-900/80">
+                                        <div className="absolute top-2 right-2 rotate-6 pointer-events-none z-10">
+                                            <div className="border-[3px] border-black text-black px-2 py-1 text-xs font-mono font-bold uppercase tracking-widest bg-[#bb943a] shadow-[2px_2px_0_#000]">
                                                 {reg.type === 'inhouse' ? 'IN-HOUSE' : 'OUT-HOUSE'}
                                             </div>
                                         </div>
 
-                                        <div className="p-4">
-                                            <div className="flex items-start gap-4">
-                                                <div className="w-20 h-24 bg-zinc-800 border-2 border-red-900/50 flex-shrink-0 overflow-hidden relative">
+                                        <div className="p-5 flex flex-col h-full">
+                                            <div className="flex items-start gap-5">
+                                                <div className="w-24 h-28 bg-[#c58715] border-[4px] border-black flex-shrink-0 overflow-hidden relative shadow-[4px_4px_0_#000] rotate-1 group-hover:-rotate-2 transition-transform">
                                                     <img
                                                         src={mysteriousManImage}
                                                         alt="Delegate"
-                                                        className="w-full h-full object-cover grayscale contrast-125 opacity-90"
+                                                        className="w-full h-full object-cover grayscale contrast-150 mix-blend-multiply opacity-80"
                                                     />
-                                                    <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-black/80 to-transparent"></div>
                                                 </div>
 
-                                                <div className="flex-1 space-y-2 overflow-hidden font-mono mt-1">
+                                                <div className="flex-1 space-y-3 font-mono mt-1 overflow-visible">
                                                     <div>
-                                                        <p className="text-[10px] text-red-500 uppercase tracking-widest font-bold">Name</p>
-                                                        <p className="text-white font-bold truncate text-sm">
+                                                        <p className="text-xs text-[#e0b0ac] border-b-2 border-black inline-block uppercase font-bold mb-1">Name</p>
+                                                        <p className="text-white font-bold text-lg leading-tight truncate px-1 bg-[#232020] border-2 border-transparent">
                                                             {reg.fullName}
                                                         </p>
                                                     </div>
-                                                    <div className="h-px bg-zinc-700 w-full"></div>
                                                     <div>
-                                                        <p className="text-[10px] text-zinc-500 uppercase tracking-widest">Role</p>
-                                                        <p className="text-zinc-400 text-xs truncate">
+                                                        <p className="text-xs text-gray-400 uppercase font-bold mb-1">Role</p>
+                                                        <p className="text-white font-bold text-sm bg-[#232020] px-1 inline-block truncate max-w-full">
                                                             {reg.role || 'Delegate'}
                                                         </p>
                                                     </div>
-                                                    <div className="h-px bg-zinc-700 w-full"></div>
                                                     <div>
-                                                        <p className="text-[10px] text-zinc-500 uppercase tracking-widest">Phone</p>
-                                                        <p className="text-zinc-400 text-xs truncate">
+                                                        <p className="text-xs text-gray-400 uppercase font-bold mb-1">Phone</p>
+                                                        <p className="text-white font-bold text-sm bg-[#232020] px-1 inline-block truncate max-w-full">
                                                             {reg.phoneNumber || 'N/A'}
                                                         </p>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div className="mt-4 pt-3 border-t border-zinc-700 flex justify-between items-center">
-                                                <div className="flex gap-1">
-                                                    {[1, 2, 3, 4, 5].map(i => (
-                                                        <div key={i} className="w-1 h-4 bg-zinc-700 group-hover:bg-red-800/50 transition-colors"></div>
+                                            <div className="mt-6 pt-4 border-t-[4px] border-dashed border-black flex justify-between items-center bg-[#232020] -mx-5 -mb-5 px-5 py-3">
+                                                <div className="flex gap-2">
+                                                    {[1, 2, 3, 4].map(i => (
+                                                        <div key={i} className="w-2 h-4 bg-black group-hover:bg-[#bb943a] transition-colors border-2 border-transparent group-hover:border-black"></div>
                                                     ))}
                                                 </div>
-                                                <span className="text-[10px] text-zinc-600 font-mono uppercase tracking-wider">
+                                                <span className="text-xs text-white font-mono font-bold uppercase tracking-widest bg-[#312e2e] border-2 border-black px-2 shadow-[2px_2px_0_#000] rotate-1">
                                                     ID: {reg.id.slice(0, 8)}
                                                 </span>
                                             </div>
@@ -231,11 +236,12 @@ export function NitmunAdminPanel({ onClose }: { onClose: () => void }) {
                             </AnimatePresence>
 
                             {!loading && filteredRegistrations.length === 0 && (
-                                <div className="col-span-full py-12 text-center">
-                                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-zinc-900 mb-4">
-                                        <Search className="w-8 h-8 text-zinc-600" />
+                                <div className="col-span-full py-20 text-center flex flex-col items-center">
+                                    <div className="w-24 h-24 mb-6 bg-[#6e3545] border-[5px] border-black shadow-[6px_6px_0_#000] flex items-center justify-center transform -rotate-6">
+                                        <Search className="w-12 h-12 text-black stroke-[3]" />
                                     </div>
-                                    <h3 className="text-xl font-medium text-zinc-400 mb-1">No registrations found</h3>
+                                    <h3 className="text-4xl font-staatliches uppercase text-white tracking-widest drop-shadow-[2px_2px_0_#000]">No matching records</h3>
+                                    <p className="text-white font-mono font-bold mt-2 bg-[#312e2e] px-4 border-[3px] border-black shadow-[4px_4px_0_#bb943a] inline-block">Try a different search query...</p>
                                 </div>
                             )}
                         </div>
@@ -278,142 +284,141 @@ function RegistrationDetailsModal({ reg, onClose }: { reg: CommonRegistration, o
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md"
         >
             <motion.div
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.95, opacity: 0 }}
-                className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden"
+                initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                className="relative w-full max-w-3xl bg-[#232020] border-[6px] border-black shadow-[15px_15px_0_#000] max-h-[90vh] flex flex-col p-2"
             >
-                <div className="flex justify-between items-center p-6 border-b border-zinc-800 bg-zinc-900/50">
-                    <div>
-                        <h2 className="text-2xl font-bold text-white">{reg.fullName}</h2>
-                        <div className="flex items-center gap-3 mt-2">
-                            <span className={`px-2.5 py-1 rounded-md text-xs font-semibold ${reg.role === 'International Press'
-                                ? 'bg-purple-500/10 text-purple-400 border border-purple-500/20'
-                                : 'bg-primary-500/10 text-primary-400 border border-primary-500/20'
-                                }`}>
-                                {reg.role || 'Delegate'}
-                            </span>
-                            <span className="px-2.5 py-1 rounded-md text-xs font-semibold bg-zinc-800 text-zinc-300 border border-zinc-700">
-                                {reg.type === 'inhouse' ? 'NIT Durgapur' : 'Out-house'}
-                            </span>
+                <div className="w-full flex-1 flex flex-col min-h-0 border-[3px] border-dashed border-black bg-[#312e2e]">
+                    <div className="flex justify-between items-center shrink-0 p-6 sm:p-8 border-b-[5px] border-black bg-[#6e3545]">
+                        <div>
+                            <h2 className="text-4xl md:text-5xl font-staatliches uppercase text-white drop-shadow-[2px_2px_0_#000]">{reg.fullName}</h2>
+                            <div className="flex items-center gap-3 mt-3">
+                                <span className="px-3 py-1 bg-[#312e2e] border-[3px] border-black font-antonio font-bold uppercase tracking-widest text-white shadow-[2px_2px_0_#000] text-sm">
+                                    {reg.role || 'Delegate'}
+                                </span>
+                                <span className="px-3 py-1 bg-black text-[#e0b0ac] border-[3px] border-black font-antonio font-bold uppercase tracking-widest shadow-[2px_2px_0_#ea9a9a] text-sm">
+                                    {reg.type === 'inhouse' ? 'NIT Durgapur' : 'Out-house'}
+                                </span>
+                            </div>
                         </div>
+                        <button onClick={onClose} className="w-12 h-12 bg-black text-white flex items-center justify-center border-[3px] border-black shadow-[3px_3px_0_#fff] hover:bg-white hover:text-black hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:translate-y-2 active:translate-x-2 transition-all">
+                            <X size={28} className="stroke-[3]" />
+                        </button>
                     </div>
-                    <button onClick={onClose} className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-full transition-colors">
-                        <X size={24} />
-                    </button>
-                </div>
 
-                <div className="p-6 overflow-y-auto flex-1 space-y-8">
-                    {/* Personal Info */}
-                    <section>
-                        <h3 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-4">Contact & Info</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="bg-zinc-800/30 p-4 rounded-xl border border-zinc-800/50">
-                                <div className="flex items-center gap-2 text-zinc-400 mb-1">
-                                    <Mail className="w-4 h-4" />
-                                    <span className="text-xs">Email</span>
+                    <div className="p-6 sm:p-8 overflow-y-auto flex-1 space-y-10 bg-[url('data:image/svg+xml,%3Csvg width=%2220%22 height=%2220%22 viewBox=%220 0 20 20%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22%23000000%22 fill-opacity=%220.15%22 fill-rule=%22evenodd%22%3E%3Ccircle cx=%223%22 cy=%223%22 r=%223%22/%3E%3Ccircle cx=%2213%22 cy=%2213%22 r=%223%22/%3E%3C/g%3E%3C/svg%3E')]">
+                        {/* Personal Info */}
+                        <section>
+                            <h3 className="text-3xl font-staatliches text-white uppercase tracking-widest mb-6 inline-block border-b-4 border-[#e08585] pb-1">Contact & Info</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="bg-[#232020] p-5 border-[4px] border-black shadow-[6px_6px_0_#000] rotate-1">
+                                    <div className="flex items-center gap-2 text-[#e0b0ac] mb-2 font-mono font-bold text-xs uppercase">
+                                        <Mail className="w-4 h-4 text-white" />
+                                        <span>Email</span>
+                                    </div>
+                                    <p className="text-white font-mono font-bold text-lg break-all">{reg.email}</p>
                                 </div>
-                                <p className="text-zinc-200 font-medium">{reg.email}</p>
-                            </div>
-                            <div className="bg-zinc-800/30 p-4 rounded-xl border border-zinc-800/50">
-                                <div className="flex items-center gap-2 text-zinc-400 mb-1">
-                                    <Phone className="w-4 h-4" />
-                                    <span className="text-xs">Phone</span>
+                                <div className="bg-[#232020] p-5 border-[4px] border-black shadow-[6px_6px_0_#000] -rotate-1">
+                                    <div className="flex items-center gap-2 text-[#e0b0ac] mb-2 font-mono font-bold text-xs uppercase">
+                                        <Phone className="w-4 h-4 text-white" />
+                                        <span>Phone</span>
+                                    </div>
+                                    <p className="text-white font-mono font-bold text-xl">{reg.phoneNumber || "N/A"}</p>
                                 </div>
-                                <p className="text-zinc-200 font-medium">{reg.phoneNumber || "N/A"}</p>
-                            </div>
 
-                            {reg.type === 'inhouse' ? (
-                                <>
-                                    <div className="bg-zinc-800/30 p-4 rounded-xl border border-zinc-800/50">
-                                        <div className="flex items-center gap-2 text-zinc-400 mb-1">
-                                            <GraduationCap className="w-4 h-4" />
-                                            <span className="text-xs">Roll Number</span>
-                                        </div>
-                                        <p className="text-zinc-200 font-medium uppercase">{reg.rollNumber}</p>
-                                    </div>
-                                    <div className="bg-zinc-800/30 p-4 rounded-xl border border-zinc-800/50">
-                                        <div className="flex items-center gap-2 text-zinc-400 mb-1">
-                                            <Building2 className="w-4 h-4" />
-                                            <span className="text-xs">Year</span>
-                                        </div>
-                                        <p className="text-zinc-200 font-medium">{reg.year}</p>
-                                    </div>
-                                </>
-                            ) : (
-                                <>
-                                    <div className="bg-zinc-800/30 p-4 rounded-xl border border-zinc-800/50">
-                                        <div className="flex items-center gap-2 text-zinc-400 mb-1">
-                                            <Building2 className="w-4 h-4" />
-                                            <span className="text-xs">College</span>
-                                        </div>
-                                        <p className="text-zinc-200 font-medium">{reg.collegeName}</p>
-                                    </div>
-                                    <div className="bg-zinc-800/30 p-4 rounded-xl border border-zinc-800/50">
-                                        <div className="flex items-center gap-2 text-zinc-400 mb-1">
-                                            <GraduationCap className="w-4 h-4" />
-                                            <span className="text-xs">Year of Study</span>
-                                        </div>
-                                        <p className="text-zinc-200 font-medium">{reg.yearOfStudy}</p>
-                                    </div>
-                                    {reg.paymentReferenceNumber && (
-                                        <div className="md:col-span-2 bg-zinc-800/30 p-4 rounded-xl border border-zinc-800/50">
-                                            <div className="flex items-center gap-2 text-zinc-400 mb-1">
-                                                <FileText className="w-4 h-4" />
-                                                <span className="text-xs">Payment Reference</span>
+                                {reg.type === 'inhouse' ? (
+                                    <>
+                                        <div className="bg-[#bb943a] p-5 border-[4px] border-black shadow-[6px_6px_0_#000] rotate-1">
+                                            <div className="flex items-center gap-2 text-black/70 mb-2 font-mono font-bold text-xs uppercase">
+                                                <GraduationCap className="w-5 h-5 text-black" />
+                                                <span>Roll Number</span>
                                             </div>
-                                            <p className="text-zinc-200 font-mono text-sm">{reg.paymentReferenceNumber}</p>
+                                            <p className="text-black font-staatliches text-2xl uppercase tracking-widest">{reg.rollNumber}</p>
                                         </div>
-                                    )}
-                                </>
-                            )}
-                        </div>
-                    </section>
+                                        <div className="bg-[#e0b0ac] p-5 border-[4px] border-black shadow-[6px_6px_0_#000] -rotate-1">
+                                            <div className="flex items-center gap-2 text-black/70 mb-2 font-mono font-bold text-xs uppercase">
+                                                <Building2 className="w-4 h-4 text-black" />
+                                                <span>Year</span>
+                                            </div>
+                                            <p className="text-black font-staatliches text-3xl">{reg.year}</p>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <>
+                                        <div className="bg-[#bb943a] p-5 border-[4px] border-black shadow-[6px_6px_0_#000] rotate-1">
+                                            <div className="flex items-center gap-2 text-black/70 mb-2 font-mono font-bold text-xs uppercase">
+                                                <Building2 className="w-4 h-4 text-black" />
+                                                <span>College</span>
+                                            </div>
+                                            <p className="text-black font-staatliches text-2xl uppercase tracking-wider line-clamp-2">{reg.collegeName}</p>
+                                        </div>
+                                        <div className="bg-[#e0b0ac] p-5 border-[4px] border-black shadow-[6px_6px_0_#000] -rotate-1">
+                                            <div className="flex items-center gap-2 text-black/70 mb-2 font-mono font-bold text-xs uppercase">
+                                                <GraduationCap className="w-4 h-4 text-black" />
+                                                <span>Year of Study</span>
+                                            </div>
+                                            <p className="text-black font-staatliches text-3xl text-left">{reg.yearOfStudy}</p>
+                                        </div>
+                                        {reg.paymentReferenceNumber && (
+                                            <div className="md:col-span-2 bg-[#232020] p-5 text-white border-[4px] border-black shadow-[6px_6px_0_#000] translate-x-1">
+                                                <div className="flex items-center gap-2 text-gray-400 mb-2 font-mono font-bold text-xs uppercase">
+                                                    <FileText className="w-4 h-4 text-white" />
+                                                    <span>Payment Reference</span>
+                                                </div>
+                                                <p className="text-white font-mono font-bold text-xl">{reg.paymentReferenceNumber}</p>
+                                            </div>
+                                        )}
+                                    </>
+                                )}
+                            </div>
+                        </section>
 
-                    {/* Preferences */}
-                    <section>
-                        <h3 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-4">Preferences</h3>
-                        <div className="space-y-4">
-                            {preferences.length > 0 ? preferences.map((pref, idx) => (
-                                <div key={idx} className="bg-zinc-800/30 p-5 rounded-xl border border-zinc-800/50 flex flex-col gap-4">
-                                    <div className="flex items-center gap-4">
-                                        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 font-bold text-sm">
-                                            {idx + 1}
+                        {/* Preferences */}
+                        <section>
+                            <h3 className="text-3xl font-staatliches text-white uppercase tracking-widest mb-6 inline-block border-b-4 border-[#e08585] pb-1">Preferences</h3>
+                            <div className="space-y-6">
+                                {preferences.length > 0 ? preferences.map((pref, idx) => (
+                                    <div key={idx} className="bg-[#232020] p-6 border-[5px] border-black shadow-[8px_8px_0_#000] flex flex-col gap-6">
+                                        <div className="flex items-center gap-5 border-b-[3px] border-dashed border-black pb-4">
+                                            <div className="flex-shrink-0 w-12 h-12 bg-black flex items-center justify-center font-staatliches text-white text-3xl shadow-[3px_3px_0_#bb943a] rotate-3">
+                                                {idx + 1}
+                                            </div>
+                                            <div className="flex-1">
+                                                <p className="text-[#e0b0ac] font-mono font-bold text-xs uppercase tracking-widest mb-1">Committee</p>
+                                                <p className="text-white text-3xl font-staatliches uppercase tracking-wide">{pref.committee}</p>
+                                            </div>
                                         </div>
-                                        <div className="flex-1">
-                                            <p className="text-zinc-400 text-xs uppercase tracking-wider mb-1 font-semibold">Committee</p>
-                                            <p className="text-white text-lg font-bold">{pref.committee}</p>
-                                        </div>
+
+                                        {reg.role !== 'International Press' && (
+                                            <div className="pl-2">
+                                                <p className="text-gray-400 font-mono font-bold text-xs uppercase border-l-4 border-[#974B60] pl-2 mb-3">Portfolios / Characters</p>
+                                                {pref.portfolios.length > 0 ? (
+                                                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                                                        {pref.portfolios.map((portfolio, i) => (
+                                                            <li key={i} className="px-4 py-3 bg-[#312e2e] border-[3px] border-black flex items-start gap-3 shadow-[3px_3px_0_#000]">
+                                                                <span className="text-[#e0b0ac] font-staatliches text-xl inline-block mt-0.5">{i + 1}.</span>
+                                                                <span className="text-white font-mono font-bold pt-1">{portfolio as string}</span>
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                ) : (
+                                                    <p className="text-sm text-gray-500 font-mono font-bold italic bg-[#312e2e] p-3 border-2 border-black">None selected</p>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
-
-                                    {reg.role !== 'International Press' && (
-                                        <div className="pl-12">
-                                            <p className="text-zinc-400 text-xs uppercase tracking-wider mb-2 font-semibold">Portfolios / Characters</p>
-                                            {pref.portfolios.length > 0 ? (
-                                                <ul className="space-y-2">
-                                                    {pref.portfolios.map((portfolio, i) => (
-                                                        <li key={i} className="text-sm px-3 py-2 bg-zinc-800/50 rounded flex items-center gap-3">
-                                                            <span className="text-zinc-500 font-mono select-none">{i + 1}.</span>
-                                                            <span className="text-zinc-300 font-medium">{portfolio as string}</span>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            ) : (
-                                                <p className="text-sm text-zinc-500 italic">None selected</p>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            )) : (
-                                <div className="text-center py-6 bg-zinc-800/30 rounded-xl border border-zinc-800/50">
-                                    <p className="text-zinc-500">No preferences recorded.</p>
-                                </div>
-                            )}
-                        </div>
-                    </section>
+                                )) : (
+                                    <div className="text-center py-10 bg-[#232020] border-[5px] border-black border-dashed">
+                                        <p className="text-gray-400 font-staatliches text-2xl uppercase tracking-widest opacity-50">No preferences recorded.</p>
+                                    </div>
+                                )}
+                            </div>
+                        </section>
+                    </div>
                 </div>
             </motion.div>
         </motion.div>
