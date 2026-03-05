@@ -13,6 +13,11 @@ import { PhotoGalleryModal } from '../components/nitmun/PhotoGalleryModal';
 import { CommitteeAIAssistant } from '../components/nitmun/CommitteeAIAssistant';
 import { Shield, ChevronDown, BookOpen, Image as ImageIcon, Link as LinkIcon } from 'lucide-react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { Shield, ChevronDown, BookOpen, Image as ImageIcon, Link as LinkIcon, Sparkles } from 'lucide-react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { useRef } from 'react';
+import { CommitteeAIAssistant } from '../components/nitmun/CommitteeAIAssistant';
+
 const TARGET_DATE = new Date('2026-03-07T00:00:00+05:30').getTime();
 
 const MarqueeBackground = () => {
@@ -579,6 +584,11 @@ export function NitmunxivPage() {
                       </p>
                     </div>
                   </div>
+                </motion.button>
+              )}
+
+            </div>
+          </motion.section>
 
                   <div className="hidden md:flex items-center gap-2 text-xl font-staatliches uppercase tracking-wider text-[#974B60] group-hover:text-[#c58715] transition-colors shrink-0">
                     Ask NITMUN AI <span className="transform group-hover:translate-x-2 transition-transform text-2xl font-sans inline-block ml-2">→</span>
@@ -589,6 +599,48 @@ export function NitmunxivPage() {
 
           </div>
 
+              <div className="hidden md:flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-rose-400 group-hover:text-rose-300 transition-colors shrink-0">
+                Watch Video <span className="transform group-hover:translate-x-1 transition-transform">→</span>
+              </div>
+            </a>
+          </motion.section>
+
+          {/* AI Assistant Banner (Only for inhouse) */}
+          {isInhouseUser && (
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="flex justify-center w-full max-w-4xl pt-4"
+            >
+              <div
+                onClick={() => setShowAIAssistant(true)}
+                className="group flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8 p-6 md:p-8 rounded-3xl border border-indigo-500/20 bg-gradient-to-r from-indigo-500/5 to-purple-900/10 hover:from-indigo-500/10 hover:to-purple-900/20 hover:border-indigo-500/40 transition-all cursor-pointer relative overflow-hidden backdrop-blur-md w-full shadow-[0_0_30px_-15px_rgba(99,102,241,0.3)] hover:shadow-[0_0_40px_-10px_rgba(99,102,241,0.5)]"
+              >
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+
+                <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 flex-1 text-center md:text-left">
+                  <div className="w-16 h-16 shrink-0 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-500 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(99,102,241,0.3)] group-hover:shadow-[0_0_25px_rgba(99,102,241,0.6)] transform group-hover:scale-105">
+                    <Sparkles className="w-8 h-8" />
+                  </div>
+
+                  <div className="space-y-1">
+                    <h4 className="text-xl md:text-2xl font-bold text-white group-hover:text-indigo-50 transition-colors">
+                      Confused about which committee to choose?
+                    </h4>
+                    <p className="text-sm md:text-base text-indigo-200/70 group-hover:text-indigo-200 transition-colors font-medium tracking-wide">
+                      Take AI help to find your perfect fit in just a few questions!
+                    </p>
+                  </div>
+                </div>
+
+                <div className="hidden md:flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-indigo-400 group-hover:text-indigo-300 transition-colors shrink-0">
+                  Ask AI Matchmaker <span className="transform group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+              </div>
+            </motion.section>
+          )}
         </div>
       </div>
 
@@ -632,6 +684,12 @@ export function NitmunxivPage() {
               <div className="h-2 bg-gradient-to-r from-[#bb943a] via-[#e08585] to-[#c58715] absolute top-0 inset-x-0" />
               <button onClick={() => setShowAIAssistant(false)}
                 className="absolute top-4 right-4 z-[110] w-8 h-8 flex items-center justify-center bg-black hover:bg-zinc-800 border-2 border-[#e08585] text-[#e08585] font-bold transition-all duration-200 shadow-[2px_2px_0_#000] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
+              className="relative w-full max-w-2xl bg-gradient-to-br from-white via-gray-50 to-indigo-50 rounded-2xl shadow-2xl overflow-hidden h-[90vh] md:h-[80vh] flex flex-col pt-8 pb-4 px-6 md:px-8"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="h-2 bg-gradient-to-r from-indigo-500 via-purple-600 to-indigo-700 absolute top-0 inset-x-0" />
+              <button onClick={() => setShowAIAssistant(false)}
+                className="absolute top-4 right-4 z-[110] w-8 h-8 flex items-center justify-center bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full text-indigo-900 font-bold transition-all duration-200 border border-white/30 shadow-sm"
                 aria-label="Close modal">
                 <span className="text-sm">X</span>
               </button>

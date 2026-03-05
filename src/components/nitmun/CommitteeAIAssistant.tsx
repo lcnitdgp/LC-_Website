@@ -235,6 +235,23 @@ INSTRUCTIONS:
             </div>
 
             <div className="flex-1 overflow-y-auto px-4 md:px-6 space-y-6 pt-4 pb-8 custom-scrollbar relative">
+        <div className="flex flex-col h-full w-full max-w-2xl mx-auto mt-2">
+            <div className="flex items-center gap-4 mb-6 sticky top-0 bg-white/80 backdrop-blur-md z-10 py-2">
+                <button
+                    onClick={onBack}
+                    className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                >
+                    <ArrowLeft size={18} />
+                </button>
+                <div className="flex items-center gap-3">
+                    <div>
+                        <h3 className="font-cormorant font-bold text-xl text-gray-900">Committee Matchmaker</h3>
+                       
+                    </div>
+                </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto pr-2 space-y-6 pb-24 custom-scrollbar relative min-h-[400px]">
                 <AnimatePresence mode="popLayout">
                     {isLoadingLimit ? (
                         <motion.div
@@ -243,6 +260,7 @@ INSTRUCTIONS:
                             className="flex items-center justify-center h-40"
                         >
                             <Loader2 className="w-10 h-10 text-[#e08585] animate-spin" />
+                            <Loader2 className="w-8 h-8 text-primary-500 animate-spin" />
                         </motion.div>
                     ) : (
                         <>
@@ -256,6 +274,12 @@ INSTRUCTIONS:
                                         <Sparkles className="w-5 h-5 text-[#c58715]" />
                                     </div>
                                     <p className="uppercase tracking-wide">You have exhausted all your attempts. View your last response below.</p>
+                                    className="mb-6 p-4 bg-orange-50 border border-orange-200 rounded-xl text-orange-800 text-sm font-medium flex items-center gap-3 shadow-sm"
+                                >
+                                    <div className="p-2 bg-orange-100 rounded-full shrink-0">
+                                        <Sparkles className="w-4 h-4 text-orange-600" />
+                                    </div>
+                                    <p>You have exhausted all your attempts. View your last response below.</p>
                                 </motion.div>
                             )}
 
@@ -269,6 +293,9 @@ INSTRUCTIONS:
                                     <div className={`max-w-[85%] p-4 font-mono font-bold text-[15px] leading-relaxed border-[3px] border-black ${msg.role === 'user'
                                         ? 'bg-[#232020] text-white shadow-[6px_6px_0_#bb943a] ml-8'
                                         : 'bg-[#e0b0ac] text-black shadow-[6px_6px_0_#974B60] whitespace-pre-line mr-8'
+                                    <div className={`max-w-[85%] rounded-2xl p-4 shadow-sm font-spectral text-[15px] leading-relaxed ${msg.role === 'user'
+                                        ? 'bg-primary-600 text-white rounded-tr-sm'
+                                        : 'bg-gray-50 border border-gray-100 text-gray-700 rounded-tl-sm whitespace-pre-line'
                                         }`}>
                                         {msg.text}
                                     </div>
@@ -286,6 +313,9 @@ INSTRUCTIONS:
                             <div className="bg-[#111] border-[3px] border-black shadow-[4px_4px_0_#e08585] p-4 flex items-center gap-3 text-white mr-8">
                                 <Loader2 className="w-5 h-5 text-[#e08585] animate-spin" />
                                 <span className="font-mono font-bold text-sm tracking-widest uppercase">Analyzing...</span>
+                            <div className="bg-gray-50 border border-gray-100 rounded-2xl rounded-tl-sm p-4 flex items-center gap-2">
+                                <Loader2 className="w-4 h-4 text-primary-600 animate-spin" />
+                                <span className="font-spectral text-sm text-gray-500">Analyzing your profile...</span>
                             </div>
                         </motion.div>
                     )}
@@ -295,6 +325,7 @@ INSTRUCTIONS:
 
             {/* Input Area or Selection Buttons */}
             <div className="pt-4 mt-auto sticky bottom-0 z-10 w-full pb-6 px-4 md:px-6 bg-gradient-to-t from-[#111] via-[#111]/80 to-transparent">
+            <div className="pt-4 border-t border-gray-100 mt-auto bg-white sticky bottom-0 z-10 w-full pb-4">
                 {isDone && !isProcessing ? (
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -303,6 +334,10 @@ INSTRUCTIONS:
                     >
                         <p className="text-center font-staatliches text-2xl text-[#bb943a] mb-2 uppercase tracking-wide">Select Your Committee Role:</p>
                         <div className="flex flex-col sm:flex-row gap-4">
+                        className="space-y-3"
+                    >
+                        <p className="text-center font-spectral text-sm text-gray-500 mb-2">Select your recommended committee to continue:</p>
+                        <div className="flex flex-col sm:flex-row gap-3">
                             {['AIPPM', 'UNGA', 'UNHRC'].map((com) => (
                                 <button
                                     key={com}
@@ -310,12 +345,16 @@ INSTRUCTIONS:
                                     className="flex-1 py-4 px-4 bg-[#e08585] border-[4px] border-black font-antonio font-bold text-black uppercase tracking-widest text-lg shadow-[4px_4px_0_#000] hover:bg-[#c58715] hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:translate-y-2 active:translate-x-2 transition-all"
                                 >
                                     Proceed to {com}
+                                    className="flex-1 py-3 px-4 border border-gray-200 rounded-xl font-semibold text-gray-700 hover:border-primary-300 hover:bg-primary-50 transition-all text-sm"
+                                >
+                                    Choose {com}
                                 </button>
                             ))}
                         </div>
                     </motion.div>
                 ) : !isDone && !isLimitExhausted && !isLoadingLimit && (
                     <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 bg-gray-50 rounded-full border border-gray-200 px-2 py-1 focus-within:ring-2 focus-within:ring-primary-500/20 focus-within:border-primary-400 transition-all">
                         <input
                             type="text"
                             value={currentInput}
@@ -325,6 +364,8 @@ INSTRUCTIONS:
                             }}
                             placeholder="Type your response..."
                             className="flex-1 bg-white border-[4px] border-black shadow-[6px_8px_0_#000] px-6 py-4 font-mono font-bold text-lg text-black placeholder:text-gray-500 focus:outline-none focus:bg-[#f0f0f0] transition-colors"
+                            placeholder="Type your answer..."
+                            className="flex-1 bg-transparent border-none focus:outline-none px-4 py-3 font-spectral text-[15px] text-gray-900 placeholder:text-gray-400"
                             disabled={isProcessing}
                             autoFocus
                         />
@@ -334,6 +375,9 @@ INSTRUCTIONS:
                             className="p-4 bg-[#c58715] text-black border-[4px] border-black shadow-[6px_8px_0_#000] hover:bg-[#bb943a] hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0_#000] active:translate-x-2 active:translate-y-2 active:shadow-none transition-all disabled:opacity-50 disabled:grayscale"
                         >
                             <Send size={24} strokeWidth={3} className={isProcessing ? "opacity-0" : ""} />
+                            className="p-3 bg-primary-600 text-white rounded-full hover:bg-primary-700 disabled:opacity-50 disabled:hover:bg-primary-600 transition-colors shadow-sm"
+                        >
+                            <Send size={18} className={isProcessing ? "opacity-0" : ""} />
                         </button>
                     </div>
                 )}
