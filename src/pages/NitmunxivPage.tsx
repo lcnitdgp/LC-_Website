@@ -621,12 +621,12 @@ export function NitmunxivPage() {
       {/* AI Assistant Modal */}
       <AnimatePresence>
         {showAIAssistant && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-4 bg-black/60 backdrop-blur-sm">
             <motion.div
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="relative w-full max-w-2xl bg-gradient-to-br from-[#2a2a2a] via-[#232020] to-[#1a1a1a] rounded-[20px] shadow-[8px_10px_0_#000] border-[5px] border-black overflow-hidden h-[90vh] md:h-[80vh] flex flex-col pt-8 pb-4 px-6 md:px-8"
+              className="relative w-full max-w-2xl bg-gradient-to-br from-[#2a2a2a] via-[#232020] to-[#1a1a1a] rounded-none md:rounded-[20px] shadow-none md:shadow-[8px_10px_0_#000] border-0 md:border-[5px] md:border-black overflow-hidden h-[100dvh] md:h-[80vh] flex flex-col pt-2 md:pt-8 pb-0 md:pb-4 px-0 md:px-8"
               onClick={e => e.stopPropagation()}
             >
               <div className="h-2 bg-gradient-to-r from-[#bb943a] via-[#e08585] to-[#c58715] absolute top-0 inset-x-0" />

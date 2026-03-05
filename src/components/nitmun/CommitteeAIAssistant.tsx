@@ -222,19 +222,19 @@ INSTRUCTIONS:
     return (
         <div className="flex flex-col h-full w-full mx-auto relative z-10">
             {/* Header */}
-            <div className="flex items-center gap-4 mb-6 sticky top-0 bg-[#bb943a] border-b-[4px] border-black z-20 py-4 px-6 shadow-[0_4px_0_#000]">
+            <div className="flex items-center gap-3 md:gap-4 mb-2 md:mb-6 sticky top-0 bg-[#bb943a] border-b-[4px] border-black z-20 py-3 md:py-4 px-4 md:px-6 shadow-[0_4px_0_#000]">
                 <button
                     onClick={onBack}
-                    className="p-2 bg-black text-white hover:bg-[#e08585] hover:text-black border-[2px] border-black shadow-[2px_2px_0_#000] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all duration-200"
+                    className="p-1.5 md:p-2 bg-black text-white hover:bg-[#e08585] hover:text-black border-[2px] border-black shadow-[2px_2px_0_#000] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none transition-all duration-200"
                 >
-                    <ArrowLeft size={20} strokeWidth={3} />
+                    <ArrowLeft size={18} strokeWidth={3} />
                 </button>
                 <div className="flex flex-col">
-                    <h3 className="font-staatliches text-3xl uppercase tracking-wider text-black drop-shadow-[1px_1px_0_#fff]">NITMUN AI</h3>
+                    <h3 className="font-staatliches text-2xl md:text-3xl uppercase tracking-wider text-black drop-shadow-[1px_1px_0_#fff]">NITMUN AI</h3>
                 </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-4 md:px-6 space-y-6 pt-4 pb-8 custom-scrollbar relative">
+            <div className="flex-1 overflow-y-auto px-3 md:px-6 space-y-4 md:space-y-6 pt-2 md:pt-4 pb-4 md:pb-8 custom-scrollbar relative">
                 <AnimatePresence mode="popLayout">
                     {isLoadingLimit ? (
                         <motion.div
@@ -266,9 +266,9 @@ INSTRUCTIONS:
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                                 >
-                                    <div className={`max-w-[85%] p-4 font-mono font-bold text-[15px] leading-relaxed border-[3px] border-black ${msg.role === 'user'
-                                        ? 'bg-[#232020] text-white shadow-[6px_6px_0_#bb943a] ml-8'
-                                        : 'bg-[#e0b0ac] text-black shadow-[6px_6px_0_#974B60] whitespace-pre-line mr-8'
+                                    <div className={`max-w-[90%] md:max-w-[85%] p-3 md:p-4 font-mono font-bold text-[13px] md:text-[15px] leading-relaxed border-[2px] md:border-[3px] border-black ${msg.role === 'user'
+                                        ? 'bg-[#232020] text-white shadow-[4px_4px_0_#bb943a] md:shadow-[6px_6px_0_#bb943a] ml-2 md:ml-8'
+                                        : 'bg-[#e0b0ac] text-black shadow-[4px_4px_0_#974B60] md:shadow-[6px_6px_0_#974B60] whitespace-pre-line mr-2 md:mr-8'
                                         }`}>
                                         {msg.text}
                                     </div>
@@ -294,20 +294,20 @@ INSTRUCTIONS:
             </div>
 
             {/* Input Area or Selection Buttons */}
-            <div className="pt-4 mt-auto sticky bottom-0 z-10 w-full pb-6 px-4 md:px-6 bg-gradient-to-t from-[#111] via-[#111]/80 to-transparent">
+            <div className="pt-3 md:pt-4 mt-auto sticky bottom-0 z-10 w-full pb-[env(safe-area-inset-bottom,16px)] md:pb-6 px-3 md:px-6 bg-gradient-to-t from-[#111] via-[#111]/80 to-transparent">
                 {isDone && !isProcessing ? (
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="space-y-4 bg-[#232020] p-6 border-[4px] border-black shadow-[8px_10px_0_#000]"
+                        className="space-y-3 md:space-y-4 bg-[#232020] p-4 md:p-6 border-[3px] md:border-[4px] border-black shadow-[4px_5px_0_#000] md:shadow-[8px_10px_0_#000]"
                     >
-                        <p className="text-center font-staatliches text-2xl text-[#bb943a] mb-2 uppercase tracking-wide">Select Your Committee Role:</p>
+                        <p className="text-center font-staatliches text-lg md:text-2xl text-[#bb943a] mb-1 md:mb-2 uppercase tracking-wide">Select Your Committee Role:</p>
                         <div className="flex flex-col sm:flex-row gap-4">
                             {['AIPPM', 'UNGA', 'UNHRC'].map((com) => (
                                 <button
                                     key={com}
                                     onClick={() => onSelectCommittee(com)}
-                                    className="flex-1 py-4 px-4 bg-[#e08585] border-[4px] border-black font-antonio font-bold text-black uppercase tracking-widest text-lg shadow-[4px_4px_0_#000] hover:bg-[#c58715] hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:translate-y-2 active:translate-x-2 transition-all"
+                                    className="flex-1 py-3 md:py-4 px-3 md:px-4 bg-[#e08585] border-[3px] md:border-[4px] border-black font-antonio font-bold text-black uppercase tracking-widest text-sm md:text-lg shadow-[3px_3px_0_#000] md:shadow-[4px_4px_0_#000] hover:bg-[#c58715] hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:translate-y-2 active:translate-x-2 transition-all"
                                 >
                                     Proceed to {com}
                                 </button>
@@ -324,14 +324,14 @@ INSTRUCTIONS:
                                 if (e.key === 'Enter') handleSend();
                             }}
                             placeholder="Type your response..."
-                            className="flex-1 bg-white border-[4px] border-black shadow-[6px_8px_0_#000] px-6 py-4 font-mono font-bold text-lg text-black placeholder:text-gray-500 focus:outline-none focus:bg-[#f0f0f0] transition-colors"
+                            className="flex-1 min-w-0 bg-white border-[3px] md:border-[4px] border-black shadow-[4px_5px_0_#000] md:shadow-[6px_8px_0_#000] px-4 md:px-6 py-3 md:py-4 font-mono font-bold text-base md:text-lg text-black placeholder:text-gray-500 focus:outline-none focus:bg-[#f0f0f0] transition-colors"
                             disabled={isProcessing}
                             autoFocus
                         />
                         <button
                             onClick={handleSend}
                             disabled={!currentInput.trim() || isProcessing}
-                            className="p-4 bg-[#c58715] text-black border-[4px] border-black shadow-[6px_8px_0_#000] hover:bg-[#bb943a] hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0_#000] active:translate-x-2 active:translate-y-2 active:shadow-none transition-all disabled:opacity-50 disabled:grayscale"
+                            className="p-3 md:p-4 bg-[#c58715] text-black border-[3px] md:border-[4px] border-black shadow-[4px_5px_0_#000] md:shadow-[6px_8px_0_#000] hover:bg-[#bb943a] hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_4px_0_#000] active:translate-x-2 active:translate-y-2 active:shadow-none transition-all disabled:opacity-50 disabled:grayscale"
                         >
                             <Send size={24} strokeWidth={3} className={isProcessing ? "opacity-0" : ""} />
                         </button>
