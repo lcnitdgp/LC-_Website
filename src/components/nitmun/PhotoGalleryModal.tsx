@@ -1,10 +1,10 @@
 import { X, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-import groupPhoto from '../../assets/nitmunxiv/group_photo.jpeg';
+import groupPhoto from '../../assets/nitmunxiv/group_photo.webp';
 
 // Use Vite's glob import to automatically pull all jpegs from the gallery folder
-const galleryModules = import.meta.glob('../../assets/nitmunxiv/gallery/*.jpeg', { eager: true, import: 'default' });
+const galleryModules = import.meta.glob('../../assets/nitmunxiv/gallery/*.webp', { eager: true, import: 'default' });
 const galleryImages = Object.values(galleryModules) as string[];
 
 interface PhotoGalleryModalProps {
