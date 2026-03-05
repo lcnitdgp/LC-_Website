@@ -44,64 +44,68 @@ export function PDFViewerModal({ isOpen, onClose, pdfUrl, title }: PDFViewerModa
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+                        className="absolute inset-0 bg-black/80 backdrop-blur-md"
                         onClick={onClose}
                     />
 
                     <motion.div
-                        initial={{ scale: 0.95, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0.95, opacity: 0 }}
-                        className="relative w-full max-w-5xl h-[85vh] bg-gray-900 rounded-xl shadow-2xl overflow-hidden flex flex-col"
+                        initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                        animate={{ scale: 1, opacity: 1, y: 0 }}
+                        exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                        className="relative w-full max-w-5xl h-[85vh] bg-[#f4f4f4] border-[6px] border-black shadow-[15px_15px_0_#974B60] overflow-hidden flex flex-col p-2"
+                        onClick={e => e.stopPropagation()}
                     >
-                        <div className="flex items-center justify-between px-6 py-4 bg-gray-800 border-b border-gray-700">
-                            <h3 className="text-xl font-merriweather text-white truncate max-w-[80%]">
-                                {title}
-                            </h3>
-                            <button
-                                onClick={onClose}
-                                className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded-full transition-colors"
-                            >
-                                <X size={24} />
-                            </button>
-                        </div>
-
-                        <div className="flex-grow bg-gray-200 w-full h-full relative">
-                            {isMobile ? (
-                                <div className="flex flex-col h-full w-full">
-                                    <iframe
-                                        src={pdfUrl}
-                                        className="flex-grow w-full border-none"
-                                        title="PDF Viewer"
-                                    />
-                                    <div className="bg-gray-800 p-4 flex justify-center shrink-0">
-                                        <a
-                                            href={fullPdfUrl}
-                                            download
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-6 rounded-lg transition-colors flex items-center gap-2"
-                                        >
-                                            Download {title} (PDF)
-                                        </a>
-                                    </div>
-                                </div>
-                            ) : (
-                                <object
-                                    data={pdfUrl}
-                                    type="application/pdf"
-                                    className="w-full h-full"
+                        <div className="w-full h-full border-[3px] border-dashed border-black flex flex-col relative">
+                            <div className="flex flex-col sm:flex-row items-center justify-between px-6 py-4 bg-black border-b-[4px] border-black shadow-[0_4px_0_#bb943a] z-10">
+                                <h3 className="text-3xl font-staatliches tracking-wider text-white truncate max-w-[80%] uppercase drop-shadow-[2px_2px_0_#e08585]">
+                                    {title}
+                                </h3>
+                                <button
+                                    type="button"
+                                    onClick={onClose}
+                                    className="absolute top-2 right-2 md:-right-3 md:-top-3 w-10 h-10 bg-[#e08585] text-black flex items-center justify-center font-bold text-xl hover:bg-white hover:text-black border-[3px] border-black transition-colors z-[60] cursor-pointer shadow-[4px_4px_0_#000]"
                                 >
-                                    <div className="flex items-center justify-center h-full">
-                                        <p className="text-gray-600">
-                                            Unable to display PDF.
-                                            <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="text-primary-600 underline ml-1">
-                                                Download instead
+                                    <X size={24} className="stroke-[3]" />
+                                </button>
+                            </div>
+
+                            <div className="flex-grow bg-[#232020] w-full h-full relative border-t-4 border-black border-dashed">
+                                {isMobile ? (
+                                    <div className="flex flex-col h-full w-full">
+                                        <iframe
+                                            src={pdfUrl}
+                                            className="flex-grow w-full border-none"
+                                            title="PDF Viewer"
+                                        />
+                                        <div className="bg-[#bb943a] border-t-[4px] border-black p-4 flex justify-center shrink-0">
+                                            <a
+                                                href={fullPdfUrl}
+                                                download
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="bg-black text-white hover:bg-[#232020] font-antonio text-xl uppercase tracking-widest py-3 px-8 border-[4px] border-black shadow-[4px_4px_0_#fff] hover:-translate-y-1 hover:shadow-[6px_6px_0_#fff] active:translate-y-2 active:translate-x-2 active:shadow-none transition-all flex items-center gap-2"
+                                            >
+                                                Download {title} (PDF)
                                             </a>
-                                        </p>
+                                        </div>
                                     </div>
-                                </object>
-                            )}
+                                ) : (
+                                    <object
+                                        data={pdfUrl}
+                                        type="application/pdf"
+                                        className="w-full h-full"
+                                    >
+                                        <div className="flex items-center justify-center h-full bg-[#f4f4f4]">
+                                            <p className="text-black font-mono font-bold text-center border-[4px] border-black shadow-[6px_6px_0_#e08585] p-6 bg-white rotate-2 max-w-md">
+                                                Unable to display PDF.
+                                                <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="text-[#bb943a] hover:text-[#c58715] underline ml-2 decoration-4">
+                                                    Download instead
+                                                </a>
+                                            </p>
+                                        </div>
+                                    </object>
+                                )}
+                            </div>
                         </div>
                     </motion.div>
                 </div>

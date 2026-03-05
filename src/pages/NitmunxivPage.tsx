@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { EditableText } from '../components/common';
@@ -9,6 +9,10 @@ import { NitmunRegistrationModal } from '../components/nitmun/InorOut';
 import { useAuth } from '../context';
 import { NitmunAdminPanel } from '../components/nitmun/NitmunAdminPanel';
 import { StudyGuidesModal } from '../components/nitmun/StudyGuidesModal';
+import { PhotoGalleryModal } from '../components/nitmun/PhotoGalleryModal';
+import { CommitteeAIAssistant } from '../components/nitmun/CommitteeAIAssistant';
+import { Shield, ChevronDown, BookOpen, Image as ImageIcon, Link as LinkIcon } from 'lucide-react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { Shield, ChevronDown, BookOpen, Image as ImageIcon, Link as LinkIcon, Sparkles } from 'lucide-react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { useRef } from 'react';
@@ -16,10 +20,39 @@ import { CommitteeAIAssistant } from '../components/nitmun/CommitteeAIAssistant'
 
 const TARGET_DATE = new Date('2026-03-07T00:00:00+05:30').getTime();
 
+const MarqueeBackground = () => {
+  const row1 = Array(15).fill('LITERARY CIRCLE • NITMUN XIV • ').join('');
+  const row2 = Array(15).fill('UNITED NATIONS GENERAL ASSEMBLY • DELEGATE • ').join('');
+  const row3 = Array(15).fill('ALL INDIA POLITICAL PARTIES MEET • CAUCUS • ').join('');
+  const row4 = Array(15).fill('UNITED NATIONS HUMAN RIGHTS COUNCIL • RESOLUTION • ').join('');
+  const row5 = Array(15).fill('INTERNATIONAL PRESS • DIPLOMACY • LITERARY CIRCLE • ').join('');
+
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-[0.12] z-0 select-none flex flex-col justify-around py-32">
+      <div className="whitespace-nowrap text-[#bb943a] text-5xl md:text-7xl font-staatliches uppercase animate-marquee">
+        {row1}
+      </div>
+      <div className="whitespace-nowrap text-[#e08585] text-5xl md:text-7xl font-staatliches uppercase animate-marquee-slow">
+        {row2}
+      </div>
+      <div className="whitespace-nowrap text-[#e0b0ac] text-5xl md:text-7xl font-staatliches uppercase animate-marquee-slower">
+        {row3}
+      </div>
+      <div className="whitespace-nowrap text-[#c58715] text-5xl md:text-7xl font-staatliches uppercase animate-marquee-slow">
+        {row4}
+      </div>
+      <div className="whitespace-nowrap text-[#974B60] text-5xl md:text-7xl font-staatliches uppercase animate-marquee whitespace-nowrap">
+        {row5}
+      </div>
+    </div>
+  );
+};
+
 export function NitmunxivPage() {
   const [showModal, setShowModal] = useState(false);
   const [showAdminPanel, setShowAdminPanel] = useState(false);
   const [showStudyGuides, setShowStudyGuides] = useState(false);
+  const [showGallery, setShowGallery] = useState(false);
   const [showAIAssistant, setShowAIAssistant] = useState(false);
   const [preselectedCommittee, setPreselectedCommittee] = useState<string>('');
   const [isVideoFinished, setIsVideoFinished] = useState(false);
@@ -39,22 +72,11 @@ export function NitmunxivPage() {
   const isAdmin = user && user.role !== 'student';
   const { scrollYProgress } = useScroll();
   const videoOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
-  const bgLogoOpacity = useTransform(scrollYProgress, [0.1, 0.3], [0, 1]);
 
   // Dynamic Content States
-  const defaultTlcText = `Literary Circle is the oldest club of NIT Durgapur, which gives the college an extra dimension of creative expression in the midst of technical unilateralism and gives the students of the college an opportunity to transcend the ordinary and mundane.
+  const defaultTlcText = `Literary Circle is the oldest club of NIT Durgapur, which gives the college an extra dimension of creative expression in the midst of technical unilateralism and gives the students of the college an opportunity to transcend the ordinary and mundane.\n\nThe Literary Circle conducts various events throughout the year: Verve, Literary cum Youth Festival of the college and the biggest of its kind in Eastern India. The Literary Circle successfully pulled off the 20th edition of Verve in 2025. Flagship events in the fest, like the Treasure Hunt, have become a matter of college folklore.\n\nThe club maintains a blog, The Darkest White, as the culmination of myriad pen strokes from the collective literary expression of the college. The club publishes the yearbook, so each student graduating out of college can reminisce about their days in the college, their hostel life and take with them a part of it.\n\nHumans of NIT Durgapur, by The Literary Circle, captures the untold stories, legends, and experiences of individuals, showing our readers how ordinary people can be unique, inspirational and relatable. The TEDx is an initiative where influential speakers are invited in order to realise TED's overall mission to research and discover "Touchstones". TEDxNITDurgapur was co-organised by The Literary Circle and was a confluence of ideas and innovation.\n\nThe club is known to be highly selective in its admission of new members, with only about 10-15 students inducted out of the entire batch of 900 each year. Great believers of the phrase 'quality over quantity', the members selected every year are the best in the field of expression and creativity.`;
 
-The Literary Circle conducts various events throughout the year: Verve, Literary cum Youth Festival of the college and the biggest of its kind in Eastern India. The Literary Circle successfully pulled off the 20th edition of Verve in 2025. Flagship events in the fest, like the Treasure Hunt, have become a matter of college folklore.
-
-The club maintains a blog, The Darkest White, as the culmination of myriad pen strokes from the collective literary expression of the college. The club publishes the yearbook, so each student graduating out of college can reminisce about their days in the college, their hostel life and take with them a part of it.
-
-Humans of NIT Durgapur, by The Literary Circle, captures the untold stories, legends, and experiences of individuals, showing our readers how ordinary people can be unique, inspirational and relatable. The TEDx is an initiative where influential speakers are invited in order to realise TED's overall mission to research and discover "Touchstones". TEDxNITDurgapur was co-organised by The Literary Circle and was a confluence of ideas and innovation.
-
-The club is known to be highly selective in its admission of new members, with only about 10-15 students inducted out of the entire batch of 900 each year. Great believers of the phrase 'quality over quantity', the members selected every year are the best in the field of expression and creativity.`;
-
-  const defaultNitmunText = `NITMUN is a forum convened by the members of the Literary Circle for discussion and analysis of global issues. It seeks to bring out motivated delegates from all over the country for a meaningful debate on significant international issues.
-
-Currently, in its 14th edition, NITMUN has been extremely successful in providing the perfect experience to each delegate. Over the years, we have entertained more than 2000 delegates totalling all the editions. Delegates arrive from all corners of India for an experience they will never forget.`;
+  const defaultNitmunText = `NITMUN is a forum convened by the members of the Literary Circle for discussion and analysis of global issues. It seeks to bring out motivated delegates from all over the country for a meaningful debate on significant international issues.\n\nCurrently, in its 14th edition, NITMUN has been extremely successful in providing the perfect experience to each delegate. Over the years, we have entertained more than 2000 delegates totalling all the editions. Delegates arrive from all corners of India for an experience they will never forget.`;
 
   const [aboutTlcText, setAboutTlcText] = useState(defaultTlcText);
   const [lastEditedTlcBy, setLastEditedTlcBy] = useState<string | undefined>();
@@ -68,7 +90,6 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
 
   const fetchPageContent = async () => {
     try {
-      // Fetch TLC About Text
       const tlcDocRef = doc(db, 'SiteContent', 'nitmun_about_tlc');
       const tlcDocSnap = await getDoc(tlcDocRef);
       if (tlcDocSnap.exists()) {
@@ -77,7 +98,6 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
         setLastEditedTlcBy(data.lastUpdatedBy);
       }
 
-      // Fetch NITMUN About Text
       const nitmunDocRef = doc(db, 'SiteContent', 'nitmun_about');
       const nitmunDocSnap = await getDoc(nitmunDocRef);
       if (nitmunDocSnap.exists()) {
@@ -115,7 +135,6 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
     setAboutNitmunText(newText);
     setLastEditedNitmunBy(editorName);
   };
-  // No duplicate videoOpacity here
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -142,18 +161,15 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
     if (isVideoFinished) {
       const scrollTimer = setTimeout(() => {
         if (actionButtonsRef.current) {
-          // Detect if it's mobile view to adjust scroll coordinate
           const isMobile = window.innerWidth < 768;
-          // Desktop uses -100 to clear the sticky nav properly, mobile uses 20 to push further down revealing buttons
           const scrollOffset = isMobile ? 20 : -100;
-
           const y = actionButtonsRef.current.getBoundingClientRect().top + window.scrollY + scrollOffset;
           window.scrollTo({
             top: y,
             behavior: 'smooth'
           });
         }
-      }, 3500); // Wait for the text animations to complete
+      }, 3500);
       return () => clearTimeout(scrollTimer);
     }
   }, [isVideoFinished]);
@@ -166,9 +182,56 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
   };
 
   return (
-    <div className="bg-black min-h-screen text-zinc-300 font-sans selection:bg-primary-500/30">
+    <div className="bg-[#232020] min-h-screen text-zinc-300 font-sans selection:bg-[#974B60]/50 relative overflow-hidden">
+
+      {/* Sticky Navigation Tab - Neo-brutalist style */}
+      <motion.div
+        style={{
+          opacity: scrollYProgress,
+          y: useTransform(scrollYProgress, [0, 0.1], [-80, 0]),
+          pointerEvents: useTransform(scrollYProgress, (v) => v > 0.05 ? "auto" : "none")
+        }}
+        className="fixed top-0 inset-x-0 z-50 bg-[#232020] border-b-[4px] border-black shadow-[0_4px_0_#000] py-3 md:py-4 px-4 md:px-6"
+      >
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-2 md:gap-3 shrink-0">
+            <img src={nitmunxivLogo} alt="NITMUN Logo" className="w-8 h-8 md:w-10 md:h-10 object-contain drop-shadow-md" />
+            <span className="text-xl md:text-2xl font-staatliches tracking-wide text-white translate-y-[2px]">NITMUN <span className="text-[#e08585]">XIV</span></span>
+          </div>
+          <div className="flex items-center gap-3 md:gap-6 font-antonio tracking-widest uppercase">
+            <button
+              onClick={() => setShowStudyGuides(true)}
+              className="text-sm md:text-base text-zinc-300 hover:text-white hover:underline decoration-2 underline-offset-4 transition-all"
+            >
+              Study Guides
+            </button>
+            <button
+              onClick={() => setShowGallery(true)}
+              className="hidden md:block text-sm md:text-base text-zinc-300 hover:text-white hover:underline decoration-2 underline-offset-4 transition-all"
+            >
+              Gallery
+            </button>
+            {isAdmin ? (
+              <button
+                onClick={() => setShowAdminPanel(true)}
+                className="px-4 py-2 bg-[#974B60] text-white border-[2px] border-black rounded shadow-[2px_2px_0_#000] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none hover:bg-[#c58715] transition-all"
+              >
+                Dashboard
+              </button>
+            ) : (
+              <button
+                onClick={() => setShowModal(true)}
+                className="px-4 py-2 bg-white text-black border-[2px] border-black rounded shadow-[2px_2px_0_#000] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none hover:bg-zinc-200 transition-all font-bold"
+              >
+                Register
+              </button>
+            )}
+          </div>
+        </div>
+      </motion.div>
+
       {/* Hero Section */}
-      <div className="relative w-full h-screen h-[100dvh] overflow-hidden flex flex-col items-center justify-end pb-32 md:pb-12">
+      <div className="relative w-full h-screen h-[100dvh] overflow-hidden flex flex-col items-center justify-end pb-32 md:pb-12 border-b-[8px] border-black shadow-[0_10px_30px_rgba(0,0,0,0.5)] z-20 bg-[#111]">
         <motion.div style={{ opacity: videoOpacity }} className="absolute inset-0 z-0">
           <video
             src={nitmunxivvideo}
@@ -177,7 +240,7 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
             playsInline
             onEnded={() => setIsVideoFinished(true)}
             id="mobile-bg-video"
-            className="absolute inset-0 w-full h-full object-cover md:hidden"
+            className="absolute inset-0 w-full h-full object-cover md:hidden opacity-80"
           />
           <video
             src={nitmunxivDesktopVideo}
@@ -186,9 +249,11 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
             playsInline
             onEnded={() => setIsVideoFinished(true)}
             id="desktop-bg-video"
-            className="absolute inset-0 w-full h-full object-cover hidden md:block"
+            className="absolute inset-0 w-full h-full object-cover hidden md:block opacity-80"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/10" />
+          {/* Grain overlay */}
+          <div className="absolute inset-0 opacity-[0.15] mix-blend-overlay pointer-events-none" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
         </motion.div>
 
         {/* Hero Content Overlay */}
@@ -198,24 +263,24 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1 }}
-              className="relative z-10 flex flex-col items-center justify-center w-full px-4 mb-8 md:mb-16"
+              className="relative z-10 flex flex-col items-center justify-center w-full px-4 mb-8 md:mb-16 mix-blend-screen"
             >
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 1.2, ease: "easeOut" }}
-                className="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-white tracking-widest text-center drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]"
+                className="text-[20vw] md:text-[15vw] leading-[0.85] font-antonio font-bold text-[#e08585] tracking-tighter text-center uppercase drop-shadow-[0_0_15px_rgba(224,133,133,0.5)]"
               >
-                NITMUN<span className="text-blue-500">XIV</span>
+                NITMUN<span className="text-[#bb943a]">XIV</span>
               </motion.h1>
 
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1, duration: 0.8 }}
-                className="mt-4 md:mt-6 text-xl md:text-2xl lg:text-3xl font-medium text-zinc-300 tracking-wide font-serif h-10 flex items-center justify-center"
+                className="mt-4 md:mt-2 text-xl md:text-3xl font-mono text-zinc-300 tracking-tight"
               >
-                <div className="relative inline-block">
+                <div className="relative inline-block bg-[#111] px-4 py-2 border-2 border-[#e08585]">
                   <motion.span
                     initial={{ width: "0%" }}
                     animate={{ width: "100%" }}
@@ -227,7 +292,7 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
                   <motion.span
                     animate={{ opacity: [1, 0] }}
                     transition={{ repeat: Infinity, duration: 0.8 }}
-                    className="absolute -right-[4px] top-[10%] h-[80%] w-[3px] bg-white inline-block"
+                    className="absolute -right-[4px] top-[10%] h-[80%] w-[10px] bg-[#bb943a] inline-block"
                   />
                 </div>
               </motion.div>
@@ -236,9 +301,9 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 3, duration: 1 }}
-                className="mt-6 md:mt-8 flex items-center gap-2 text-sm md:text-base font-medium uppercase tracking-[0.2em] text-blue-400 bg-blue-950/30 px-6 py-2 rounded-full border border-blue-500/20 backdrop-blur-md"
+                className="mt-6 md:mt-8 flex items-center gap-2 text-sm md:text-base font-antonio font-bold uppercase tracking-widest text-black bg-[#bb943a] px-6 py-2 border-[3px] border-black shadow-[4px_4px_0_#000]"
               >
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
+                <span className="w-2 h-2 bg-black animate-pulse" />
                 7th and 8th of March 2026
               </motion.p>
             </motion.div>
@@ -251,287 +316,273 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 4, duration: 1 }}
-          className="relative z-10 flex flex-col items-center gap-2 text-white/70 hover:text-white transition-colors group cursor-pointer mt-4"
+          className="relative z-10 flex flex-col items-center gap-2 text-white/50 hover:text-white transition-colors group cursor-pointer mt-4"
         >
-          <span className="text-sm font-medium tracking-widest uppercase">Scroll Below</span>
+          <span className="text-sm font-bold font-antonio tracking-widest uppercase">Scroll Below</span>
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
           >
-            <ChevronDown className="w-8 h-8 opacity-70 group-hover:opacity-100 group-hover:text-primary-400" />
+            <ChevronDown className="w-8 h-8 opacity-70 group-hover:opacity-100 group-hover:text-[#bb943a]" />
           </motion.div>
         </motion.button>
       </div>
 
-      {/* Sticky Navigation Tab */}
-      <motion.div
-        style={{
-          opacity: scrollYProgress,
-          y: useTransform(scrollYProgress, [0, 0.1], [-50, 0]),
-          pointerEvents: useTransform(scrollYProgress, (v) => v > 0.05 ? "auto" : "none")
-        }}
-        className="fixed top-0 inset-x-0 z-50 bg-black/80 backdrop-blur-xl border-b border-zinc-800 py-3 md:py-4 px-4 md:px-6"
-      >
-        <div className="max-w-5xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 md:gap-3 shrink-0">
-            <img src={nitmunxivLogo} alt="NITMUN Logo" className="w-7 h-7 sm:w-8 sm:h-8 md:w-10 md:h-10 object-contain drop-shadow-md" />
-            <span className="text-base sm:text-lg md:text-xl font-bold font-serif tracking-widest text-white">NITMUN<span className="text-blue-500">XIV</span></span>
-          </div>
-          <div className="flex items-center gap-2 md:gap-4">
-            <button
-              onClick={() => setShowStudyGuides(true)}
-              className="flex items-center gap-2 px-2 md:px-4 py-2 text-sm text-zinc-400 hover:text-white transition-colors"
-              title="Study Guides"
-            >
-              <BookOpen className="w-5 h-5 md:w-4 md:h-4" />
-              <span className="hidden md:inline">Study Guides</span>
-            </button>
-            <button
-              onClick={() => alert("Photo Gallery will be available soon!")}
-              className="flex items-center gap-2 px-2 md:px-4 py-2 text-sm text-zinc-400 hover:text-white transition-colors"
-              title="Gallery"
-            >
-              <ImageIcon className="w-5 h-5 md:w-4 md:h-4" />
-              <span className="hidden md:inline">Gallery</span>
-            </button>
-            {isAdmin ? (
-              <button
-                onClick={() => setShowAdminPanel(true)}
-                className="flex items-center gap-2 px-4 md:px-6 py-2 bg-primary-600 hover:bg-primary-500 text-white rounded-full text-xs md:text-sm font-semibold transition-colors whitespace-nowrap"
-              >
-                <Shield className="w-4 h-4" />
-                <span className="hidden sm:inline">View Registrations</span>
-                <span className="sm:hidden">View</span>
-              </button>
-            ) : (
-              <button
-                onClick={() => setShowModal(true)}
-                className="flex items-center gap-2 px-4 md:px-6 py-2 bg-white hover:bg-zinc-200 text-black rounded-full text-xs md:text-sm font-semibold transition-colors whitespace-nowrap"
-              >
-                <LinkIcon className="w-4 h-4" />
-                <span className="hidden sm:inline">Register Now</span>
-                <span className="sm:hidden">Register</span>
-              </button>
-            )}
-          </div>
+      {/* Main Content Area */}
+      <div className="relative w-full pb-32 pt-24 md:pt-32 z-10">
+        <MarqueeBackground />
+
+        {/* --- Vertical Side Ambient Texts --- */}
+        <div className="absolute left-6 top-[20%] text-[8vh] font-staatliches text-zinc-500/20 uppercase tracking-widest pointer-events-none hidden xl:block mix-blend-overlay selection-none" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
+          LITERARY CIRCLE
         </div>
-      </motion.div>
+        <div className="absolute right-6 top-[40%] text-[8vh] font-staatliches text-[#e08585]/20 uppercase tracking-widest pointer-events-none hidden xl:block mix-blend-overlay selection-none" style={{ writingMode: 'vertical-rl' }}>
+          NITMUN XIV
+        </div>
+        <div className="absolute left-6 top-[70%] text-[8vh] font-staatliches text-[#bb943a]/20 uppercase tracking-widest pointer-events-none hidden xl:block mix-blend-overlay selection-none" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
+          INTERNATIONAL PRESS
+        </div>
+        {/* --- End Ambient Texts --- */}
 
-      {/* Background Logo Overlay */}
-      <div className="fixed inset-0 z-0 pointer-events-none flex items-center justify-center overflow-hidden opacity-5 md:opacity-[0.07]">
-        <motion.img style={{ opacity: bgLogoOpacity }} src={nitmunxivLogo} alt="" className="w-[150%] md:w-full max-w-4xl object-contain" />
-      </div>
+        <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 space-y-20 md:space-y-32">
 
-      {/* Content Sections */}
-      <div className="relative z-10 max-w-5xl mx-auto px-6 py-24 space-y-32">
-
-        {/* About TLC */}
-        <motion.section
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8 }}
-          className="space-y-8"
-        >
-          <div className="flex items-center gap-4 border-b border-zinc-800 pb-4">
-            <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">About <span className="text-primary-500">Literary Circle</span></h2>
-          </div>
-          <div className="prose prose-invert prose-lg max-w-none text-zinc-400 leading-relaxed font-serif relative group">
-            {isLoadingContent ? (
-              <p className="animate-pulse">Loading content...</p>
-            ) : (
-              <EditableText
-                value={aboutTlcText}
-                onSave={handleSaveTlcText}
-                canEdit={Boolean(isAdmin)}
-                className="font-spectral"
-                showLastEdited={Boolean(isAdmin)}
-                lastEditedBy={lastEditedTlcBy}
-              />
-            )}
-            {isAdmin && !isLoadingContent && (
-              <p className="text-xs text-primary-300/60 mt-2 block italic border-l-2 border-primary-500 pl-2">
-                ✏️ Note: As an admin, you can hover and edit this paragraph. Your edits will instantly update the main database.
-              </p>
-            )}
-          </div>
-        </motion.section>
-
-        {/* About NITMUN XIV */}
-        <motion.section
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8 }}
-          className="space-y-8"
-        >
-          <div className="flex items-center gap-4 border-b border-zinc-800 pb-4">
-            <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">About <span className="text-blue-500">NITMUN XIV</span></h2>
-          </div>
-          <div className="prose prose-invert prose-lg max-w-none text-zinc-400 leading-relaxed font-serif relative group">
-            {isLoadingContent ? (
-              <p className="animate-pulse">Loading content...</p>
-            ) : (
-              <EditableText
-                value={aboutNitmunText}
-                onSave={handleSaveNitmunText}
-                canEdit={Boolean(isAdmin)}
-                className="font-spectral text-xl md:text-2xl text-zinc-300 leading-normal"
-                showLastEdited={Boolean(isAdmin)}
-                lastEditedBy={lastEditedNitmunBy}
-              />
-            )}
-          </div>
-        </motion.section>
-
-        {/* Countdown Timer */}
-        <motion.section
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8 }}
-          className="bg-zinc-900/50 border border-zinc-800 rounded-3xl p-8 md:p-12 text-center backdrop-blur-xl relative overflow-hidden"
-        >
-          <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary-500/50 to-transparent" />
-          <h3 className="text-sm font-bold tracking-[0.2em] text-primary-400 uppercase mb-8">Commencing In</h3>
-
-          <div className="flex flex-wrap justify-center gap-4 md:gap-8">
-            {[
-              { label: 'Days', value: timeLeft.days },
-              { label: 'Hours', value: timeLeft.hours },
-              { label: 'Minutes', value: timeLeft.minutes },
-              { label: 'Seconds', value: timeLeft.seconds }
-            ].map((unit) => (
-              <div key={unit.label} className="flex flex-col items-center">
-                <div className="w-20 h-24 md:w-32 md:h-36 bg-black/50 border border-zinc-800 flex items-center justify-center rounded-2xl shadow-inner relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-primary-500/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <span className="text-4xl md:text-7xl font-light text-white font-mono tracking-tighter">
-                    {unit.value.toString().padStart(2, '0')}
-                  </span>
-                </div>
-                <span className="text-xs md:text-sm text-zinc-500 font-medium uppercase tracking-widest mt-4">
-                  {unit.label}
-                </span>
-              </div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* Grouped Bottom Sections */}
-        <div className="space-y-8 md:space-y-12 w-full max-w-4xl mx-auto">
-          {/* Action Buttons */}
+          {/* About TLC */}
           <motion.section
-            ref={actionButtonsRef}
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
+            viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 0.8 }}
-            className="flex justify-center"
+            className="bg-[#232020]/80 backdrop-blur-md rounded-[20px] border-[5px] border-black shadow-[8px_10px_0_#000] p-6 md:p-10 relative group hover:-translate-y-2 hover:-translate-x-2 hover:shadow-[12px_14px_0_#bb943a] transition-all duration-300"
           >
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
-              {/* Study Guides Button */}
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.95, filter: "brightness(0.9)" }}
-                onClick={() => setShowStudyGuides(true)}
-                className="flex flex-col items-start gap-4 p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-blue-500/10 to-blue-900/20 border border-blue-500/20 hover:border-blue-400/50 transition-colors group overflow-hidden relative text-left"
-                title="Study Guides"
-              >
-                <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-                  <BookOpen className="w-32 h-32 transform rotate-12" />
-                </div>
-                <div className="relative z-10 flex items-center justify-center w-14 h-14 rounded-xl bg-black/40 backdrop-blur-md border border-white/5 group-hover:bg-black/60 transition-colors">
-                  <BookOpen className="w-7 h-7 text-blue-400" />
-                </div>
-                <div className="relative z-10 space-y-2 mt-2">
-                  <h4 className="text-xl sm:text-2xl font-bold text-white group-hover:text-amber-50 transition-colors">
-                    Study Guides
-                  </h4>
-                  <p className="text-sm sm:text-base font-medium text-zinc-400 group-hover:text-zinc-300">
-                    Access comprehensive preparation materials for all committees
-                  </p>
-                </div>
-                <div className="relative z-10 mt-auto pt-4 flex items-center text-sm font-bold uppercase tracking-wider text-blue-400/70 group-hover:text-blue-400 transition-colors">
-                  Open Guides <span className="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
-                </div>
-              </motion.button>
+            {/* Watermark Logo */}
+            <img
+              src="http://www.lcnitd.co.in/images/tlclogo.png"
+              alt=""
+              className="absolute inset-0 m-auto w-[60%] md:w-[40%] opacity-[0.05] pointer-events-none mix-blend-screen filter grayscale-[100%]"
+            />
 
-              {/* Photo Gallery Button */}
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.95, filter: "brightness(0.9)" }}
-                onClick={() => alert("Photo Gallery will be available soon!")}
-                className="flex flex-col items-start gap-4 p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-amber-500/10 to-amber-900/20 border border-amber-500/20 hover:border-amber-400/50 transition-colors group overflow-hidden relative text-left"
-                title="Photo Gallery"
-              >
-                <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-                  <ImageIcon className="w-32 h-32 transform rotate-12" />
-                </div>
-                <div className="relative z-10 flex items-center justify-center w-14 h-14 rounded-xl bg-black/40 backdrop-blur-md border border-white/5 group-hover:bg-black/60 transition-colors">
-                  <ImageIcon className="w-7 h-7 text-amber-400" />
-                </div>
-                <div className="relative z-10 space-y-2 mt-2">
-                  <h4 className="text-xl sm:text-2xl font-bold text-white group-hover:text-amber-50 transition-colors">
-                    Photo Gallery
-                  </h4>
-                  <p className="text-sm sm:text-base font-medium text-zinc-400 group-hover:text-zinc-300">
-                    Relive the most memorable moments and highlights of NITMUN
-                  </p>
-                </div>
-                <div className="relative z-10 mt-auto pt-4 flex items-center text-sm font-bold uppercase tracking-wider text-amber-400/70 group-hover:text-amber-400 transition-colors">
-                  View Gallery <span className="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
-                </div>
-              </motion.button>
-
-              {/* Register/Admin Button */}
-              {isAdmin ? (
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.95, filter: "brightness(0.9)" }}
-                  onClick={() => setShowAdminPanel(true)}
-                  className="flex flex-col items-start gap-4 p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-primary-600/20 to-primary-900/30 border border-primary-500/30 hover:border-primary-400/60 transition-colors group overflow-hidden relative text-left shadow-[0_0_40px_-15px_rgba(239,68,68,0.3)] hover:shadow-[0_0_40px_-10px_rgba(239,68,68,0.5)]"
-                >
-                  <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-                    <Shield className="w-32 h-32 transform rotate-12" />
-                  </div>
-                  <div className="relative z-10 flex items-center justify-center w-14 h-14 rounded-xl bg-black/40 backdrop-blur-md border border-white/5 group-hover:bg-black/60 transition-colors">
-                    <Shield className="w-7 h-7 text-primary-400" />
-                  </div>
-                  <div className="relative z-10 space-y-2 mt-2">
-                    <h4 className="text-xl sm:text-2xl font-bold text-white group-hover:text-amber-50 transition-colors">
-                      View Registrations
-                    </h4>
-                    <p className="text-sm sm:text-base font-medium text-zinc-400 group-hover:text-zinc-300">
-                      Manage and review all delegate registrations for the conference
-                    </p>
-                  </div>
-                  <div className="relative z-10 mt-auto pt-4 flex items-center text-sm font-bold uppercase tracking-wider text-primary-400/70 group-hover:text-primary-400 transition-colors">
-                    Open Dashboard <span className="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
-                  </div>
-                </motion.button>
+            <div className="absolute top-0 right-0 py-2 px-4 bg-black text-white font-antonio font-bold text-lg transform rotate-[-5deg] translate-x-4 -translate-y-4 shadow-[4px_4px_0_#bb943a] z-10">
+              ORGANIZERS
+            </div>
+            <h2 className="text-5xl md:text-7xl font-staatliches text-[#bb943a] uppercase tracking-wide mb-6 drop-shadow-[2px_2px_0_#000] relative z-10">
+              About Literary Circle
+            </h2>
+            <div className="text-base md:text-xl text-zinc-300 font-mono leading-relaxed relative group prose prose-invert max-w-none z-10">
+              {isLoadingContent ? (
+                <p className="animate-pulse">Loading content...</p>
               ) : (
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.95, filter: "brightness(0.9)" }}
-                  onClick={() => setShowModal(true)}
-                  className="flex flex-col items-start gap-4 p-6 sm:p-8 rounded-2xl bg-gradient-to-br from-emerald-500/10 to-emerald-900/20 border border-emerald-500/20 hover:border-emerald-400/50 transition-colors group overflow-hidden relative text-left shadow-[0_0_40px_-15px_rgba(16,185,129,0.2)] hover:shadow-[0_0_40px_-10px_rgba(16,185,129,0.3)]"
+                <EditableText
+                  value={aboutTlcText}
+                  onSave={handleSaveTlcText}
+                  canEdit={Boolean(isAdmin)}
+                  className="font-mono bg-black/20 p-4 rounded border-2 border-transparent hover:border-[#bb943a]/50 transition-colors"
+                  showLastEdited={Boolean(isAdmin)}
+                  lastEditedBy={lastEditedTlcBy}
+                />
+              )}
+              {isAdmin && !isLoadingContent && (
+                <p className="text-xs text-[#bb943a] mt-4 font-sans font-bold uppercase tracking-wider block border-l-4 border-[#bb943a] pl-3 py-1 bg-black/40">
+                  Admin: Hover over text to edit
+                </p>
+              )}
+            </div>
+          </motion.section>
+
+          {/* About NITMUN XIV */}
+          <motion.section
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8 }}
+            className="bg-[#232020]/80 backdrop-blur-md rounded-[20px] border-[5px] border-black shadow-[8px_10px_0_#000] p-6 md:p-10 relative group hover:-translate-y-2 hover:-translate-x-2 hover:shadow-[12px_14px_0_#e08585] transition-all duration-300"
+          >
+            {/* Watermark Logo */}
+            <img
+              src={nitmunxivLogo}
+              alt=""
+              className="absolute inset-0 m-auto w-[60%] md:w-[40%] opacity-[0.05] pointer-events-none mix-blend-screen"
+            />
+
+            <div className="absolute top-0 right-0 py-2 px-4 bg-black text-white font-antonio font-bold text-lg transform rotate-[3deg] translate-x-2 -translate-y-4 shadow-[4px_4px_0_#e08585] z-10">
+              THE FORUM
+            </div>
+            <h2 className="text-5xl md:text-7xl font-staatliches text-[#e08585] uppercase tracking-wide mb-6 drop-shadow-[2px_2px_0_#000] relative z-10">
+              About NITMUN XIV
+            </h2>
+            <div className="text-base md:text-xl text-zinc-300 font-mono leading-relaxed relative group prose prose-invert max-w-none z-10">
+              {isLoadingContent ? (
+                <p className="animate-pulse">Loading content...</p>
+              ) : (
+                <EditableText
+                  value={aboutNitmunText}
+                  onSave={handleSaveNitmunText}
+                  canEdit={Boolean(isAdmin)}
+                  className="font-mono bg-black/20 p-4 rounded border-2 border-transparent hover:border-[#e08585]/50 transition-colors text-lg md:text-2xl text-zinc-200 backdrop-blur-sm"
+                  showLastEdited={Boolean(isAdmin)}
+                  lastEditedBy={lastEditedNitmunBy}
+                />
+              )}
+            </div>
+          </motion.section>
+
+          {/* Countdown Timer */}
+          <motion.section
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.8 }}
+            className="bg-[#c58715] rounded-[20px] border-[5px] border-black shadow-[8px_10px_0_#000] p-8 md:p-12 text-center overflow-hidden relative group hover:-translate-y-2 hover:-translate-x-2 hover:shadow-[12px_14px_0_#000] transition-all duration-300"
+          >
+            {/* Brutalist Pattern Overlay */}
+            <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(#000 2px, transparent 2px)', backgroundSize: '16px 16px' }}></div>
+
+            <h3 className="text-2xl md:text-4xl font-staatliches text-black uppercase mb-8 relative z-10 drop-shadow-[1px_1px_0_#fff]">
+              Commencing In
+            </h3>
+
+            <div className="flex flex-wrap justify-center gap-4 md:gap-8 relative z-10">
+              {[
+                { label: 'Days', value: timeLeft.days },
+                { label: 'Hours', value: timeLeft.hours },
+                { label: 'Minutes', value: timeLeft.minutes },
+                { label: 'Seconds', value: timeLeft.seconds }
+              ].map((unit) => (
+                <div key={unit.label} className="flex flex-col items-center">
+                  <div className="w-20 h-24 md:w-32 md:h-36 bg-white border-[4px] border-black shadow-[4px_6px_0_#000] flex items-center justify-center rounded-xl relative overflow-hidden group">
+                    <span className="text-5xl md:text-7xl font-antonio font-bold text-black tracking-tighter">
+                      {unit.value.toString().padStart(2, '0')}
+                    </span>
+                  </div>
+                  <span className="text-base md:text-xl text-black font-antonio font-bold uppercase tracking-widest mt-4">
+                    {unit.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </motion.section>
+
+          {/* Grouped Bottom Sections */}
+          <div className="space-y-8 md:space-y-12 w-full mx-auto" ref={actionButtonsRef}>
+
+            {/* Action Buttons */}
+            <motion.section
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.8 }}
+            >
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+
+                {/* Study Guides Button */}
+                <button
+                  onClick={() => setShowStudyGuides(true)}
+                  className="relative block w-full bg-[#974B60] text-white rounded-xl border-[4px] border-black shadow-[6px_8px_0_#000] overflow-hidden group active:translate-y-2 active:translate-x-2 active:shadow-none transition-all duration-300 hover:-translate-y-2 hover:-translate-x-2 hover:shadow-[10px_12px_0_#000]"
                 >
-                  <div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
-                    <LinkIcon className="w-32 h-32 transform rotate-12" />
+                  <div className="absolute inset-0 bg-[#c58715] top-[110%] group-hover:top-0 transition-all duration-300 z-0"></div>
+                  <div className="relative z-10 p-6 md:p-8 flex flex-col items-start gap-2 h-full">
+                    <BookOpen className="w-8 h-8 mb-2" />
+                    <span className="text-3xl font-staatliches tracking-wide uppercase">Study Guides</span>
+                    <span className="text-sm font-mono text-zinc-100/90 leading-tight">Access comprehensive committee materials</span>
                   </div>
-                  <div className="relative z-10 flex items-center justify-center w-14 h-14 rounded-xl bg-black/40 backdrop-blur-md border border-white/5 group-hover:bg-black/60 transition-colors">
-                    <LinkIcon className="w-7 h-7 text-emerald-400" />
+                </button>
+
+                {/* Photo Gallery Button */}
+                <button
+                  onClick={() => setShowGallery(true)}
+                  className="relative block w-full bg-[#974B60] text-white rounded-xl border-[4px] border-black shadow-[6px_8px_0_#000] overflow-hidden group active:translate-y-2 active:translate-x-2 active:shadow-none transition-all duration-300 hover:-translate-y-2 hover:-translate-x-2 hover:shadow-[10px_12px_0_#000]"
+                >
+                  <div className="absolute inset-0 bg-[#c58715] top-[110%] group-hover:top-0 transition-all duration-300 z-0"></div>
+                  <div className="relative z-10 p-6 md:p-8 flex flex-col items-start gap-2 h-full">
+                    <ImageIcon className="w-8 h-8 mb-2" />
+                    <span className="text-3xl font-staatliches tracking-wide uppercase">Photo Gallery</span>
+                    <span className="text-sm font-mono text-zinc-100/90 leading-tight">Relive past moments of diplomacy</span>
                   </div>
-                  <div className="relative z-10 space-y-2 mt-2">
-                    <h4 className="text-xl sm:text-2xl font-bold text-white group-hover:text-amber-50 transition-colors">
-                      Register Now
+                </button>
+
+                {/* Register / Admin Button */}
+                {isAdmin ? (
+                  <button
+                    onClick={() => setShowAdminPanel(true)}
+                    className="relative block w-full bg-[#e08585] text-black rounded-xl border-[4px] border-black shadow-[6px_8px_0_#000] overflow-hidden group active:translate-y-2 active:translate-x-2 active:shadow-none transition-all duration-300 hover:-translate-y-2 hover:-translate-x-2 hover:shadow-[10px_12px_0_#000]"
+                  >
+                    <div className="absolute inset-0 bg-[#bb943a] top-[110%] group-hover:top-0 transition-all duration-300 z-0 text-black"></div>
+                    <div className="relative z-10 p-6 md:p-8 flex flex-col items-start gap-2 h-full">
+                      <Shield className="w-8 h-8 mb-2" />
+                      <span className="text-3xl font-staatliches tracking-wide uppercase">Registrations</span>
+                      <span className="text-sm font-mono text-black/80 font-bold leading-tight">Manage and review delegates</span>
+                    </div>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setShowModal(true)}
+                    className="relative block w-full bg-white text-black rounded-xl border-[4px] border-black shadow-[6px_8px_0_#000] overflow-hidden group active:translate-y-2 active:translate-x-2 active:shadow-none transition-all duration-300 hover:-translate-y-2 hover:-translate-x-2 hover:shadow-[10px_12px_0_#000]"
+                  >
+                    <div className="absolute inset-0 bg-[#e08585] top-[110%] group-hover:top-0 transition-all duration-300 z-0 text-black"></div>
+                    <div className="relative z-10 p-6 md:p-8 flex flex-col items-start gap-2 h-full">
+                      <LinkIcon className="w-8 h-8 mb-2" />
+                      <span className="text-3xl font-staatliches tracking-wide uppercase">Register Now</span>
+                      <span className="text-sm font-mono text-black/80 font-bold leading-tight">Secure your spot for the conference</span>
+                    </div>
+                  </button>
+                )}
+
+              </div>
+            </motion.section>
+
+            {/* New to MUN Video Link */}
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              <a
+                href="https://www.youtube.com/watch?v=9EhrOk2mWXI"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col md:flex-row items-center justify-between gap-6 p-6 md:p-8 rounded-[20px] border-[5px] border-black bg-white shadow-[8px_10px_0_#000] hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_5px_0_#000] active:translate-x-3 active:translate-y-3 active:shadow-none transition-all cursor-pointer relative"
+              >
+                <div className="flex flex-col md:flex-row items-center gap-6 flex-1 text-center md:text-left">
+                  <div className="w-20 h-20 shrink-0 rounded-full border-[4px] border-black bg-[#e08585] flex items-center justify-center text-black group-hover:bg-[#c58715] transition-colors shadow-[4px_4px_0_#000]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
+                    </svg>
+                  </div>
+
+                  <div className="space-y-1">
+                    <h4 className="text-3xl md:text-4xl font-staatliches text-black uppercase tracking-wide">
+                      New to MUN?
                     </h4>
-                    <p className="text-sm sm:text-base font-medium text-zinc-400 group-hover:text-zinc-300">
-                      Secure your spot and participate in the upcoming conference
+                    <p className="text-sm md:text-lg text-black/70 font-mono font-bold">
+                      Click Here to watch a quick guide on the rules!
                     </p>
                   </div>
-                  <div className="relative z-10 mt-auto pt-4 flex items-center text-sm font-bold uppercase tracking-wider text-emerald-400/70 group-hover:text-emerald-400 transition-colors">
-                    Register Here <span className="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
+                </div>
+              </a>
+            </motion.section>
+
+            {/* AI Assistant Banner (Only for inhouse) */}
+            {isInhouseUser && (
+              <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+                className="pt-4"
+              >
+                <div
+                  onClick={() => setShowAIAssistant(true)}
+                  className="group flex flex-col md:flex-row items-center justify-between gap-6 p-6 md:p-8 rounded-[20px] border-[5px] border-black bg-white shadow-[8px_10px_0_#000] hover:translate-x-1 hover:translate-y-1 hover:shadow-[4px_5px_0_#000] active:translate-x-3 active:translate-y-3 active:shadow-none transition-all cursor-pointer relative"
+                >
+                  <div className="flex flex-col md:flex-row items-center gap-6 flex-1 text-center md:text-left">
+                    <div className="space-y-1">
+                      <h4 className="text-3xl md:text-4xl font-staatliches text-black uppercase tracking-wide">
+                        Confused about which committee to choose?
+                      </h4>
+                      <p className="text-sm md:text-lg text-black/70 font-mono font-bold">
+                        NITMUN AI is here to guide you to the best committee
+                      </p>
+                    </div>
                   </div>
                 </motion.button>
               )}
@@ -539,38 +590,14 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
             </div>
           </motion.section>
 
-          {/* New to MUN Video Link */}
-          <motion.section
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex justify-center w-full max-w-4xl"
-          >
-            <a
-              href="https://www.youtube.com/watch?v=9EhrOk2mWXI"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8 p-6 md:p-8 rounded-3xl border border-rose-500/20 bg-gradient-to-r from-rose-500/5 to-rose-900/10 hover:from-rose-500/10 hover:to-rose-900/20 hover:border-rose-500/40 transition-all cursor-pointer relative overflow-hidden backdrop-blur-md w-full shadow-[0_0_30px_-15px_rgba(244,63,94,0.3)] hover:shadow-[0_0_40px_-10px_rgba(244,63,94,0.5)]"
-            >
-              <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-              <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6 flex-1 text-center md:text-left">
-                <div className="w-16 h-16 shrink-0 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-500 group-hover:bg-rose-600 group-hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(244,63,94,0.3)] group-hover:shadow-[0_0_25px_rgba(244,63,94,0.6)] transform group-hover:scale-105">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z" />
-                  </svg>
+                  <div className="hidden md:flex items-center gap-2 text-xl font-staatliches uppercase tracking-wider text-[#974B60] group-hover:text-[#c58715] transition-colors shrink-0">
+                    Ask NITMUN AI <span className="transform group-hover:translate-x-2 transition-transform text-2xl font-sans inline-block ml-2">→</span>
+                  </div>
                 </div>
+              </motion.section>
+            )}
 
-                <div className="space-y-1">
-                  <h4 className="text-xl md:text-2xl font-bold text-white group-hover:text-rose-50 transition-colors">
-                    New to MUN?
-                  </h4>
-                  <p className="text-sm md:text-base text-rose-200/70 group-hover:text-rose-200 transition-colors font-medium tracking-wide">
-                    Click Here to know the rules!
-                  </p>
-                </div>
-              </div>
+          </div>
 
               <div className="hidden md:flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-rose-400 group-hover:text-rose-300 transition-colors shrink-0">
                 Watch Video <span className="transform group-hover:translate-x-1 transition-transform">→</span>
@@ -615,7 +642,6 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
             </motion.section>
           )}
         </div>
-
       </div>
 
       {/* Modals */}
@@ -639,6 +665,11 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
         onClose={() => setShowStudyGuides(false)}
       />
 
+      <PhotoGalleryModal
+        isOpen={showGallery}
+        onClose={() => setShowGallery(false)}
+      />
+
       {/* AI Assistant Modal */}
       <AnimatePresence>
         {showAIAssistant && (
@@ -647,6 +678,12 @@ Currently, in its 14th edition, NITMUN has been extremely successful in providin
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-2xl bg-gradient-to-br from-[#2a2a2a] via-[#232020] to-[#1a1a1a] rounded-[20px] shadow-[8px_10px_0_#000] border-[5px] border-black overflow-hidden h-[90vh] md:h-[80vh] flex flex-col pt-8 pb-4 px-6 md:px-8"
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="h-2 bg-gradient-to-r from-[#bb943a] via-[#e08585] to-[#c58715] absolute top-0 inset-x-0" />
+              <button onClick={() => setShowAIAssistant(false)}
+                className="absolute top-4 right-4 z-[110] w-8 h-8 flex items-center justify-center bg-black hover:bg-zinc-800 border-2 border-[#e08585] text-[#e08585] font-bold transition-all duration-200 shadow-[2px_2px_0_#000] active:translate-y-[2px] active:translate-x-[2px] active:shadow-none"
               className="relative w-full max-w-2xl bg-gradient-to-br from-white via-gray-50 to-indigo-50 rounded-2xl shadow-2xl overflow-hidden h-[90vh] md:h-[80vh] flex flex-col pt-8 pb-4 px-6 md:px-8"
               onClick={e => e.stopPropagation()}
             >
