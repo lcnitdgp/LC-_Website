@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
-import { Search, X, Users, GraduationCap, Building2, Phone, Mail, FileText } from 'lucide-react';
+import { Search, X, Users, GraduationCap, Building2, Phone, Mail, FileText, Download } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import mysteriousManImage from '../../assets/auditions/mysterious-man.webp';
 
@@ -101,6 +101,62 @@ export function NitmunAdminPanel({ onClose }: { onClose: () => void }) {
         return matchesTab && matchesSearch;
     });
 
+    const exportToCsv = () => {
+        const dataToExport = registrations.filter(reg => reg.type === activeTab);
+        if (dataToExport.length === 0) return;
+
+        const headers = [
+            'ID', 'Full Name', 'Email', 'Phone Number', 'Role', 'Type',
+            'College/NIT', 'Roll Number', 'Year/Year of Study',
+            'Committee Pref 1', 'Portfolio 1.1', 'Portfolio 1.2', 'Portfolio 1.3',
+            'Committee Pref 2', 'Portfolio 2.1', 'Portfolio 2.2', 'Portfolio 2.3',
+            'Committee Pref 3', 'Portfolio 3.1', 'Portfolio 3.2', 'Portfolio 3.3',
+            'Payment Ref', 'Timestamp'
+        ];
+
+        const escapeCSV = (str: any) => {
+            if (str === null || str === undefined) return '';
+            const stringified = String(str).replace(/"/g, '""');
+            return `"${stringified}"`;
+        };
+
+        const csvRows = [headers.join(',')];
+
+        dataToExport.forEach(reg => {
+            const row = [
+                reg.id,
+                reg.fullName,
+                reg.email,
+                reg.phoneNumber,
+                reg.role,
+                reg.type,
+                reg.type === 'inhouse' ? 'NIT Durgapur' : reg.collegeName,
+                reg.rollNumber || '',
+                reg.type === 'inhouse' ? reg.year : reg.yearOfStudy,
+                reg.committeePref1 || '',
+                reg.portfolio1_1 || '', reg.portfolio1_2 || '', reg.portfolio1_3 || '',
+                reg.committeePref2 || '',
+                reg.portfolio2_1 || '', reg.portfolio2_2 || '', reg.portfolio2_3 || '',
+                reg.committeePref3 || '',
+                reg.portfolio3_1 || '', reg.portfolio3_2 || '', reg.portfolio3_3 || '',
+                reg.paymentReferenceNumber || '',
+                reg.timestamp ? new Date(reg.timestamp).toLocaleString() : ''
+            ].map(escapeCSV);
+
+            csvRows.push(row.join(','));
+        });
+
+        const csvContent = csvRows.join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `nitmun_${activeTab}_registrations_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     return (
         <div className="fixed inset-0 bg-[#232020] z-50 flex flex-col font-inter overflow-hidden border-[8px] border-black shadow-[inset_0_0_0_4px_#bb943a]">
             {/* Header */}
@@ -114,9 +170,15 @@ export function NitmunAdminPanel({ onClose }: { onClose: () => void }) {
                             NITMUN Records
                         </h2>
 
-                        <button onClick={onClose} className="w-10 h-10 bg-black text-white flex items-center justify-center border-[3px] border-black shadow-[3px_3px_0_#fff] hover:bg-white hover:text-black hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:translate-y-2 active:translate-x-2 transition-all sm:hidden">
-                            <X size={24} className="stroke-[3]" />
-                        </button>
+                        <div className="flex gap-2 sm:hidden">
+                            <button onClick={exportToCsv} className="h-10 px-3 bg-[#bb943a] text-black flex items-center justify-center gap-2 border-[3px] border-black shadow-[3px_3px_0_#000] hover:bg-white hover:text-black hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:translate-y-2 active:translate-x-2 transition-all font-antonio font-bold uppercase tracking-widest text-xs whitespace-nowrap" title="Export to CSV">
+                                <span>Export to CSV</span>
+                                <Download size={16} className="stroke-[3]" />
+                            </button>
+                            <button onClick={onClose} className="w-10 h-10 bg-black text-white flex items-center justify-center border-[3px] border-black shadow-[3px_3px_0_#fff] hover:bg-white hover:text-black hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:translate-y-2 active:translate-x-2 transition-all">
+                                <X size={24} className="stroke-[3]" />
+                            </button>
+                        </div>
                     </div>
 
                     <div className="flex gap-2 w-full sm:w-auto">
@@ -152,6 +214,10 @@ export function NitmunAdminPanel({ onClose }: { onClose: () => void }) {
                             className="bg-[#e0b0ac] border-[4px] border-black shadow-[4px_4px_0_#000] rounded-none pl-12 pr-4 py-3 text-black font-mono font-bold placeholder-black/60 focus:outline-none focus:bg-[#c89894] focus:border-black transition-colors w-full sm:w-72 uppercase"
                         />
                     </div>
+                    <button onClick={exportToCsv} className="h-12 px-4 bg-[#232020] text-white hidden sm:flex items-center justify-center gap-2 border-[4px] border-black shadow-[4px_4px_0_#bb943a] hover:bg-[#bb943a] hover:text-black hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:translate-y-2 active:translate-x-2 transition-all font-antonio font-bold uppercase tracking-widest whitespace-nowrap" title="Export to CSV">
+                        <span>Export to CSV</span>
+                        <Download size={20} className="stroke-[3]" />
+                    </button>
                     <button onClick={onClose} className="w-12 h-12 bg-[#232020] text-white hidden sm:flex items-center justify-center border-[4px] border-black shadow-[4px_4px_0_#fff] hover:bg-black hover:text-[#bb943a] hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:translate-y-2 active:translate-x-2 transition-all">
                         <X size={24} className="stroke-[3]" />
                     </button>
