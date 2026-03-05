@@ -229,12 +229,9 @@ INSTRUCTIONS:
                     <ArrowLeft size={18} />
                 </button>
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white shadow-md">
-                        <Sparkles className="w-5 h-5" />
-                    </div>
                     <div>
                         <h3 className="font-cormorant font-bold text-xl text-gray-900">Committee Matchmaker</h3>
-                        <p className="font-spectral text-xs text-primary-600">Powered by Gemini AI</p>
+                       
                     </div>
                 </div>
             </div>
