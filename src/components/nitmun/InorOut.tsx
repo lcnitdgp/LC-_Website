@@ -124,15 +124,8 @@ export function NitmunRegistrationModal({ isOpen, onClose, initialCommittee }: P
             });
             setLoginUserId('');
             setLoginPassword('');
-        } else {
-            if (initialCommittee) {
-                setPreferences(prev => ({
-                    ...prev,
-                    committeePref1: initialCommittee
-                }));
-            }
         }
-    }, [isOpen, initialCommittee]);
+    }, [isOpen]);
 
     useEffect(() => {
         document.body.style.overflow = isOpen ? 'hidden' : 'unset';
@@ -229,10 +222,6 @@ export function NitmunRegistrationModal({ isOpen, onClose, initialCommittee }: P
                 return (
                     <div key={prefNum} className="space-y-4 p-4 md:p-6 bg-[#e0b0ac]/20 border-[4px] border-black shadow-[4px_4px_0_#000]">
                         <h4 className="font-bold font-antonio text-xl tracking-wider uppercase text-gray-900 bg-black text-white inline-block px-3 py-1 -mt-8 -ml-4 md:-ml-6 shadow-[2px_2px_0_#bb943a]">Preference {prefNum}</h4>
-                    <div key={prefNum} className="space-y-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
-                        <div className="flex items-center justify-between pointer-events-none">
-                            <h4 className="font-medium text-gray-700 font-spectral text-sm pointer-events-auto">Preference {prefNum}</h4>
-                        </div>
 
                         <div>
                             <label className={labelClass}>Committee</label>
