@@ -28,6 +28,7 @@ type ModalView = 'selection' | 'inhouse-form' | 'outhouse-form' | 'login-form' |
 interface Props {
     isOpen: boolean;
     onClose: () => void;
+    initialCommittee?: string;
 }
 
 const inputClass = "w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all duration-200 bg-white/80 font-spectral text-gray-800 placeholder-gray-400";
@@ -60,7 +61,7 @@ const UNHRC_PORTFOLIOS = [
 
 const COMMITTEES = ["AIPPM", "UNGA", "UNHRC"];
 
-export function NitmunRegistrationModal({ isOpen, onClose }: Props) {
+export function NitmunRegistrationModal({ isOpen, onClose, initialCommittee }: Props) {
     const { user, loginWithGoogle, loginWithCredentials, isLoading: isAuthLoading } = useAuth();
 
     const [loginUserId, setLoginUserId] = useState('');
@@ -117,8 +118,15 @@ export function NitmunRegistrationModal({ isOpen, onClose }: Props) {
             });
             setLoginUserId('');
             setLoginPassword('');
+        } else {
+            if (initialCommittee) {
+                setPreferences(prev => ({
+                    ...prev,
+                    committeePref1: initialCommittee
+                }));
+            }
         }
-    }, [isOpen]);
+    }, [isOpen, initialCommittee]);
 
     useEffect(() => {
         document.body.style.overflow = isOpen ? 'hidden' : 'unset';
@@ -214,7 +222,9 @@ export function NitmunRegistrationModal({ isOpen, onClose }: Props) {
 
                 return (
                     <div key={prefNum} className="space-y-4 p-4 bg-gray-50 rounded-xl border border-gray-100">
-                        <h4 className="font-medium text-gray-700 font-spectral text-sm">Preference {prefNum}</h4>
+                        <div className="flex items-center justify-between pointer-events-none">
+                            <h4 className="font-medium text-gray-700 font-spectral text-sm pointer-events-auto">Preference {prefNum}</h4>
+                        </div>
 
                         <div>
                             <label className={labelClass}>Committee</label>

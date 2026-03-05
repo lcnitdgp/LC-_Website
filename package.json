@@ -12,6 +12,7 @@
   "dependencies": {
     "@fontsource/delicious-handrawn": "^5.2.8",
     "@fontsource/special-elite": "^5.2.8",
+    "@google/generative-ai": "^0.24.1",
     "firebase": "^12.10.0",
     "framer-motion": "^12.23.26",
     "lucide-react": "^0.561.0",
