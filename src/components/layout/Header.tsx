@@ -168,6 +168,14 @@ export function Header() {
                                 </li>
                                 <li>
                                     <Link
+                                        to="/team"
+                                        className="font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
+                                    >
+                                        Team
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
                                         to="/alumni"
                                         className="font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
                                     >
@@ -268,6 +276,15 @@ export function Header() {
                                         onClick={() => setIsMobileMenuOpen(false)}
                                     >
                                         Déjà Vu
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
+                                        to="/team"
+                                        className="block font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                    >
+                                        Team
                                     </Link>
                                 </li>
                                 <li>

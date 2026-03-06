@@ -1,5 +1,5 @@
 import { Header, Footer } from '../components/layout';
-import { HeroSection, AboutSection, TeamSection } from '../components/sections';
+import { HeroSection, AboutSection } from '../components/sections';
 import { SEO } from '../components/SEO';
 
 
@@ -41,7 +41,6 @@ export function HomePage() {
             <main>
                 <HeroSection />
                 <AboutSection />
-                <TeamSection />
             </main>
             <Footer />
         </div>

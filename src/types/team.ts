@@ -13,3 +13,18 @@ export interface TeamMember {
     social: SocialLinks;
     lastUpdatedBy?: string;
 }
+
+export type YearGroup = 'Final Years' | 'Third Years' | 'Second Years';
+
+export interface TeamMemberFirestore {
+    id?: string;
+    name: string;
+    yearGroup: YearGroup;
+    facebookUrl?: string;
+    instagramUrl?: string;
+    post?: string;
+    photoUrl?: string;
+    createdAt: number;
+    addedBy: string;
+    editedBy: string | 'none';
+}
