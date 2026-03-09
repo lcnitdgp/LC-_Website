@@ -144,6 +144,14 @@ export function Header() {
                                 ))}
                                 <li>
                                     <Link
+                                        to="/verve"
+                                        className="font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
+                                    >
+                                        Verve
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link
                                         to="/nitmunxiv"
                                         className="font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
                                     >
@@ -251,6 +259,15 @@ export function Header() {
                                         </a>
                                     </li>
                                 ))}
+                                <li>
+                                    <Link
+                                        to="/verve"
+                                        className="block font-spectral text-gray-700 hover:text-primary-600 transition-colors duration-200"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                    >
+                                        Verve
+                                    </Link>
+                                </li>
                                 <li>
                                     <Link
                                         to="/nitmunxiv"
