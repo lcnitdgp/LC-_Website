@@ -23,7 +23,7 @@ export function VervePage() {
   const [aboutText, setAboutText] = useState(defaultAboutText);
   const [lastEditedBy, setLastEditedBy] = useState<string | undefined>();
 
-  const defaultAboutClubText = "Founded decades ago, The Literary Circle serves as the official English literary club of NIT Durgapur. It is a refuge for the bibliophiles, wordsmiths, debaters, and the intellectually curious.\n\nWe don't just organize events; we curate experiences that challenge perspectives and celebrate the unabashed power of words.";
+  const defaultAboutClubText = "In a college teeming with tech clubs and scientific student bodies, the Literary Circle prides itself in being a breath of fresh air, encouraging creativity and free thought.\n\nThe Literary Circle, through events like NITMUN, or Verve, which is East India's largest youth cum literary festival, and Literati helps students to get out of their creative cocoon, engage in healthy debate and exchange ideas among themselves. We don't just organize events; we curate experiences that challenge perspectives and celebrate the unabashed power of words.";
   const [aboutClubText, setAboutClubText] = useState(defaultAboutClubText);
   const [clubLastEditedBy, setClubLastEditedBy] = useState<string | undefined>();
 
