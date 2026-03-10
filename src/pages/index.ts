@@ -1,7 +1,8 @@
 export { HomePage } from './HomePage';
+export { NitmunxivPage } from './NitmunxivPage';
 export { AuditionsPage } from './AuditionsPage';
-export { MembersDashboardPage } from './MembersDashboardPage';
 export { DejaVuPage } from './DejaVuPage';
+export { MembersDashboardPage } from './MembersDashboardPage';
 export { AlumniPage } from './AlumniPage';
 export { TeamPage } from './TeamPage';
-export { NitmunxivPage } from "./NitmunxivPage";
+export { VervePage } from './VervePage';

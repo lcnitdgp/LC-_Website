@@ -51,7 +51,7 @@
 }
 
 @layer base {
-  html {
+  html:not(.verve-active) {
     scroll-behavior: smooth;
   }
 
