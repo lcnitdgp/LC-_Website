@@ -32,9 +32,9 @@ export const EVENTS_DATA: EventData[] = [
         color: "#fcc201",
     },
     {
-        id: "tba-1",
-        title: "TBA",
-        description: "Event details will be announced soon. Stay tuned for more excitement and madness!",
+        id: "wild-card",
+        title: "Wild Card",
+        description: "Expect the unexpected! A surprise event that will test your creativity, wit, and spontaneity.",
         date: "17th March",
         time: "TBD",
         venue: "TBD",
@@ -50,13 +50,22 @@ export const EVENTS_DATA: EventData[] = [
         color: "#c084fc",
     },
     {
-        id: "tba-2",
-        title: "TBA",
-        description: "Event details will be announced soon. Stay tuned for more excitement and madness!",
+        id: "public-speaking",
+        title: "Public Speaking",
+        description: "Step up to the podium and captivate the crowd! Showcase your oratory skills in this electrifying public speaking contest.",
         date: "18th March",
         time: "TBD",
         venue: "TBD",
         color: "#1dfa82",
+    },
+    {
+        id: "open-mic",
+        title: "Open Mic",
+        description: "The stage is yours! Poetry, storytelling, stand-up, or anything in between — grab the mic and let your voice be heard.",
+        date: "18th March",
+        time: "TBD",
+        venue: "TBD",
+        color: "#38bdf8",
     }
 ];
 
