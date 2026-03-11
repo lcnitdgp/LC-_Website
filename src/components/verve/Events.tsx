@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
 export interface EventData {
     id: string;
@@ -71,24 +71,30 @@ export function Events({ onRegisterClick }: EventsProps) {
         offset: ["start start", "end end"]
     });
 
-    const x = useTransform(scrollYProgress, [0, 1], ["0%", "-100%"]);
+    const smoothScrollYProgress = useSpring(scrollYProgress, {
+        stiffness: 100,
+        damping: 30,
+        restDelta: 0.001
+    });
+
+    const x = useTransform(smoothScrollYProgress, [0, 1], ["0%", "-100%"]);
 
     // Background parallax & marquees
-    const marqueeX1 = useTransform(scrollYProgress, [0, 1], ["0%", "-30%"]);
-    const marqueeX2 = useTransform(scrollYProgress, [0, 1], ["-30%", "0%"]);
+    const marqueeX1 = useTransform(smoothScrollYProgress, [0, 1], ["0%", "-30%"]);
+    const marqueeX2 = useTransform(smoothScrollYProgress, [0, 1], ["-30%", "0%"]);
 
     const [activeDateIndex, setActiveDateIndex] = useState(0);
     const uniqueDates = Array.from(new Set(EVENTS_DATA.map(e => e.date))).sort();
 
     useEffect(() => {
-        return scrollYProgress.onChange((latest) => {
+        return smoothScrollYProgress.onChange((latest) => {
             const index = Math.min(
                 uniqueDates.length - 1,
                 Math.floor(latest * uniqueDates.length)
             );
             setActiveDateIndex(index);
         });
-    }, [scrollYProgress, uniqueDates]);
+    }, [smoothScrollYProgress, uniqueDates]);
 
     const groupedData: { date: string, times: { time: string, events: EventData[] }[] }[] = [];
     uniqueDates.forEach(date => {
