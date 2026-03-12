@@ -400,3 +400,9 @@
   background: #fcc201;
   border: 2px solid #0e1012;
 }
+
+@media (max-width: 767px) {
+  body.verve-modal-open nav.fixed.top-0 {
+    display: none !important;
+  }
+}
