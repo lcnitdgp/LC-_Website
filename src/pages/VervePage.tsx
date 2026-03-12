@@ -42,7 +42,8 @@ export function VervePage() {
 
   // Dashboard Modal State
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
-  const isLCite = user?.role === 'LCite';
+
+
 
   // Read More Modal State
   const [readMore, setReadMore] = useState<{ isOpen: boolean, type: 'fest' | 'club' }>({ isOpen: false, type: 'fest' });
@@ -167,10 +168,10 @@ export function VervePage() {
               <a href="#events" onClick={(e) => { e.preventDefault(); (window as any).lenis?.scrollTo('#events') }} className="hover:text-verve-gold transition-colors interactive">Events</a>
               <a href="#team" onClick={(e) => { e.preventDefault(); (window as any).lenis?.scrollTo('#team') }} className="hover:text-verve-gold transition-colors interactive">Team</a>
               <button
-                onClick={() => isLCite ? setIsDashboardOpen(true) : handleRegisterClick()}
+                onClick={() => isAdmin ? setIsDashboardOpen(true) : handleRegisterClick()}
                 className="bg-verve-gold text-verve-dark px-6 py-2 brutal-border brutal-shadow hover:bg-white transition-colors font-black"
               >
-                {isLCite ? 'Dashboard' : 'Register'}
+                {isAdmin ? 'Dashboard' : 'Register'}
               </button>
             </div>
 
@@ -197,10 +198,10 @@ export function VervePage() {
                 <a href="#events" onClick={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); (window as any).lenis?.scrollTo('#events') }} className="text-white hover:text-verve-gold transition-colors font-sans font-bold tracking-widest uppercase text-sm border-b-2 border-white/10 pb-2">Events</a>
                 <a href="#team" onClick={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); (window as any).lenis?.scrollTo('#team') }} className="text-white hover:text-verve-gold transition-colors font-sans font-bold tracking-widest uppercase text-sm border-b-2 border-white/10 pb-2">Team</a>
                 <button
-                  onClick={() => { setIsMobileMenuOpen(false); isLCite ? setIsDashboardOpen(true) : handleRegisterClick() }}
+                  onClick={() => { setIsMobileMenuOpen(false); isAdmin ? setIsDashboardOpen(true) : handleRegisterClick() }}
                   className="bg-verve-gold text-verve-dark px-6 py-2 brutal-border brutal-shadow hover:bg-white transition-colors font-black text-sm uppercase tracking-widest mt-2 whitespace-nowrap"
                 >
-                  {isLCite ? 'Dashboard' : 'Register'}
+                  {isAdmin ? 'Dashboard' : 'Register'}
                 </button>
               </motion.div>
             )}
@@ -306,7 +307,7 @@ export function VervePage() {
           </div>
         </section>
 
-        <Events onRegisterClick={(eventId) => isLCite ? setIsDashboardOpen(true) : handleRegisterClick(eventId)} />
+        <Events isAdmin={Boolean(isAdmin)} onDashboardClick={() => setIsDashboardOpen(true)} onRegisterClick={(eventId) => handleRegisterClick(eventId)} />
         <Gallery />
         <Team />
 
@@ -318,10 +319,10 @@ export function VervePage() {
               READY?
             </h2>
             <button
-              onClick={() => isLCite ? setIsDashboardOpen(true) : handleRegisterClick()}
+              onClick={() => isAdmin ? setIsDashboardOpen(true) : handleRegisterClick()}
               className="bg-verve-gold text-verve-dark px-12 py-5 text-xl md:text-3xl font-heading font-bold brutal-border hover:bg-white transition-colors interactive shadow-[0_8px_0_#000]"
             >
-              {isLCite ? 'VIEW DASHBOARD' : 'SECURE YOUR SPOT'}
+              {isAdmin ? 'VIEW DASHBOARD' : 'SECURE YOUR SPOT'}
             </button>
             <p className="mt-12 font-mono text-white/50 text-sm uppercase tracking-widest">
               The Literary Circle © 2026

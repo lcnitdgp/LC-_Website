@@ -75,9 +75,11 @@ export const EVENTS_DATA: EventData[] = [
 
 interface EventsProps {
     onRegisterClick?: (eventId: string) => void;
+    isAdmin?: boolean;
+    onDashboardClick?: () => void;
 }
 
-export function Events({ onRegisterClick }: EventsProps) {
+export function Events({ onRegisterClick, isAdmin, onDashboardClick }: EventsProps) {
     const targetRef = useRef<HTMLElement>(null);
     const { scrollYProgress } = useScroll({
         target: targetRef,
@@ -355,7 +357,7 @@ export function Events({ onRegisterClick }: EventsProps) {
                                         <div className={`flex shrink-0 items-center h-full ${isMobile ? 'gap-4 py-4' : 'gap-8 md:gap-16'}`}>
                                             {timeBlock.events.map((event, eventIdx) => (
                                                 <div key={event.id} className={`shrink-0 snap-center ${isMobile ? 'w-[75vw] h-[55vh] max-h-[420px]' : 'w-[85vw] md:w-[60vw] lg:w-[45vw] lg:max-w-[600px] h-[60vh] min-h-[400px] max-h-[500px]'}`}>
-                                                    <EventCard event={event} index={eventIdx} isMobile={isMobile} onRegister={() => onRegisterClick?.(event.id)} onViewDetails={() => setSelectedEventDetails(event)} />
+                                                    <EventCard event={event} index={eventIdx} isMobile={isMobile} isAdmin={isAdmin} onRegister={() => isAdmin ? onDashboardClick?.() : onRegisterClick?.(event.id)} onViewDetails={() => setSelectedEventDetails(event)} />
                                                 </div>
                                             ))}
                                         </div>
@@ -467,11 +469,12 @@ interface EventCardProps {
     event: EventData;
     index: number;
     isMobile?: boolean;
+    isAdmin?: boolean;
     onRegister: () => void;
     onViewDetails: () => void;
 }
 
-function EventCard({ event, index, isMobile, onRegister, onViewDetails }: EventCardProps) {
+function EventCard({ event, index, isMobile, isAdmin, onRegister, onViewDetails }: EventCardProps) {
     const [isHovered, setIsHovered] = useState(false);
 
     return (
@@ -524,7 +527,7 @@ function EventCard({ event, index, isMobile, onRegister, onViewDetails }: EventC
                             className={`flex-1 font-heading font-black ${isMobile ? 'text-[1rem] py-2 border-[2px]' : 'text-xl md:text-3xl py-2 md:py-3 border-[4px]'} uppercase border-black transition-all duration-300 ${isHovered ? 'bg-black text-white hover:bg-white hover:text-black' : 'bg-white text-black hover:bg-black hover:text-white'}`}
                             style={{ boxShadow: isHovered ? `${isMobile ? '3px 3px 0px #000' : '8px 8px 0px #000'}` : `${isMobile ? `3px 3px 0px ${event.color}` : `8px 8px 0px ${event.color}`}` }}
                         >
-                            REGISTER
+                            {isAdmin ? 'VIEW REGS' : 'REGISTER'}
                         </button>
                         <button
                             onClick={(e) => { e.stopPropagation(); onViewDetails(); }}
