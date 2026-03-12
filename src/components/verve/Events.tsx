@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 import openMicPoster from '../../assets/verve/events/open-mic-xxi.webp';
+import literatiPoster from '../../assets/verve/events/literatiposter.webp';
 
 export interface EventData {
     id: string;
@@ -15,11 +16,11 @@ export interface EventData {
 
 export const EVENTS_DATA: EventData[] = [
     {
-        id: "vocab",
-        title: "Vocab",
+        id: "arcanum",
+        title: "Arcanum",
         description: "A battle of vocabulary and wit! Prove your linguistic dominance in this intense vocabulary challenge.",
-        date: "13th March",
-        time: "TBD",
+        date: "14th March",
+        time: "1:00 PM",
         venue: "SAC",
         color: "#e08585",
     },
@@ -28,35 +29,36 @@ export const EVENTS_DATA: EventData[] = [
         title: "Literati",
         description: "Test your literary prowess. Dive into word games, literary quizzes, and trivia that will challenge the bibliophile in you.",
         date: "13th March",
-        time: "TBD",
-        venue: "Main Stage",
+        time: "6:30 PM",
+        venue: "LH21",
         color: "#fcc201",
+        poster: literatiPoster,
     },
     {
         id: "wild-card",
         title: "Wild Card",
         description: "Expect the unexpected! A surprise event that will test your creativity, wit, and spontaneity.",
         date: "14th March",
-        time: "TBD",
-        venue: "TBD",
+        time: "3:30 PM",
+        venue: "TBA",
         color: "#ff3e3e",
     },
     {
         id: "treasure-hunt",
         title: "Treasure Hunt",
         description: "The most anticipated event of the fest! Solve cryptic clues and race across the campus to unearth the hidden treasure.",
-        date: "14th March",
-        time: "TBD",
-        venue: "Oval Stands",
+        date: "15th March",
+        time: "9:00 AM",
+        venue: "TBA",
         color: "#c084fc",
     },
     {
         id: "public-speaking",
         title: "Public Speaking",
         description: "Step up to the podium and captivate the crowd! Showcase your oratory skills in this electrifying public speaking contest.",
-        date: "15th March",
-        time: "TBD",
-        venue: "TBD",
+        date: "14th March",
+        time: "5:30 PM",
+        venue: "TBA",
         color: "#1dfa82",
     },
     {
@@ -67,6 +69,7 @@ export const EVENTS_DATA: EventData[] = [
         time: "5:30 PM",
         venue: "HSS Assembly Hall",
         color: "#38bdf8",
+        poster: openMicPoster,
     }
 ];
 
@@ -405,9 +408,9 @@ export function Events({ onRegisterClick }: EventsProps) {
                             {/* Poster Column */}
                             <div className="w-full md:w-1/2 min-h-[350px] md:min-h-0 h-[50vh] md:h-[60vh] shrink-0 bg-black border-b-[4px] md:border-b-0 md:border-r-[4px] border-white relative flex flex-col p-4">
                                 <img 
-                                    src={selectedEventDetails.id === 'open-mic' ? openMicPoster : (selectedEventDetails.poster || 'https://grainy-gradients.vercel.app/noise.svg')} 
+                                    src={selectedEventDetails.poster || 'https://grainy-gradients.vercel.app/noise.svg'} 
                                     alt={`${selectedEventDetails.title} poster`} 
-                                    className={`w-full h-full ${selectedEventDetails.id === 'open-mic' ? 'object-contain object-top' : 'object-cover'} opacity-80 ${selectedEventDetails.id === 'open-mic' ? '' : 'grayscale'} ${!selectedEventDetails.poster && selectedEventDetails.id !== 'open-mic' ? 'mix-blend-overlay' : ''}`} 
+                                    className={`w-full h-full object-contain object-top opacity-80 ${!selectedEventDetails.poster ? 'mix-blend-overlay' : ''}`} 
                                 />
                                 <div className="absolute top-4 left-4 z-10 bg-white text-black font-heading font-black px-4 py-1 text-xl md:text-2xl uppercase border-[2px] border-black shadow-[4px_4px_0_#000] max-w-[calc(100%-5rem)] truncate">
                                     {selectedEventDetails.title}
@@ -499,27 +502,14 @@ function EventCard({ event, index, isMobile, onRegister, onViewDetails }: EventC
                     </div>
                 </div>
 
-                {/* Title & Poster Space Wrapper */}
-                <div className={`flex w-full ${isMobile ? 'h-28 mt-2' : 'mt-4 h-32 md:h-48'} gap-4 items-center ${event.id === 'open-mic' ? 'justify-center w-full' : 'items-stretch'}`}>
+                {/* Title Space Wrapper */}
+                <div className={`flex w-full ${isMobile ? 'h-28 mt-2' : 'mt-4 h-32 md:h-48'} gap-4 items-center justify-center w-full`}>
                     {/* Title Area */}
-                    <div className={`flex flex-col ${event.id === 'open-mic' ? 'justify-center items-center w-full pb-0' : 'flex-1 justify-end pb-1 md:pb-2'}`}>
-                        <h3 className={`${isMobile ? (event.id === 'open-mic' ? 'text-[12vw]' : 'text-[9vw]') : (event.id === 'open-mic' ? 'text-5xl md:text-7xl lg:text-[6rem]' : 'text-4xl md:text-5xl lg:text-6xl')} font-heading font-black uppercase tracking-tighter ${event.id === 'open-mic' ? 'text-center' : ''} ${isHovered ? 'text-black' : 'text-white'}`} style={{ textShadow: isHovered ? 'none' : `3px 3px 0px ${event.color}` }}>
+                    <div className="flex flex-col justify-center items-center w-full pb-0">
+                        <h3 className={`${isMobile ? 'text-[12vw]' : 'text-5xl md:text-7xl lg:text-[6rem]'} font-heading font-black uppercase tracking-tighter text-center ${isHovered ? 'text-black' : 'text-white'}`} style={{ textShadow: isHovered ? 'none' : `3px 3px 0px ${event.color}` }}>
                             {event.title}
                         </h3>
                     </div>
-
-                    {/* Poster Space */}
-                    {event.id !== 'open-mic' && (
-                        <div className={`w-[45%] h-full border-[2px] border-black overflow-hidden flex-shrink-0 relative transition-colors ${isHovered ? 'bg-black/10' : 'bg-white/5'}`}>
-                            {event.poster ? (
-                                <img src={event.poster} alt={`${event.title} poster`} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300" />
-                            ) : (
-                                <div className={`w-full h-full flex flex-col items-center justify-center font-mono ${isMobile ? 'text-[8px]' : 'text-xs'} uppercase tracking-widest bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-50 mix-blend-overlay ${isHovered ? 'text-black' : 'text-white/50'}`}>
-                                    <span className="opacity-70 text-center">POSTER</span>
-                                </div>
-                            )}
-                        </div>
-                    )}
                 </div>
 
                 {/* Content */}
