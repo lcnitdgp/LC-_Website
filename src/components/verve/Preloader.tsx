@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import verveLogoVideo from '../../assets/verve/verve_logo.webm';
+import desktopVerveVideo from '../../assets/verve/final-video-verve (1).webm';
 
 interface PreloaderProps {
     onComplete: () => void;
@@ -8,7 +9,17 @@ interface PreloaderProps {
 
 export function Preloader({ onComplete }: PreloaderProps) {
     const [isFadingOut, setIsFadingOut] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const handleVideoEnd = () => {
         setIsFadingOut(true);
@@ -38,8 +49,9 @@ export function Preloader({ onComplete }: PreloaderProps) {
                     transition={{ duration: 0.8, ease: "easeInOut" }}
                 >
                     <video
+                        key={isMobile ? 'mobile-video' : 'desktop-video'}
                         ref={videoRef}
-                        src={verveLogoVideo}
+                        src={isMobile ? verveLogoVideo : desktopVerveVideo}
                         autoPlay
                         muted
                         playsInline

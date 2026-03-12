@@ -10,7 +10,7 @@ import { Gallery } from '../components/verve/Gallery'
 import { Team } from '../components/verve/Team'
 import { VerveRegistrationModal } from '../components/verve/VerveRegistrationModal'
 import { VerveAdminDashboardModal } from '../components/verve/VerveAdminDashboardModal'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Menu, X } from 'lucide-react'
 import Lenis from '@studio-freight/lenis'
 import './verve.css'
 
@@ -46,6 +46,9 @@ export function VervePage() {
 
   // Read More Modal State
   const [readMore, setReadMore] = useState<{ isOpen: boolean, type: 'fest' | 'club' }>({ isOpen: false, type: 'fest' });
+
+  // Mobile Menu State
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleRegisterClick = (eventId?: string) => {
     setSelectedEventId(eventId);
@@ -157,6 +160,8 @@ export function VervePage() {
                 VERVE <span className="text-verve-pink">XXI</span>
               </span>
             </div>
+            
+            {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8 font-sans font-bold tracking-widest uppercase text-sm">
               <a href="#about" onClick={(e) => { e.preventDefault(); (window as any).lenis?.scrollTo('#about') }} className="hover:text-verve-gold transition-colors interactive">About</a>
               <a href="#events" onClick={(e) => { e.preventDefault(); (window as any).lenis?.scrollTo('#events') }} className="hover:text-verve-gold transition-colors interactive">Events</a>
@@ -168,7 +173,38 @@ export function VervePage() {
                 {isLCite ? 'Dashboard' : 'Register'}
               </button>
             </div>
+
+            {/* Mobile Toggle */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="md:hidden p-2 text-white hover:text-verve-gold transition-colors"
+              aria-label="Toggle menu"
+            >
+              {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
           </div>
+
+          {/* Mobile Menu */}
+          <AnimatePresence>
+            {isMobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="md:hidden absolute top-[100%] right-6 md:right-8 mt-2 w-max min-w-[160px] bg-verve-dark border-[4px] border-black shadow-[4px_4px_0_#000] p-5 flex flex-col gap-4 z-50 mix-blend-normal"
+              >
+                <a href="#about" onClick={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); (window as any).lenis?.scrollTo('#about') }} className="text-white hover:text-verve-gold transition-colors font-sans font-bold tracking-widest uppercase text-sm border-b-2 border-white/10 pb-2">About</a>
+                <a href="#events" onClick={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); (window as any).lenis?.scrollTo('#events') }} className="text-white hover:text-verve-gold transition-colors font-sans font-bold tracking-widest uppercase text-sm border-b-2 border-white/10 pb-2">Events</a>
+                <a href="#team" onClick={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); (window as any).lenis?.scrollTo('#team') }} className="text-white hover:text-verve-gold transition-colors font-sans font-bold tracking-widest uppercase text-sm border-b-2 border-white/10 pb-2">Team</a>
+                <button
+                  onClick={() => { setIsMobileMenuOpen(false); isLCite ? setIsDashboardOpen(true) : handleRegisterClick() }}
+                  className="bg-verve-gold text-verve-dark px-6 py-2 brutal-border brutal-shadow hover:bg-white transition-colors font-black text-sm uppercase tracking-widest mt-2 whitespace-nowrap"
+                >
+                  {isLCite ? 'Dashboard' : 'Register'}
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </nav>
 
         {/* Hero Section */}

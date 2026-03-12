@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
+import openMicPoster from '../../assets/verve/events/open-mic-xxi.webp';
 
 export interface EventData {
     id: string;
@@ -17,7 +18,7 @@ export const EVENTS_DATA: EventData[] = [
         id: "vocab",
         title: "Vocab",
         description: "A battle of vocabulary and wit! Prove your linguistic dominance in this intense vocabulary challenge.",
-        date: "16th March",
+        date: "13th March",
         time: "TBD",
         venue: "SAC",
         color: "#e08585",
@@ -26,7 +27,7 @@ export const EVENTS_DATA: EventData[] = [
         id: "literati",
         title: "Literati",
         description: "Test your literary prowess. Dive into word games, literary quizzes, and trivia that will challenge the bibliophile in you.",
-        date: "17th March",
+        date: "13th March",
         time: "TBD",
         venue: "Main Stage",
         color: "#fcc201",
@@ -35,7 +36,7 @@ export const EVENTS_DATA: EventData[] = [
         id: "wild-card",
         title: "Wild Card",
         description: "Expect the unexpected! A surprise event that will test your creativity, wit, and spontaneity.",
-        date: "17th March",
+        date: "14th March",
         time: "TBD",
         venue: "TBD",
         color: "#ff3e3e",
@@ -44,7 +45,7 @@ export const EVENTS_DATA: EventData[] = [
         id: "treasure-hunt",
         title: "Treasure Hunt",
         description: "The most anticipated event of the fest! Solve cryptic clues and race across the campus to unearth the hidden treasure.",
-        date: "18th March",
+        date: "14th March",
         time: "TBD",
         venue: "Oval Stands",
         color: "#c084fc",
@@ -53,7 +54,7 @@ export const EVENTS_DATA: EventData[] = [
         id: "public-speaking",
         title: "Public Speaking",
         description: "Step up to the podium and captivate the crowd! Showcase your oratory skills in this electrifying public speaking contest.",
-        date: "18th March",
+        date: "15th March",
         time: "TBD",
         venue: "TBD",
         color: "#1dfa82",
@@ -62,9 +63,9 @@ export const EVENTS_DATA: EventData[] = [
         id: "open-mic",
         title: "Open Mic",
         description: "The stage is yours! Poetry, storytelling, stand-up, or anything in between — grab the mic and let your voice be heard.",
-        date: "18th March",
-        time: "TBD",
-        venue: "TBD",
+        date: "15th March",
+        time: "5:30 PM",
+        venue: "HSS Assembly Hall",
         color: "#38bdf8",
     }
 ];
@@ -192,6 +193,22 @@ export function Events({ onRegisterClick }: EventsProps) {
         });
     });
     const [isMobile, setIsMobile] = useState(false);
+    const [selectedEventDetails, setSelectedEventDetails] = useState<EventData | null>(null);
+
+    // Block scrolling when modal is open
+    useEffect(() => {
+        if (selectedEventDetails) {
+            document.body.style.overflow = 'hidden';
+            document.body.classList.add('verve-modal-open');
+        } else {
+            document.body.style.overflow = 'unset';
+            document.body.classList.remove('verve-modal-open');
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+            document.body.classList.remove('verve-modal-open');
+        };
+    }, [selectedEventDetails]);
 
     useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -335,7 +352,7 @@ export function Events({ onRegisterClick }: EventsProps) {
                                         <div className={`flex shrink-0 items-center h-full ${isMobile ? 'gap-4 py-4' : 'gap-8 md:gap-16'}`}>
                                             {timeBlock.events.map((event, eventIdx) => (
                                                 <div key={event.id} className={`shrink-0 snap-center ${isMobile ? 'w-[75vw] h-[55vh] max-h-[420px]' : 'w-[85vw] md:w-[60vw] lg:w-[45vw] lg:max-w-[600px] h-[60vh] min-h-[400px] max-h-[500px]'}`}>
-                                                    <EventCard event={event} index={eventIdx} isMobile={isMobile} onRegister={() => onRegisterClick?.(event.id)} />
+                                                    <EventCard event={event} index={eventIdx} isMobile={isMobile} onRegister={() => onRegisterClick?.(event.id)} onViewDetails={() => setSelectedEventDetails(event)} />
                                                 </div>
                                             ))}
                                         </div>
@@ -358,6 +375,87 @@ export function Events({ onRegisterClick }: EventsProps) {
                     </svg>
                 </motion.div>
             </div>
+
+            {/* EVENT DETAILS MODAL */}
+            <AnimatePresence>
+                {selectedEventDetails && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[99999] flex items-center justify-center p-4 md:p-8 bg-black/80 backdrop-blur-md"
+                        onClick={() => setSelectedEventDetails(null)}
+                        data-lenis-prevent="true"
+                    >
+                        <motion.div
+                            initial={{ scale: 0.95, y: 20 }}
+                            animate={{ scale: 1, y: 0 }}
+                            exit={{ scale: 0.95, y: 20 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="relative w-full max-w-4xl h-[90vh] md:h-auto md:max-h-[90vh] bg-verve-dark border-[4px] border-white flex flex-col md:flex-row overflow-y-auto md:overflow-hidden shadow-[16px_16px_0_#000] hide-scrollbar"
+                        >
+                            {/* Fixed Close Button for Mobile */}
+                            <button 
+                                onClick={() => setSelectedEventDetails(null)}
+                                className="absolute top-4 right-4 z-50 text-white bg-black hover:text-verve-pink transition-colors p-2 md:hidden border-[2px] border-white hover:border-verve-pink"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                            </button>
+
+                            {/* Poster Column */}
+                            <div className="w-full md:w-1/2 min-h-[350px] md:min-h-0 h-[50vh] md:h-[60vh] shrink-0 bg-black border-b-[4px] md:border-b-0 md:border-r-[4px] border-white relative flex flex-col p-4">
+                                <img 
+                                    src={selectedEventDetails.id === 'open-mic' ? openMicPoster : (selectedEventDetails.poster || 'https://grainy-gradients.vercel.app/noise.svg')} 
+                                    alt={`${selectedEventDetails.title} poster`} 
+                                    className={`w-full h-full ${selectedEventDetails.id === 'open-mic' ? 'object-contain object-top' : 'object-cover'} opacity-80 ${selectedEventDetails.id === 'open-mic' ? '' : 'grayscale'} ${!selectedEventDetails.poster && selectedEventDetails.id !== 'open-mic' ? 'mix-blend-overlay' : ''}`} 
+                                />
+                                <div className="absolute top-4 left-4 z-10 bg-white text-black font-heading font-black px-4 py-1 text-xl md:text-2xl uppercase border-[2px] border-black shadow-[4px_4px_0_#000] max-w-[calc(100%-5rem)] truncate">
+                                    {selectedEventDetails.title}
+                                </div>
+                            </div>
+                            
+                            {/* Details Column */}
+                            <div className="w-full md:w-1/2 flex flex-col p-6 md:p-8 shrink-0 md:overflow-y-auto hide-scrollbar">
+                                <div className="flex justify-between items-start mb-6 shrink-0 mt-4 md:mt-0">
+                                    <div className="flex flex-col gap-2">
+                                        <div className="text-verve-gold font-mono font-bold uppercase tracking-widest text-sm">
+                                            {selectedEventDetails.date} // {selectedEventDetails.time}
+                                        </div>
+                                        <div className="text-white font-mono uppercase bg-white/10 px-3 py-1 w-max border-[1px] border-white/20">
+                                            VENUE: {selectedEventDetails.venue}
+                                        </div>
+                                    </div>
+                                    <button 
+                                        onClick={() => setSelectedEventDetails(null)}
+                                        className="hidden md:block text-white hover:text-verve-pink transition-colors p-2 border-[2px] border-white/20 hover:border-verve-pink"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                                    </button>
+                                </div>
+
+                                <div className="flex-1 min-h-0 shrink-0 mb-8">
+                                    <h3 className="text-3xl md:text-5xl font-heading font-black text-white uppercase mb-4 leading-none">
+                                        ABOUT THE <br/><span className="text-verve-pink">EVENT</span>
+                                    </h3>
+                                    <p className="font-mono text-white/80 text-sm md:text-base leading-relaxed">
+                                        {selectedEventDetails.description}
+                                    </p>
+                                </div>
+
+                                <button
+                                    onClick={() => {
+                                        setSelectedEventDetails(null);
+                                        onRegisterClick?.(selectedEventDetails.id);
+                                    }}
+                                    className="w-full shrink-0 bg-verve-gold text-black font-heading font-black text-2xl md:text-3xl py-4 border-[4px] border-black uppercase hover:bg-white transition-colors shadow-[8px_8px_0_#000]"
+                                >
+                                    REGISTER NOW
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </section>
     );
 }
@@ -367,9 +465,10 @@ interface EventCardProps {
     index: number;
     isMobile?: boolean;
     onRegister: () => void;
+    onViewDetails: () => void;
 }
 
-function EventCard({ event, index, isMobile, onRegister }: EventCardProps) {
+function EventCard({ event, index, isMobile, onRegister, onViewDetails }: EventCardProps) {
     const [isHovered, setIsHovered] = useState(false);
 
     return (
@@ -380,7 +479,8 @@ function EventCard({ event, index, isMobile, onRegister }: EventCardProps) {
             transition={{ type: "spring", stiffness: 200, damping: 15 }}
             onHoverStart={() => setIsHovered(true)}
             onHoverEnd={() => setIsHovered(false)}
-            className="w-full h-full relative group perspective-1000"
+            onClick={onViewDetails}
+            className="w-full h-full relative group perspective-1000 cursor-pointer"
         >
             <div className="absolute inset-0 bg-black translate-x-2 translate-y-2 md:translate-x-6 md:translate-y-6 transition-transform duration-300 group-hover:translate-x-0 group-hover:translate-y-0 z-0" />
             <div className={`absolute inset-0 translate-x-4 translate-y-4 md:translate-x-10 md:translate-y-10 transition-transform duration-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 z-0`} style={{ backgroundColor: event.color, mixBlendMode: 'screen' }} />
@@ -400,24 +500,26 @@ function EventCard({ event, index, isMobile, onRegister }: EventCardProps) {
                 </div>
 
                 {/* Title & Poster Space Wrapper */}
-                <div className={`flex w-full ${isMobile ? 'h-28 mt-2' : 'mt-4 h-32 md:h-48'} gap-4 items-stretch`}>
+                <div className={`flex w-full ${isMobile ? 'h-28 mt-2' : 'mt-4 h-32 md:h-48'} gap-4 items-center ${event.id === 'open-mic' ? 'justify-center w-full' : 'items-stretch'}`}>
                     {/* Title Area */}
-                    <div className="flex-1 flex flex-col justify-end pb-1 md:pb-2">
-                        <h3 className={`${isMobile ? 'text-[9vw] leading-none' : 'text-4xl md:text-5xl lg:text-6xl'} font-heading font-black uppercase tracking-tighter ${isHovered ? 'text-black' : 'text-white'}`} style={{ textShadow: isHovered ? 'none' : `3px 3px 0px ${event.color}` }}>
+                    <div className={`flex flex-col ${event.id === 'open-mic' ? 'justify-center items-center w-full pb-0' : 'flex-1 justify-end pb-1 md:pb-2'}`}>
+                        <h3 className={`${isMobile ? (event.id === 'open-mic' ? 'text-[12vw]' : 'text-[9vw]') : (event.id === 'open-mic' ? 'text-5xl md:text-7xl lg:text-[6rem]' : 'text-4xl md:text-5xl lg:text-6xl')} font-heading font-black uppercase tracking-tighter ${event.id === 'open-mic' ? 'text-center' : ''} ${isHovered ? 'text-black' : 'text-white'}`} style={{ textShadow: isHovered ? 'none' : `3px 3px 0px ${event.color}` }}>
                             {event.title}
                         </h3>
                     </div>
 
                     {/* Poster Space */}
-                    <div className={`w-[45%] h-full border-[2px] border-black overflow-hidden flex-shrink-0 relative transition-colors ${isHovered ? 'bg-black/10' : 'bg-white/5'}`}>
-                        {event.poster ? (
-                            <img src={event.poster} alt={`${event.title} poster`} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300" />
-                        ) : (
-                            <div className={`w-full h-full flex flex-col items-center justify-center font-mono ${isMobile ? 'text-[8px]' : 'text-xs'} uppercase tracking-widest bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-50 mix-blend-overlay ${isHovered ? 'text-black' : 'text-white/50'}`}>
-                                <span className="opacity-70 text-center">POSTER</span>
-                            </div>
-                        )}
-                    </div>
+                    {event.id !== 'open-mic' && (
+                        <div className={`w-[45%] h-full border-[2px] border-black overflow-hidden flex-shrink-0 relative transition-colors ${isHovered ? 'bg-black/10' : 'bg-white/5'}`}>
+                            {event.poster ? (
+                                <img src={event.poster} alt={`${event.title} poster`} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-300" />
+                            ) : (
+                                <div className={`w-full h-full flex flex-col items-center justify-center font-mono ${isMobile ? 'text-[8px]' : 'text-xs'} uppercase tracking-widest bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-50 mix-blend-overlay ${isHovered ? 'text-black' : 'text-white/50'}`}>
+                                    <span className="opacity-70 text-center">POSTER</span>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
 
                 {/* Content */}
@@ -426,13 +528,22 @@ function EventCard({ event, index, isMobile, onRegister }: EventCardProps) {
                         {event.description}
                     </p>
 
-                    <button
-                        onClick={onRegister}
-                        className={`mt-2 w-full font-heading font-black ${isMobile ? 'text-xl py-2 border-[2px]' : 'text-xl md:text-3xl py-2 md:py-3 border-[4px]'} uppercase border-black transition-all duration-300 ${isHovered ? 'bg-black text-white hover:bg-white hover:text-black' : 'bg-white text-black hover:bg-black hover:text-white'}`}
-                        style={{ boxShadow: isHovered ? `${isMobile ? '3px 3px 0px #000' : '8px 8px 0px #000'}` : `${isMobile ? `3px 3px 0px ${event.color}` : `8px 8px 0px ${event.color}`}` }}
-                    >
-                        REGISTER NOW
-                    </button>
+                    <div className="flex gap-2 w-full mt-2">
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onRegister(); }}
+                            className={`flex-1 font-heading font-black ${isMobile ? 'text-[1rem] py-2 border-[2px]' : 'text-xl md:text-3xl py-2 md:py-3 border-[4px]'} uppercase border-black transition-all duration-300 ${isHovered ? 'bg-black text-white hover:bg-white hover:text-black' : 'bg-white text-black hover:bg-black hover:text-white'}`}
+                            style={{ boxShadow: isHovered ? `${isMobile ? '3px 3px 0px #000' : '8px 8px 0px #000'}` : `${isMobile ? `3px 3px 0px ${event.color}` : `8px 8px 0px ${event.color}`}` }}
+                        >
+                            REGISTER
+                        </button>
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onViewDetails(); }}
+                            className={`flex-1 cursor-pointer font-heading font-black ${isMobile ? 'text-[1rem] py-2 border-[2px]' : 'text-xl md:text-3xl py-2 md:py-3 border-[4px]'} uppercase border-black transition-all duration-300 ${isHovered ? 'bg-white text-black' : 'bg-black/50 text-white backdrop-blur-sm'}`}
+                            style={{ boxShadow: isHovered ? `${isMobile ? `3px 3px 0px ${event.color}` : `8px 8px 0px ${event.color}`}` : 'none' }}
+                        >
+                            DETAILS
+                        </button>
+                    </div>
                 </div>
 
                 {/* Cyber-Brutalist decorative index */}
