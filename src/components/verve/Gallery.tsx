@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
 // Dynamically import all webp images from the gallery folder
-const imageRecords = import.meta.glob('../../assets/nitmunxiv/gallery/*.webp', { eager: true, query: '?url', import: 'default' });
+const imageRecords = import.meta.glob('../../assets/verve/gallery/*.webp', { eager: true, query: '?url', import: 'default' });
 const images = Object.values(imageRecords) as string[];
 
 // Distribute images

@@ -1,8 +1,8 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
-import img1 from '../../assets/nitmunxiv/gallery/WhatsApp Image 2026-03-05 at 02.08.37.webp';
-import img2 from '../../assets/nitmunxiv/gallery/WhatsApp Image 2026-03-05 at 02.08.49.webp';
-import img3 from '../../assets/nitmunxiv/gallery/WhatsApp Image 2026-03-05 at 02.08.57.webp';
+import img1 from '../../assets/verve/team/4thyear.webp';
+import img2 from '../../assets/verve/team/3rdyear.webp';
+import img3 from '../../assets/verve/team/2ndyear.webp';
 
 export interface TeamGroup {
     id: number;
