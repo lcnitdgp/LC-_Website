@@ -12,6 +12,10 @@ export interface EventData {
     venue: string;
     color: string;
     poster?: string;
+    teamSize?: {
+        min: number;
+        max: number;
+    };
 }
 
 export const EVENTS_DATA: EventData[] = [
@@ -23,6 +27,7 @@ export const EVENTS_DATA: EventData[] = [
         time: "1:00 PM",
         venue: "SAC",
         color: "#e08585",
+        teamSize: { min: 1, max: 3 }
     },
     {
         id: "literati",
@@ -42,6 +47,7 @@ export const EVENTS_DATA: EventData[] = [
         time: "3:30 PM",
         venue: "TBA",
         color: "#ff3e3e",
+        teamSize: { min: 2, max: 4 }
     },
     {
         id: "treasure-hunt",
@@ -51,6 +57,7 @@ export const EVENTS_DATA: EventData[] = [
         time: "9:00 AM",
         venue: "TBA",
         color: "#c084fc",
+        teamSize: { min: 2, max: 4 }
     },
     {
         id: "public-speaking",
@@ -509,7 +516,7 @@ function EventCard({ event, index, isMobile, isAdmin, onRegister, onViewDetails 
                 <div className={`flex w-full ${isMobile ? 'h-28 mt-2' : 'mt-4 h-32 md:h-48'} gap-4 items-center justify-center w-full`}>
                     {/* Title Area */}
                     <div className="flex flex-col justify-center items-center w-full pb-0">
-                        <h3 className={`${isMobile ? 'text-[12vw]' : 'text-5xl md:text-7xl lg:text-[6rem]'} font-heading font-black uppercase tracking-tighter text-center ${isHovered ? 'text-black' : 'text-white'}`} style={{ textShadow: isHovered ? 'none' : `3px 3px 0px ${event.color}` }}>
+                        <h3 className={`${isMobile ? 'text-[16vw]' : 'text-5xl md:text-7xl lg:text-[6rem]'} font-heading font-black uppercase tracking-tighter text-center ${isHovered ? 'text-black' : 'text-white'}`} style={{ textShadow: isHovered ? 'none' : `3px 3px 0px ${event.color}` }}>
                             {event.title}
                         </h3>
                     </div>
