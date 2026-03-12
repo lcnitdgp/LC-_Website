@@ -114,12 +114,16 @@ export function VervePage() {
     // @ts-ignore
     window.lenis = lenis;
 
+    let rafId: number;
+
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
+    
     return () => {
+      cancelAnimationFrame(rafId);
       lenis.destroy();
       // @ts-ignore
       delete window.lenis;
@@ -383,8 +387,8 @@ function AboutSectionContent({ scrollYProgress, isAdmin, aboutText, handleSaveAb
 
           {/* State 1: About Verve (LEFT, DARK, SHRINKS) */}
           <motion.div
-            style={{ width: darkWidth }}
-            className="h-full bg-verve-dark/80 backdrop-blur-xl border-2 border-white/10 rounded-[2rem] p-4 md:p-8 lg:p-12 relative overflow-hidden group interactive flex flex-col justify-center shadow-2xl origin-left"
+            style={{ width: darkWidth, willChange: 'width' }}
+            className="h-full bg-verve-dark border-2 border-white/10 rounded-[2rem] p-4 md:p-8 lg:p-12 relative overflow-hidden group interactive flex flex-col justify-center shadow-xl origin-left"
           >
             <div className="absolute top-0 right-0 w-64 h-64 bg-verve-pink/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 group-hover:bg-verve-pink/20 transition-colors duration-700 pointer-events-none" />
 
@@ -402,7 +406,6 @@ function AboutSectionContent({ scrollYProgress, isAdmin, aboutText, handleSaveAb
             <motion.div
               style={{ opacity: darkContentOpacity }}
               className="absolute inset-y-0 left-0 w-[78vw] md:w-[70vw] lg:w-[55vw] max-w-[800px] px-6 py-12 md:p-12 pb-12 flex flex-col justify-start md:justify-center items-start overflow-hidden"
-              data-lenis-prevent="true"
             >
               <div className="inline-block px-4 py-2 rounded-full bg-verve-gold/20 text-verve-gold font-sans font-bold text-xs tracking-wider mb-4 md:mb-8 shrink-0">
                 01 // THE FEST
@@ -446,10 +449,10 @@ function AboutSectionContent({ scrollYProgress, isAdmin, aboutText, handleSaveAb
 
           {/* State 2: About Literary Circle (RIGHT, YELLOW, EXPANDS) */}
           <motion.div
-            style={{ width: yellowWidth }}
-            className="h-full bg-verve-gold rounded-[2rem] p-4 md:p-8 lg:p-12 relative overflow-hidden group interactive flex flex-col justify-center shadow-2xl origin-right"
+            style={{ width: yellowWidth, willChange: 'width' }}
+            className="h-full bg-verve-gold rounded-[2rem] p-4 md:p-8 lg:p-12 relative overflow-hidden group interactive flex flex-col justify-center shadow-xl origin-right"
           >
-            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none mix-blend-overlay" />
+            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none" />
 
             {/* Compressed Vertical Title */}
             <motion.div
@@ -465,7 +468,6 @@ function AboutSectionContent({ scrollYProgress, isAdmin, aboutText, handleSaveAb
             <motion.div
               style={{ opacity: yellowContentOpacity }}
               className="absolute inset-y-0 left-0 w-[78vw] md:w-[70vw] lg:w-[55vw] max-w-[800px] px-6 py-12 md:p-12 pb-12 flex flex-col justify-start md:justify-center items-start overflow-hidden"
-              data-lenis-prevent="true"
             >
               <div className="inline-block px-4 py-2 rounded-full bg-black/10 text-black font-sans font-bold text-xs tracking-wider mb-4 md:mb-8 shrink-0">
                 02 // THE CLUB
