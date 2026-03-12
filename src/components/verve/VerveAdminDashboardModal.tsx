@@ -161,33 +161,51 @@ export function VerveAdminDashboardModal({ isOpen, onClose }: Props) {
     });
 
     const handleExportCSV = async () => {
-        if (activeTab === 'treasure-hunt') {
+        const currentEventDef = EVENTS_DATA.find(e => e.id === activeTab);
+        
+        if (currentEventDef?.teamSize) {
             try {
-                const querySnapshot = await getDocs(collection(db, 'treasure_hunt_teams'));
-                const headers = [
+                const collectionName = `${activeTab.replace(/-/g, '_')}_teams`;
+                const querySnapshot = await getDocs(collection(db, collectionName));
+                
+                const maxMembers = currentEventDef.teamSize.max;
+                
+                const baseHeaders = [
                     "Team Name", "Registered At",
-                    "Leader Name", "Leader Reg No", "Leader Phone", "Leader Email",
-                    "Member 2 Name", "Member 2 Reg No", "Member 2 Phone",
-                    "Member 3 Name", "Member 3 Reg No", "Member 3 Phone",
-                    "Member 4 Name", "Member 4 Reg No", "Member 4 Phone"
+                    "Leader Name", "Leader Reg No", "Leader Phone", "Leader Email"
                 ];
+                
+                const memberHeaders: string[] = [];
+                for (let i = 2; i <= maxMembers; i++) {
+                    memberHeaders.push(`Member ${i} Name`, `Member ${i} Reg No`, `Member ${i} Phone`);
+                }
+                
+                const headers = [...baseHeaders, ...memberHeaders];
 
                 const rows: string[] = [];
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
                     const mems = data.members || [];
-                    const row = [
+                    
+                    const baseRow = [
                         `"${data.teamName || ''}"`,
                         data.registeredAt ? `"${new Date(data.registeredAt).toLocaleString()}"` : 'N/A',
                         `"${data.leader?.name || ''}"`,
                         data.leader?.regNumber || '',
                         data.leader?.phone || '',
-                        data.leader?.email || '',
-                        `"${mems[0]?.name || ''}"`, mems[0]?.regNumber || '', mems[0]?.phone || '',
-                        `"${mems[1]?.name || ''}"`, mems[1]?.regNumber || '', mems[1]?.phone || '',
-                        `"${mems[2]?.name || ''}"`, mems[2]?.regNumber || '', mems[2]?.phone || ''
+                        data.leader?.email || ''
                     ];
-                    rows.push(row.join(','));
+                    
+                    const memberRowData: string[] = [];
+                    for (let i = 0; i < maxMembers - 1; i++) {
+                        memberRowData.push(
+                            `"${mems[i]?.name || ''}"`,
+                            mems[i]?.regNumber || '',
+                            mems[i]?.phone || ''
+                        );
+                    }
+                    
+                    rows.push([...baseRow, ...memberRowData].join(','));
                 });
 
                 const csvContent = [headers.join(','), ...rows].join('\n');
@@ -195,13 +213,13 @@ export function VerveAdminDashboardModal({ isOpen, onClose }: Props) {
                 const link = document.createElement('a');
                 const url = URL.createObjectURL(blob);
                 link.setAttribute('href', url);
-                link.setAttribute('download', `verve_treasure_hunt_teams_${new Date().toISOString().split('T')[0]}.csv`);
+                link.setAttribute('download', `verve_${collectionName}_${new Date().toISOString().split('T')[0]}.csv`);
                 link.style.visibility = 'hidden';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
             } catch (error) {
-                console.error("Error exporting teams:", error);
+                console.error(`Error exporting teams for ${activeTab}:`, error);
             }
             return;
         }

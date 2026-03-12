@@ -54,12 +54,11 @@ export function VerveRegistrationModal({ isOpen, onClose, initialEventId }: Prop
     // Checklist state
     const [registeredEvents, setRegisteredEvents] = useState<string[]>([]);
     const [additionalSelections, setAdditionalSelections] = useState<string[]>([]);
+    const [currentTeamEventId, setCurrentTeamEventId] = useState<string | null>(null);
 
     // Team Form State
     const [teamName, setTeamName] = useState('');
     const [teamMembers, setTeamMembers] = useState([
-        { name: '', regNumber: '', phone: '' },
-        { name: '', regNumber: '', phone: '' },
         { name: '', regNumber: '', phone: '' },
     ]);
 
@@ -75,10 +74,9 @@ export function VerveRegistrationModal({ isOpen, onClose, initialEventId }: Prop
             setLoginPassword('');
             setRegisteredEvents([]);
             setAdditionalSelections([]);
+            setCurrentTeamEventId(null);
             setTeamName('');
             setTeamMembers([
-                { name: '', regNumber: '', phone: '' },
-                { name: '', regNumber: '', phone: '' },
                 { name: '', regNumber: '', phone: '' }
             ]);
             return;
@@ -111,7 +109,9 @@ export function VerveRegistrationModal({ isOpen, onClose, initialEventId }: Prop
 
                     // If they have a profile, check initial event
                     if (initialEventId && !existingEvents.includes(initialEventId)) {
-                        if (initialEventId === 'treasure-hunt') {
+                        const eventDef = EVENTS_DATA.find(e => e.id === initialEventId);
+                        if (eventDef?.teamSize) {
+                            setCurrentTeamEventId(initialEventId);
                             setView('team-form');
                         } else {
                             await registerForEvents(regNumber, [...existingEvents, initialEventId], data.phoneNumber);
@@ -173,7 +173,10 @@ export function VerveRegistrationModal({ isOpen, onClose, initialEventId }: Prop
 
             setRegisteredEvents(newRegisteredEvents);
             setView('success-checklist');
-            setAdditionalSelections([]);
+            
+            const teamEventIds = EVENTS_DATA.filter(e => e.teamSize).map(e => e.id);
+            setAdditionalSelections(prev => prev.filter(id => !teamEventIds.includes(id)));
+            setCurrentTeamEventId(null);
         } catch (err: any) {
             setError(err.message || 'Something went wrong saving registration.');
         } finally {
@@ -205,9 +208,13 @@ export function VerveRegistrationModal({ isOpen, onClose, initialEventId }: Prop
         e.preventDefault();
         if (!user || !user.email) return;
 
-        if (initialEventId === 'treasure-hunt') {
-            setView('team-form');
-            return;
+        if (initialEventId) {
+            const eventDef = EVENTS_DATA.find(e => e.id === initialEventId);
+            if (eventDef?.teamSize) {
+                setCurrentTeamEventId(initialEventId);
+                setView('team-form');
+                return;
+            }
         }
 
         const regNumber = extractRegNumber(user.email.toLowerCase());
@@ -222,8 +229,9 @@ export function VerveRegistrationModal({ isOpen, onClose, initialEventId }: Prop
             return;
         }
 
-        if (additionalSelections.includes('treasure-hunt')) {
-            // Transition to team form specific to Treasure Hunt. Keep other selections pending.
+        const teamEventsSelected = additionalSelections.filter(id => EVENTS_DATA.find(e => e.id === id)?.teamSize);
+        if (teamEventsSelected.length > 0) {
+            setCurrentTeamEventId(teamEventsSelected[0]);
             setView('team-form');
             return;
         }
@@ -241,7 +249,17 @@ export function VerveRegistrationModal({ isOpen, onClose, initialEventId }: Prop
 
     const handleTeamSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!user || !user.email) return;
+        if (!user || !user.email || !currentTeamEventId) return;
+
+        const currentEventDef = EVENTS_DATA.find(ev => ev.id === currentTeamEventId);
+        if (!currentEventDef || !currentEventDef.teamSize) return;
+
+        const minMembersExcludingLeader = currentEventDef.teamSize.min - 1;
+
+        if (teamMembers.length < minMembersExcludingLeader) {
+             setError(`You need at least ${currentEventDef.teamSize.min} members for ${currentEventDef.title} (including yourself).`);
+             return;
+        }
 
         setIsSubmitting(true);
         setError(null);
@@ -261,15 +279,18 @@ export function VerveRegistrationModal({ isOpen, onClose, initialEventId }: Prop
                 regNumber: leaderRegNumber,
                 extractedYear: leaderYearDigits,
                 yearOfStudy: leaderCalculatedYear,
-                registeredEvents: arrayUnion('treasure-hunt'),
+                registeredEvents: arrayUnion(currentTeamEventId),
                 lastUpdated: new Date().toISOString()
             }, { merge: true });
 
+            const collectionName = `${currentTeamEventId.replace(/-/g, '_')}_teams`;
+
             // 2. Create the Team Entry Document for Admins
             const teamId = `${teamName.trim().toLowerCase().replace(/\s+/g, '-')}-${leaderRegNumber}`;
-            const teamDocRef = doc(db, 'treasure_hunt_teams', teamId);
+            const teamDocRef = doc(db, collectionName, teamId);
             await setDoc(teamDocRef, {
                 teamName: teamName,
+                eventId: currentTeamEventId,
                 leader: {
                     name: user.name,
                     regNumber: leaderRegNumber,
@@ -280,7 +301,7 @@ export function VerveRegistrationModal({ isOpen, onClose, initialEventId }: Prop
                 registeredAt: new Date().toISOString()
             });
 
-            // 3. Update the individual `verve_registrations` document for members 2, 3, 4 so they see it on their dashboard
+            // 3. Update the individual `verve_registrations` document for members so they see it on their dashboard
             const memberUpdates = teamMembers.map(async (member) => {
                 const memberRegLower = member.regNumber.trim().toLowerCase();
                 const memberDocRef = doc(db, 'verve_registrations', memberRegLower);
@@ -292,26 +313,37 @@ export function VerveRegistrationModal({ isOpen, onClose, initialEventId }: Prop
                     phoneNumber: member.phone,
                     extractedYear: yearDigits,
                     yearOfStudy: getYearOfStudy(memberRegLower),
-                    registeredEvents: arrayUnion('treasure-hunt'),
+                    registeredEvents: arrayUnion(currentTeamEventId),
                     lastUpdated: new Date().toISOString()
                 }, { merge: true });
             });
             await Promise.all(memberUpdates);
 
             // 4. Update local state and finish
-            const newRegisteredEvents = [...new Set([...registeredEvents, 'treasure-hunt', ...additionalSelections])];
-
-            // If we have other standard events to submit alongside treasure hunt
-            const eventsWithoutTreasureHunt = additionalSelections.filter(id => id !== 'treasure-hunt');
-            if (eventsWithoutTreasureHunt.length > 0) {
-                await setDoc(leaderDocRef, {
-                    registeredEvents: arrayUnion(...eventsWithoutTreasureHunt)
-                }, { merge: true });
-            }
+            const newRegisteredEvents = [...new Set([...registeredEvents, currentTeamEventId, ...additionalSelections])];
 
             setRegisteredEvents(newRegisteredEvents);
-            setAdditionalSelections([]);
-            setView('success-checklist');
+            
+            // Check if there are more team events to register
+            const remainingSelections = additionalSelections.filter(id => id !== currentTeamEventId);
+            const nextTeamEvent = remainingSelections.find(id => EVENTS_DATA.find(e => e.id === id)?.teamSize);
+
+            if (nextTeamEvent) {
+                setTeamName('');
+                setTeamMembers([{ name: '', regNumber: '', phone: '' }]);
+                setCurrentTeamEventId(nextTeamEvent);
+                setView('team-form');
+            } else {
+                // If we have other standard events to submit alongside
+                const normalEvents = remainingSelections.filter(id => !EVENTS_DATA.find(e => e.id === id)?.teamSize);
+                if (normalEvents.length > 0) {
+                    await setDoc(leaderDocRef, {
+                        registeredEvents: arrayUnion(...normalEvents)
+                    }, { merge: true });
+                }
+                setAdditionalSelections([]);
+                setView('success-checklist');
+            }
 
         } catch (err: any) {
             setError(err.message || 'Error occurred while saving team registration.');
@@ -508,100 +540,149 @@ export function VerveRegistrationModal({ isOpen, onClose, initialEventId }: Prop
         );
     }
 
-    const renderTeamForm = () => (
-        <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }}>
-            <form onSubmit={handleTeamSubmit} className="space-y-6">
-                <div className="bg-verve-gold border-[4px] border-black p-4 shadow-[4px_4px_0_#000] -rotate-1 mb-6">
-                    <p className="text-sm md:text-base text-black font-mono font-bold leading-relaxed text-center">
-                        Treasure Hunt is a <span className="underline decoration-4 decoration-verve-pink">4-person</span> team event. Complete your roster below.
-                    </p>
-                </div>
+    const renderTeamForm = () => {
+        const currentEventDef = EVENTS_DATA.find(e => e.id === currentTeamEventId);
+        const eventTitle = currentEventDef?.title || 'Team Event';
+        const teamSize = currentEventDef?.teamSize || { min: 4, max: 4 };
+        const maxAdditionalMembers = teamSize.max - 1;
+        const minAdditionalMembers = teamSize.min - 1;
 
-                <div className="max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar space-y-8">
-                    {/* Team Info */}
-                    <div>
-                        <label className={labelClass}>Team Name</label>
-                        <input
-                            type="text" required
-                            value={teamName} onChange={(e) => setTeamName(e.target.value)}
-                            className={inputClass} placeholder="Enter an awesome team name"
-                        />
+        const addMember = () => {
+            if (teamMembers.length < maxAdditionalMembers) {
+                setTeamMembers([...teamMembers, { name: '', regNumber: '', phone: '' }]);
+            }
+        };
+
+        const removeMember = (index: number) => {
+            if (teamMembers.length > 0 && index >= 0) {
+                 const newMembers = [...teamMembers];
+                 newMembers.splice(index, 1);
+                 setTeamMembers(newMembers);
+            }
+        };
+
+        return (
+            <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -16 }}>
+                <form onSubmit={handleTeamSubmit} className="space-y-6">
+                    <div className="bg-verve-gold border-[4px] border-black p-4 shadow-[4px_4px_0_#000] -rotate-1 mb-6">
+                        <p className="text-sm md:text-base text-black font-mono font-bold leading-relaxed text-center">
+                            {eventTitle} is a <span className="underline decoration-4 decoration-verve-pink">{teamSize.min === teamSize.max ? `${teamSize.max}-person` : `${teamSize.min} to ${teamSize.max}-person`}</span> team event. 
+                            {minAdditionalMembers > 0 && ` Minimum ${teamSize.min} member team for this event.`} Complete your roster below.
+                        </p>
                     </div>
 
-                    {/* Leader (Read Only/Pre-filled) */}
-                    <div className="bg-[#1f1d1d] border-2 border-black p-4 space-y-4">
-                        <div className="flex justify-between items-center mb-2 border-b-2 border-verve-gold pb-2">
-                            <span className="font-heading uppercase text-xl text-verve-gold tracking-widest">Member 1 / Leader</span>
-                            <User className="w-5 h-5 text-verve-gold" />
+                    <div className="max-h-[50vh] overflow-y-auto pr-2 custom-scrollbar space-y-8">
+                        {/* Team Info */}
+                        <div>
+                            <label className={labelClass}>Team Name</label>
+                            <input
+                                type="text" required
+                                value={teamName} onChange={(e) => setTeamName(e.target.value)}
+                                className={inputClass} placeholder="Enter an awesome team name"
+                            />
                         </div>
-                        <div className="space-y-3 font-mono text-sm">
-                            <p><span className="text-gray-400">Name:</span> <strong>{user?.name}</strong></p>
-                            <p><span className="text-gray-400">Reg No:</span> <strong>{user?.email && extractRegNumber(user.email).toUpperCase()}</strong></p>
-                            {/* Ensure we have the phone number if they just came from the Auth Choice without passing through phone form */}
-                            <>
-                                <label className="text-gray-400 mt-2 block">Leader WhatsApp:</label>
-                                <input
-                                    type="tel" required
-                                    value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
-                                    className="w-full px-3 py-2 border-[2px] border-black bg-[#312e2e] text-white focus:border-verve-gold transition-colors outline-none font-mono"
-                                    placeholder="10-digit number" pattern="[0-9]{10}"
-                                />
-                            </>
-                        </div>
-                    </div>
 
-                    {/* Members 2-4 */}
-                    {teamMembers.map((member, idx) => (
-                        <div key={idx} className="bg-[#1f1d1d] border-2 border-black p-4 space-y-4">
-                            <div className="flex justify-between items-center mb-2 border-b-2 border-black pb-2">
-                                <span className="font-heading uppercase text-xl text-white tracking-widest">Member {idx + 2}</span>
-                                <User className="w-5 h-5 text-white/50" />
+                        {/* Leader (Read Only/Pre-filled) */}
+                        <div className="bg-[#1f1d1d] border-2 border-black p-4 space-y-4">
+                            <div className="flex justify-between items-center mb-2 border-b-2 border-verve-gold pb-2">
+                                <span className="font-heading uppercase text-xl text-verve-gold tracking-widest">Member 1 / Leader</span>
+                                <User className="w-5 h-5 text-verve-gold" />
                             </div>
-
-                            <div className="space-y-4">
-                                <div>
-                                    <label className="text-xs font-bold text-gray-400 mb-1 block uppercase">Full Name</label>
+                            <div className="space-y-3 font-mono text-sm">
+                                <p><span className="text-gray-400">Name:</span> <strong>{user?.name}</strong></p>
+                                <p><span className="text-gray-400">Reg No:</span> <strong>{user?.email && extractRegNumber(user.email).toUpperCase()}</strong></p>
+                                {/* Ensure we have the phone number if they just came from the Auth Choice without passing through phone form */}
+                                <>
+                                    <label className="text-gray-400 mt-2 block">Leader WhatsApp:</label>
                                     <input
-                                        type="text" required
-                                        value={member.name} onChange={(e) => handleTeamMemberUpdate(idx, 'name', e.target.value)}
-                                        className="w-full px-3 py-2 border-[2px] border-black bg-[#312e2e] text-white focus:border-verve-pink transition-colors outline-none font-mono text-sm"
-                                        placeholder="Name"
+                                        type="tel" required
+                                        value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
+                                        className="w-full px-3 py-2 border-[2px] border-black bg-[#312e2e] text-white focus:border-verve-gold transition-colors outline-none font-mono"
+                                        placeholder="10-digit number" pattern="[0-9]{10}"
                                     />
+                                </>
+                            </div>
+                        </div>
+
+                        {/* Members 2-Max */}
+                        {teamMembers.map((member, idx) => (
+                            <div key={idx} className="bg-[#1f1d1d] border-2 border-black p-4 space-y-4 relative group">
+                                <div className="flex justify-between items-center mb-2 border-b-2 border-black pb-2">
+                                    <span className="font-heading uppercase text-xl text-white tracking-widest">Member {idx + 2}</span>
+                                    <div className="flex items-center gap-2">
+                                        <button 
+                                            type="button" 
+                                            onClick={() => removeMember(idx)}
+                                            className="text-verve-pink hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                                            title="Remove Member"
+                                        >
+                                            <X size={20} />
+                                        </button>
+                                        <User className="w-5 h-5 text-white/50" />
+                                    </div>
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
+
+                                <div className="space-y-4">
                                     <div>
-                                        <label className="text-xs font-bold text-gray-400 mb-1 block uppercase">Reg/Roll No</label>
+                                        <label className="text-xs font-bold text-gray-400 mb-1 block uppercase">Full Name</label>
                                         <input
                                             type="text" required
-                                            value={member.regNumber} onChange={(e) => handleTeamMemberUpdate(idx, 'regNumber', e.target.value)}
-                                            className="w-full px-3 py-2 border-[2px] border-black bg-[#312e2e] text-white focus:border-verve-pink transition-colors outline-none font-mono text-sm uppercase"
-                                            placeholder="e.g. 21XX123"
+                                            value={member.name} onChange={(e) => handleTeamMemberUpdate(idx, 'name', e.target.value)}
+                                            className="w-full px-3 py-2 border-[2px] border-black bg-[#312e2e] text-white focus:border-verve-pink transition-colors outline-none font-mono text-sm"
+                                            placeholder="Name"
                                         />
                                     </div>
-                                    <div>
-                                        <label className="text-xs font-bold text-gray-400 mb-1 block uppercase">WhatsApp</label>
-                                        <input
-                                            type="tel" required
-                                            value={member.phone} onChange={(e) => handleTeamMemberUpdate(idx, 'phone', e.target.value)}
-                                            className="w-full px-3 py-2 border-[2px] border-black bg-[#312e2e] text-white focus:border-verve-pink transition-colors outline-none font-mono text-sm"
-                                            placeholder="10-digits" pattern="[0-9]{10}"
-                                        />
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-400 mb-1 block uppercase">Reg/Roll No</label>
+                                            <input
+                                                type="text" required
+                                                value={member.regNumber} onChange={(e) => handleTeamMemberUpdate(idx, 'regNumber', e.target.value)}
+                                                className="w-full px-3 py-2 border-[2px] border-black bg-[#312e2e] text-white focus:border-verve-pink transition-colors outline-none font-mono text-sm uppercase"
+                                                placeholder="e.g. 21XX123"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-400 mb-1 block uppercase">WhatsApp</label>
+                                            <input
+                                                type="tel" required
+                                                value={member.phone} onChange={(e) => handleTeamMemberUpdate(idx, 'phone', e.target.value)}
+                                                className="w-full px-3 py-2 border-[2px] border-black bg-[#312e2e] text-white focus:border-verve-pink transition-colors outline-none font-mono text-sm"
+                                                placeholder="10-digits" pattern="[0-9]{10}"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
-                </div>
+                        ))}
 
-                <button
-                    type="submit" disabled={isSubmitting}
-                    className="w-full py-5 mt-4 bg-verve-pink text-black font-heading tracking-widest text-2xl md:text-3xl uppercase border-[4px] border-black shadow-[6px_8px_0_#000] hover:bg-[#c97474] hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:translate-y-2 active:translate-x-2 transition-all disabled:opacity-50"
-                >
-                    {isSubmitting ? 'Registering Team...' : 'Register Team'}
-                </button>
-            </form>
-        </motion.div>
-    );
+                        {teamMembers.length < maxAdditionalMembers && (
+                            <button
+                                type="button"
+                                onClick={addMember}
+                                className="w-full py-4 bg-[#312e2e] text-white font-mono font-bold uppercase tracking-widest border-[2px] border-dashed border-gray-500 hover:border-verve-gold hover:text-verve-gold transition-colors flex items-center justify-center gap-2"
+                            >
+                                <span>+ Add Another Member (Max {teamSize.max})</span>
+                            </button>
+                        )}
+                        
+                        {teamMembers.length < minAdditionalMembers && (
+                            <p className="text-verve-pink text-xs font-mono font-bold text-center">
+                                * Minimum {teamSize.min} members required for this event (You need {minAdditionalMembers - teamMembers.length} more).
+                            </p>
+                        )}
+                    </div>
+
+                    <button
+                        type="submit" disabled={isSubmitting}
+                        className="w-full py-5 mt-4 bg-verve-pink text-black font-heading tracking-widest text-2xl md:text-3xl uppercase border-[4px] border-black shadow-[6px_8px_0_#000] hover:bg-[#c97474] hover:translate-x-1 hover:translate-y-1 hover:shadow-none active:translate-y-2 active:translate-x-2 transition-all disabled:opacity-50"
+                    >
+                        {isSubmitting ? 'Registering Team...' : `Register ${eventTitle}`}
+                    </button>
+                </form>
+            </motion.div>
+        );
+    };
 
     const showBackButton = view === 'login-form';
 

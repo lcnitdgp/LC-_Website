@@ -122,19 +122,10 @@ function BentoGrid({ images }: { images: string[] }) {
         "col-span-12 row-span-1"                // Full width footer
     ];
 
-    // Titles for hover effects
-    const hoverTitles = [
-        "Unleashing Energy", "Focus & Precision", "The Debates", "Raw Moments",
-        "Stage Performances", "Backstage Chaos", "Late Night Grinds", "The Verdict",
-        "Closing Ceremonies", "Speaker Sessions", "Audience Reactions", "The Setup",
-        "Final Goodbyes", "The Legacy"
-    ];
-
     return (
         <div className="grid grid-cols-12 gap-4 md:gap-6 lg:gap-8 auto-rows-[250px] md:auto-rows-[350px]">
             {images.map((img, index) => {
                 const spanClass = layoutPattern[index % layoutPattern.length];
-                const title = hoverTitles[index % hoverTitles.length];
 
                 return (
                     <motion.div
@@ -146,19 +137,9 @@ function BentoGrid({ images }: { images: string[] }) {
                         className={`${spanClass} rounded-[2rem] lg:rounded-[3rem] overflow-hidden relative group cursor-pointer border-2 border-white/5 bg-white/5 shadow-2xl origin-center`}
                     >
                         <img src={img} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 group-hover:-rotate-1 opacity-70 group-hover:opacity-100 mix-blend-luminosity group-hover:mix-blend-normal" />
-
-                        {/* Hover Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-verve-dark/95 via-verve-dark/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6 md:p-10">
-                            <div className="translate-y-8 group-hover:translate-y-0 transition-transform duration-500 ease-out">
-                                <div className="w-12 h-1 bg-verve-pink mb-4 shadow-[0_0_10px_#e08585]" />
-                                <h3 className="text-white font-heading text-3xl md:text-5xl uppercase tracking-wider leading-none">
-                                    {title}
-                                </h3>
-                                <p className="text-white/70 font-mono text-xs md:text-sm mt-3 uppercase tracking-widest shrink-0">
-                                    Archive // Phase 0{index + 1}
-                                </p>
-                            </div>
-                        </div>
+                        
+                        {/* Hover Overlay Gradient (No Text) */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-verve-dark/95 via-verve-dark/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                     </motion.div>
                 );
             })}
