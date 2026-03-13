@@ -2,6 +2,8 @@ import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 import openMicPoster from '../../assets/verve/events/open-mic-xxi.webp';
 import literatiPoster from '../../assets/verve/events/literatiposter.webp';
+import judicorPoster from '../../assets/verve/events/judicor2.webp';
+import arcanumPoster from '../../assets/verve/events/arcanum.webp';
 
 export interface EventData {
     id: string;
@@ -25,8 +27,9 @@ export const EVENTS_DATA: EventData[] = [
         description: "A battle of vocabulary and wit! Prove your linguistic dominance in this intense vocabulary challenge.",
         date: "14th March",
         time: "1:00 PM",
-        venue: "SAC",
+        venue: "LH21, MAB",
         color: "#e08585",
+        poster: arcanumPoster,
         teamSize: { min: 1, max: 3 }
     },
     {
@@ -61,12 +64,13 @@ export const EVENTS_DATA: EventData[] = [
     },
     {
         id: "public-speaking",
-        title: "Public Speaking",
+        title: "JUDICOR",
         description: "Step up to the podium and captivate the crowd! Showcase your oratory skills in this electrifying public speaking contest.",
         date: "14th March",
-        time: "5:30 PM",
-        venue: "TBA",
+        time: "4:00 PM",
+        venue: "HSS HALL, MAB",
         color: "#1dfa82",
+        poster: judicorPoster,
     },
     {
         id: "open-mic",
