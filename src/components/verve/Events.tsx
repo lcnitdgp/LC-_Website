@@ -1,9 +1,19 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
+import { onSnapshot, doc } from 'firebase/firestore';
+import { db } from '../../firebase';
+import { useAuth } from '../../context';
 import openMicPoster from '../../assets/verve/events/open-mic-xxi.webp';
 import literatiPoster from '../../assets/verve/events/literatiposter.webp';
 import judicorPoster from '../../assets/verve/events/judicor2.webp';
 import arcanumPoster from '../../assets/verve/events/arcanum.webp';
+import valdrathPoster from '../../assets/verve/events/valdrathposter.webp';
+
+const extractRegNumber = (email: string) => {
+    const match = email.match(/\.([^.@]+)@/);
+    if (match && match[1]) return match[1].toLowerCase();
+    return email.split('@')[0].toLowerCase();
+};
 
 export interface EventData {
     id: string;
@@ -30,7 +40,6 @@ export const EVENTS_DATA: EventData[] = [
         venue: "LH21, MAB",
         color: "#e08585",
         poster: arcanumPoster,
-        teamSize: { min: 1, max: 3 }
     },
     {
         id: "literati",
@@ -44,12 +53,13 @@ export const EVENTS_DATA: EventData[] = [
     },
     {
         id: "wild-card",
-        title: "Wild Card",
+        title: "Valdrath",
         description: "Expect the unexpected! A surprise event that will test your creativity, wit, and spontaneity.",
         date: "14th March",
-        time: "3:30 PM",
-        venue: "TBA",
+        time: "2:30 PM",
+        venue: "LH21, MAB",
         color: "#ff3e3e",
+        poster: valdrathPoster,
         teamSize: { min: 2, max: 4 }
     },
     {
@@ -111,6 +121,38 @@ export function Events({ onRegisterClick, isAdmin, onDashboardClick }: EventsPro
 
     const [activeDateIndex, setActiveDateIndex] = useState(0);
     const uniqueDates = Array.from(new Set(EVENTS_DATA.map(e => e.date))).sort();
+    
+    const { user } = useAuth();
+    const [userRegisteredEvents, setUserRegisteredEvents] = useState<string[]>([]);
+
+    useEffect(() => {
+        if (!user || !user.email) {
+            setUserRegisteredEvents([]);
+            return;
+        }
+
+        const userEmailLower = user.email.toLowerCase();
+        const isInhouseUser = userEmailLower.endsWith('@nitdgp.ac.in') || userEmailLower.endsWith('@btech.nitdgp.ac.in');
+        
+        if (!isInhouseUser) {
+            setUserRegisteredEvents([]);
+            return;
+        }
+
+        const regNumber = extractRegNumber(userEmailLower);
+        const docRef = doc(db, 'verve_registrations', regNumber);
+
+        const unsubscribe = onSnapshot(docRef, (docSnap) => {
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                setUserRegisteredEvents(data.registeredEvents || []);
+            } else {
+                setUserRegisteredEvents([]);
+            }
+        });
+
+        return () => unsubscribe();
+    }, [user]);
 
     useEffect(() => {
         return smoothScrollYProgress.onChange((latest) => {
@@ -366,11 +408,22 @@ export function Events({ onRegisterClick, isAdmin, onDashboardClick }: EventsPro
                                             )}
                                         </div>
                                         <div className={`flex shrink-0 items-center h-full ${isMobile ? 'gap-4 py-4' : 'gap-8 md:gap-16'}`}>
-                                            {timeBlock.events.map((event, eventIdx) => (
-                                                <div key={event.id} className={`shrink-0 snap-center ${isMobile ? 'w-[75vw] h-[55vh] max-h-[420px]' : 'w-[85vw] md:w-[60vw] lg:w-[45vw] lg:max-w-[600px] h-[60vh] min-h-[400px] max-h-[500px]'}`}>
-                                                    <EventCard event={event} index={eventIdx} isMobile={isMobile} isAdmin={isAdmin} onRegister={() => isAdmin ? onDashboardClick?.() : onRegisterClick?.(event.id)} onViewDetails={() => setSelectedEventDetails(event)} />
-                                                </div>
-                                            ))}
+                                            {timeBlock.events.map((event, eventIdx) => {
+                                                const isUserRegistered = userRegisteredEvents.includes(event.id);
+                                                return (
+                                                    <div key={event.id} className={`shrink-0 snap-center ${isMobile ? 'w-[75vw] h-[55vh] max-h-[420px]' : 'w-[85vw] md:w-[60vw] lg:w-[45vw] lg:max-w-[600px] h-[60vh] min-h-[400px] max-h-[500px]'}`}>
+                                                        <EventCard 
+                                                            event={event} 
+                                                            index={eventIdx} 
+                                                            isMobile={isMobile} 
+                                                            isAdmin={isAdmin} 
+                                                            isRegistered={isUserRegistered}
+                                                            onRegister={() => isAdmin ? onDashboardClick?.() : onRegisterClick?.(event.id)} 
+                                                            onViewDetails={() => setSelectedEventDetails(event)} 
+                                                        />
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 ))}
@@ -481,11 +534,12 @@ interface EventCardProps {
     index: number;
     isMobile?: boolean;
     isAdmin?: boolean;
+    isRegistered?: boolean;
     onRegister: () => void;
     onViewDetails: () => void;
 }
 
-function EventCard({ event, index, isMobile, isAdmin, onRegister, onViewDetails }: EventCardProps) {
+function EventCard({ event, index, isMobile, isAdmin, isRegistered, onRegister, onViewDetails }: EventCardProps) {
     const [isHovered, setIsHovered] = useState(false);
 
     return (
@@ -535,10 +589,10 @@ function EventCard({ event, index, isMobile, isAdmin, onRegister, onViewDetails 
                     <div className="flex gap-2 w-full mt-2">
                         <button
                             onClick={(e) => { e.stopPropagation(); onRegister(); }}
-                            className={`flex-1 font-heading font-black ${isMobile ? 'text-[1rem] py-2 border-[2px]' : 'text-xl md:text-3xl py-2 md:py-3 border-[4px]'} uppercase border-black transition-all duration-300 ${isHovered ? 'bg-black text-white hover:bg-white hover:text-black' : 'bg-white text-black hover:bg-black hover:text-white'}`}
-                            style={{ boxShadow: isHovered ? `${isMobile ? '3px 3px 0px #000' : '8px 8px 0px #000'}` : `${isMobile ? `3px 3px 0px ${event.color}` : `8px 8px 0px ${event.color}`}` }}
+                            className={`flex-1 font-heading font-black ${isMobile ? 'text-[1rem] py-2 border-[2px]' : 'text-xl md:text-3xl py-2 md:py-3 border-[4px]'} uppercase border-black transition-all duration-300 ${!isAdmin && isRegistered ? 'bg-verve-gold text-black hover:bg-white' : isHovered ? 'bg-black text-white hover:bg-white hover:text-black' : 'bg-white text-black hover:bg-black hover:text-white'}`}
+                            style={{ boxShadow: isHovered || isRegistered ? `${isMobile ? '3px 3px 0px #000' : '8px 8px 0px #000'}` : `${isMobile ? `3px 3px 0px ${event.color}` : `8px 8px 0px ${event.color}`}` }}
                         >
-                            {isAdmin ? 'VIEW REGS' : 'REGISTER'}
+                            {isAdmin ? 'VIEW REGS' : (isRegistered ? 'REGISTERED' : 'REGISTER')}
                         </button>
                         <button
                             onClick={(e) => { e.stopPropagation(); onViewDetails(); }}
