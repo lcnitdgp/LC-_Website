@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
-import { X, Users, Search, Target, Mail, Phone, Calendar, UserCircle, Download } from 'lucide-react';
+import { X, Users, Users2, Shield, Search, Target, Mail, Phone, Calendar, UserCircle, Download } from 'lucide-react';
 import { EVENTS_DATA } from './Events';
 import type { EventData } from './Events';
 
@@ -13,8 +13,32 @@ interface VerveRegistration {
     lastUpdated: string;
     phoneNumber: string;
     regNumber: string;
+    rollNumber?: string;
     registeredEvents: string[];
     yearOfStudy: string;
+}
+
+interface TeamMember {
+    name: string;
+    regNumber: string;
+    rollNumber?: string;
+    phone: string;
+}
+
+interface TeamLeader {
+    name: string;
+    regNumber: string;
+    rollNumber?: string;
+    phone: string;
+    email: string;
+}
+
+interface TeamEntry {
+    teamName: string;
+    eventId: string;
+    registeredAt: string;
+    leader: TeamLeader;
+    members: TeamMember[];
 }
 
 interface Props {
@@ -99,7 +123,9 @@ function RegistrationDetailsView({ reg, onClose }: { reg: VerveRegistration, onC
 
 export function VerveAdminDashboardModal({ isOpen, onClose }: Props) {
     const [registrations, setRegistrations] = useState<VerveRegistration[]>([]);
+    const [teamData, setTeamData] = useState<TeamEntry[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isTeamLoading, setIsTeamLoading] = useState(false);
     const [activeTab, setActiveTab] = useState<string>('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedReg, setSelectedReg] = useState<VerveRegistration | null>(null);
@@ -127,6 +153,33 @@ export function VerveAdminDashboardModal({ isOpen, onClose }: Props) {
 
         fetchRegistrations();
     }, [isOpen]);
+
+    // Always fetch team data for the active tab (handles legacy team data for converted events)
+    useEffect(() => {
+        if (activeTab === 'all') {
+            setTeamData([]);
+            return;
+        }
+        const fetchTeamData = async () => {
+            setIsTeamLoading(true);
+            try {
+                const collectionName = `${activeTab.replace(/-/g, '_')}_teams`;
+                const querySnapshot = await getDocs(collection(db, collectionName));
+                const teams: TeamEntry[] = [];
+                querySnapshot.forEach((doc) => {
+                    teams.push(doc.data() as TeamEntry);
+                });
+                teams.sort((a, b) => a.teamName.localeCompare(b.teamName));
+                setTeamData(teams);
+            } catch (error) {
+                // Collection might not exist — that's fine
+                setTeamData([]);
+            } finally {
+                setIsTeamLoading(false);
+            }
+        };
+        fetchTeamData();
+    }, [activeTab]);
 
     useEffect(() => {
         if (isOpen) {
@@ -168,16 +221,16 @@ export function VerveAdminDashboardModal({ isOpen, onClose }: Props) {
                 const collectionName = `${activeTab.replace(/-/g, '_')}_teams`;
                 const querySnapshot = await getDocs(collection(db, collectionName));
                 
-                const maxMembers = currentEventDef.teamSize.max;
+                const maxMembers = currentEventDef.teamSize.max - 1; // excluding leader
                 
                 const baseHeaders = [
                     "Team Name", "Registered At",
-                    "Leader Name", "Leader Reg No", "Leader Phone", "Leader Email"
+                    "Leader Name", "Leader Reg No", "Leader Roll No", "Leader Phone", "Leader Email"
                 ];
                 
                 const memberHeaders: string[] = [];
-                for (let i = 2; i <= maxMembers; i++) {
-                    memberHeaders.push(`Member ${i} Name`, `Member ${i} Reg No`, `Member ${i} Phone`);
+                for (let i = 1; i <= maxMembers; i++) {
+                    memberHeaders.push(`Member ${i} Name`, `Member ${i} Reg No`, `Member ${i} Roll No`, `Member ${i} Phone`);
                 }
                 
                 const headers = [...baseHeaders, ...memberHeaders];
@@ -192,15 +245,17 @@ export function VerveAdminDashboardModal({ isOpen, onClose }: Props) {
                         data.registeredAt ? `"${new Date(data.registeredAt).toLocaleString()}"` : 'N/A',
                         `"${data.leader?.name || ''}"`,
                         data.leader?.regNumber || '',
+                        data.leader?.rollNumber || '',
                         data.leader?.phone || '',
                         data.leader?.email || ''
                     ];
                     
                     const memberRowData: string[] = [];
-                    for (let i = 0; i < maxMembers - 1; i++) {
+                    for (let i = 0; i < maxMembers; i++) {
                         memberRowData.push(
                             `"${mems[i]?.name || ''}"`,
                             mems[i]?.regNumber || '',
+                            mems[i]?.rollNumber || '',
                             mems[i]?.phone || ''
                         );
                     }
@@ -328,6 +383,7 @@ export function VerveAdminDashboardModal({ isOpen, onClose }: Props) {
                             {EVENTS_DATA.map((event: EventData) => {
                                 const eventCount = registrations.filter(r => r.registeredEvents && r.registeredEvents.includes(event.id)).length;
                                 const isActive = activeTab === event.id;
+                    const isTeamEvent = !!event.teamSize;
 
                                 return (
                                     <button
@@ -340,7 +396,7 @@ export function VerveAdminDashboardModal({ isOpen, onClose }: Props) {
                                             boxShadow: isActive ? '4px 4px 0 #000' : 'none',
                                         }}
                                     >
-                                        <Target className="w-4 h-4" /> {event.title} ({eventCount})
+                                        {isTeamEvent ? <Users2 className="w-4 h-4" /> : <Target className="w-4 h-4" />} {event.title} ({eventCount})
                                     </button>
                                 );
                             })}
@@ -349,17 +405,169 @@ export function VerveAdminDashboardModal({ isOpen, onClose }: Props) {
 
                     {/* Data Grid */}
                     <div className="p-6 md:p-8 overflow-y-auto flex-1 custom-scrollbar relative z-10 bg-verve-dark">
-                        {isLoading ? (
+                        {(isLoading || isTeamLoading) ? (
                             <div className="flex flex-col items-center justify-center p-20 gap-6 h-full">
                                 <div className="w-16 h-16 border-[6px] border-black border-t-verve-gold animate-spin" />
                                 <span className="text-2xl font-heading uppercase tracking-widest text-[#e08585] drop-shadow-[2px_2px_0_#000]">Gathering Intel...</span>
                             </div>
-                        ) : filteredRegistrations.length === 0 ? (
-                            <div className="text-center p-20 border-[4px] border-dashed border-gray-600 bg-black/20 h-full flex items-center justify-center">
-                                <p className="text-2xl font-heading text-gray-400 uppercase tracking-widest">No Participants Found</p>
-                            </div>
+                        ) : EVENTS_DATA.find(e => e.id === activeTab)?.teamSize ? (
+                            // --- CURRENT TEAM EVENT VIEW ---
+                            teamData.length === 0 ? (
+                                <div className="text-center p-20 border-[4px] border-dashed border-gray-600 bg-black/20 h-full flex items-center justify-center">
+                                    <p className="text-2xl font-heading text-gray-400 uppercase tracking-widest">No Teams Registered Yet</p>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pb-20">
+                                    {teamData.map((team, index) => {
+                                        return (
+                                            <div
+                                                key={`${team.teamName}-${index}`}
+                                                className="bg-[#2a2828] border-[4px] border-black p-5 shadow-[6px_6px_0_#000] hover:-translate-y-2 hover:-translate-x-2 hover:shadow-[10px_10px_0_#e08585] transition-all flex flex-col gap-4 relative overflow-hidden"
+                                            >
+                                                <div className="absolute inset-0 bg-verve-gold/5 pointer-events-none" />
+
+                                                {/* Team Header */}
+                                                <div className="flex justify-between items-start border-b-2 border-dashed border-gray-600 pb-3 relative z-10">
+                                                    <div>
+                                                        <p className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">Team</p>
+                                                        <h3 className="text-xl md:text-2xl font-heading text-verve-gold uppercase tracking-wider break-words">{team.teamName}</h3>
+                                                    </div>
+                                                    <div className="bg-black text-white border-2 border-white px-2 py-1 font-mono font-bold text-[10px] shrink-0 rotate-2">
+                                                        {team.members?.length + 1} MEMBERS
+                                                    </div>
+                                                </div>
+
+                                                {/* Leader */}
+                                                <div className="relative z-10">
+                                                    <div className="flex items-center gap-2 mb-2">
+                                                        <Shield className="w-4 h-4 text-verve-gold" />
+                                                        <span className="text-[10px] font-mono text-verve-gold uppercase font-bold tracking-widest">Leader</span>
+                                                    </div>
+                                                    <div className="bg-[#312e2e] border-[2px] border-verve-gold/40 p-3 font-mono text-xs space-y-1">
+                                                        <p className="text-white font-bold text-sm">{team.leader?.name}</p>
+                                                        <p className="text-gray-400">Reg: <span className="text-white uppercase">{team.leader?.regNumber}</span></p>
+                                                        {team.leader?.rollNumber && <p className="text-gray-400">Roll: <span className="text-white uppercase">{team.leader.rollNumber}</span></p>}
+                                                        <p className="text-gray-400 flex items-center gap-1"><Phone className="w-3 h-3" /> {team.leader?.phone || 'N/A'}</p>
+                                                        <p className="text-gray-400 flex items-center gap-1 truncate"><Mail className="w-3 h-3" /> {team.leader?.email}</p>
+                                                    </div>
+                                                </div>
+
+                                                {/* Members */}
+                                                {team.members && team.members.length > 0 && (
+                                                    <div className="relative z-10">
+                                                        <div className="flex items-center gap-2 mb-2">
+                                                            <Users className="w-4 h-4 text-verve-pink" />
+                                                            <span className="text-[10px] font-mono text-verve-pink uppercase font-bold tracking-widest">Members</span>
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            {team.members.map((member, mIdx) => (
+                                                                <div key={mIdx} className="bg-[#1e1c1c] border-[2px] border-gray-700 p-3 font-mono text-xs space-y-1">
+                                                                    <p className="text-white font-bold">{member.name || <span className="text-gray-500 italic">Unnamed</span>}</p>
+                                                                    <p className="text-gray-400">Reg: <span className="text-white uppercase">{member.regNumber}</span></p>
+                                                                    {member.rollNumber && <p className="text-gray-400">Roll: <span className="text-white uppercase">{member.rollNumber}</span></p>}
+                                                                    <p className="text-gray-400 flex items-center gap-1"><Phone className="w-3 h-3" /> {member.phone || 'N/A'}</p>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {/* Timestamp */}
+                                                {team.registeredAt && (
+                                                    <p className="text-gray-600 font-mono text-[10px] mt-auto relative z-10">
+                                                        Registered: {new Date(team.registeredAt).toLocaleString()}
+                                                    </p>
+                                                )}
+
+                                                <div className="absolute bottom-[-10px] right-2 font-mono font-black text-7xl text-white/5 pointer-events-none select-none mix-blend-overlay">
+                                                    {String(index + 1).padStart(2, '0')}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )
                         ) : (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-20">
+                            // --- SOLO (or converted) EVENT VIEW ---
+                            <div className="flex flex-col gap-8 pb-20">
+                                {/* Legacy Team Registrations Section (for events converted from team → solo) */}
+                                {teamData.length > 0 && (
+                                    <div>
+                                        <div className="flex items-center gap-3 mb-4 border-b-[3px] border-dashed border-yellow-600/40 pb-3">
+                                            <Users2 className="w-5 h-5 text-verve-gold" />
+                                            <h3 className="font-heading text-verve-gold uppercase tracking-widest text-lg">Legacy Team Registrations</h3>
+                                            <span className="px-2 py-0.5 bg-verve-gold/20 text-verve-gold font-mono text-xs border border-verve-gold/40">{teamData.length} teams</span>
+                                            <span className="text-gray-500 font-mono text-[10px] ml-auto">From when this event was team-based</span>
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                                            {teamData.map((team, index) => (
+                                                <div
+                                                    key={`${team.teamName}-${index}`}
+                                                    className="bg-[#2a2828] border-[4px] border-verve-gold/30 p-5 shadow-[6px_6px_0_#fcc20155] flex flex-col gap-4 relative overflow-hidden"
+                                                >
+                                                    <div className="absolute top-0 left-0 w-full h-[3px] bg-verve-gold/50" />
+                                                    <div className="flex justify-between items-start border-b-2 border-dashed border-gray-600 pb-3 relative z-10">
+                                                        <div>
+                                                            <p className="text-[10px] font-mono text-verve-gold/60 uppercase tracking-widest">Legacy Team</p>
+                                                            <h3 className="text-xl font-heading text-verve-gold uppercase tracking-wider break-words">{team.teamName}</h3>
+                                                        </div>
+                                                        <div className="bg-verve-gold/20 text-verve-gold border border-verve-gold/40 px-2 py-1 font-mono font-bold text-[10px] shrink-0">
+                                                            {(team.members?.length || 0) + 1} MEMBERS
+                                                        </div>
+                                                    </div>
+                                                    <div className="relative z-10">
+                                                        <div className="flex items-center gap-2 mb-2">
+                                                            <Shield className="w-4 h-4 text-verve-gold" />
+                                                            <span className="text-[10px] font-mono text-verve-gold uppercase font-bold tracking-widest">Leader</span>
+                                                        </div>
+                                                        <div className="bg-[#312e2e] border-[2px] border-verve-gold/30 p-3 font-mono text-xs space-y-1">
+                                                            <p className="text-white font-bold text-sm">{team.leader?.name}</p>
+                                                            <p className="text-gray-400">Reg: <span className="text-white uppercase">{team.leader?.regNumber}</span></p>
+                                                            {team.leader?.rollNumber && <p className="text-gray-400">Roll: <span className="text-white uppercase">{team.leader.rollNumber}</span></p>}
+                                                            <p className="text-gray-400 flex items-center gap-1"><Phone className="w-3 h-3" /> {team.leader?.phone || 'N/A'}</p>
+                                                            <p className="text-gray-400 flex items-center gap-1 truncate"><Mail className="w-3 h-3" /> {team.leader?.email}</p>
+                                                        </div>
+                                                    </div>
+                                                    {team.members && team.members.length > 0 && (
+                                                        <div className="relative z-10">
+                                                            <div className="flex items-center gap-2 mb-2">
+                                                                <Users className="w-4 h-4 text-verve-pink" />
+                                                                <span className="text-[10px] font-mono text-verve-pink uppercase font-bold tracking-widest">Members</span>
+                                                            </div>
+                                                            <div className="space-y-2">
+                                                                {team.members.map((member, mIdx) => (
+                                                                    <div key={mIdx} className="bg-[#1e1c1c] border-[2px] border-gray-700 p-3 font-mono text-xs space-y-1">
+                                                                        <p className="text-white font-bold">{member.name || <span className="text-gray-500 italic">Unnamed</span>}</p>
+                                                                        <p className="text-gray-400">Reg: <span className="text-white uppercase">{member.regNumber}</span></p>
+                                                                        {member.rollNumber && <p className="text-gray-400">Roll: <span className="text-white uppercase">{member.rollNumber}</span></p>}
+                                                                        <p className="text-gray-400 flex items-center gap-1"><Phone className="w-3 h-3" /> {member.phone || 'N/A'}</p>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                    {team.registeredAt && (
+                                                        <p className="text-gray-600 font-mono text-[10px] mt-auto relative z-10">
+                                                            Registered: {new Date(team.registeredAt).toLocaleString()}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Individual Registrations */}
+                                {filteredRegistrations.length > 0 && (
+                                    <div>
+                                        {teamData.length > 0 && (
+                                            <div className="flex items-center gap-3 mb-4 border-b-[3px] border-dashed border-gray-600 pb-3">
+                                                <UserCircle className="w-5 h-5 text-white" />
+                                                <h3 className="font-heading text-white uppercase tracking-widest text-lg">Individual Registrations</h3>
+                                                <span className="px-2 py-0.5 bg-white/10 text-white font-mono text-xs border border-white/20">{filteredRegistrations.length}</span>
+                                            </div>
+                                        )}
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                                 {filteredRegistrations.map((reg, index) => (
                                     <div
                                         key={reg.regNumber}
@@ -414,7 +622,10 @@ export function VerveAdminDashboardModal({ isOpen, onClose }: Props) {
                                             {String(index + 1).padStart(2, '0')}
                                         </div>
                                     </div>
-                                ))}
+                                 ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </div>

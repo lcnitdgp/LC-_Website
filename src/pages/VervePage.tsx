@@ -1,5 +1,5 @@
 import { useState, useEffect, useLayoutEffect, useRef } from 'react'
-import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc, onSnapshot, updateDoc, arrayRemove } from 'firebase/firestore'
 import { db } from '../firebase'
 import { useAuth } from '../context'
 import { EditableText } from '../components/common'
@@ -50,6 +50,62 @@ export function VervePage() {
 
   // Mobile Menu State
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Teammate Notification State
+  interface TeamNotification {
+    id: string;
+    eventTitle: string;
+    registeredBy: string;
+    teamName: string;
+    timestamp: string;
+  }
+  const [pendingNotifications, setPendingNotifications] = useState<TeamNotification[]>([]);
+  const [activeNotification, setActiveNotification] = useState<TeamNotification | null>(null);
+
+  useEffect(() => {
+    if (!user || !user.email) return;
+    const userEmailLower = user.email.toLowerCase();
+    const isInhouseUser = userEmailLower.endsWith('@nitdgp.ac.in') || userEmailLower.endsWith('@btech.nitdgp.ac.in');
+    if (!isInhouseUser) return;
+
+    const match = userEmailLower.match(/\.([^.@]+)@/);
+    const regNumber = match ? match[1] : userEmailLower.split('@')[0];
+
+    const docRef = doc(db, 'verve_registrations', regNumber);
+    const unsubscribe = onSnapshot(docRef, (snap) => {
+      if (snap.exists()) {
+        const data = snap.data();
+        const notifs: TeamNotification[] = (data.pendingNotifications || []).filter((n: any) => !n.seen);
+        if (notifs.length > 0) {
+          setPendingNotifications(notifs);
+          setActiveNotification(notifs[0]);
+        }
+      }
+    });
+    return () => unsubscribe();
+  }, [user]);
+
+  const dismissNotification = async (notif: TeamNotification) => {
+    setActiveNotification(null);
+    const remaining = pendingNotifications.filter(n => n.id !== notif.id);
+    setPendingNotifications(remaining);
+    if (remaining.length > 0) {
+      setTimeout(() => setActiveNotification(remaining[0]), 400);
+    }
+    // Mark as cleared in Firestore by removing the notification from the array
+    try {
+      if (!user?.email) return;
+      const userEmailLower = user.email.toLowerCase();
+      const match = userEmailLower.match(/\.([^.@]+)@/);
+      const regNumber = match ? match[1] : userEmailLower.split('@')[0];
+      const docRef = doc(db, 'verve_registrations', regNumber);
+      await updateDoc(docRef, {
+        pendingNotifications: arrayRemove(notif)
+      });
+    } catch (e) {
+      console.error('Failed to clear notification', e);
+    }
+  };
 
   const handleRegisterClick = (eventId?: string) => {
     setSelectedEventId(eventId);
@@ -342,6 +398,41 @@ export function VervePage() {
         isOpen={isDashboardOpen}
         onClose={() => setIsDashboardOpen(false)}
       />
+
+      {/* Teammate Registration Notification Pop-up */}
+      <AnimatePresence>
+        {activeNotification && (
+          <motion.div
+            key={activeNotification.id}
+            initial={{ opacity: 0, y: 60, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 60, scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[999] w-[calc(100%-2rem)] max-w-md"
+            data-lenis-prevent="true"
+          >
+            <div className="bg-verve-dark border-[4px] border-black shadow-[8px_8px_0_#fcc201] p-5 relative">
+              {/* Gold accent bar */}
+              <div className="absolute top-0 left-0 w-full h-[5px] bg-verve-gold" />
+              <div className="mt-2">
+                <p className="text-xs font-mono font-bold text-verve-gold uppercase tracking-widest mb-1">Team Registration</p>
+                <p className="text-white font-heading text-lg md:text-xl uppercase leading-tight">
+                  <span className="text-verve-pink">{activeNotification.registeredBy}</span> added you to <span className="text-verve-gold">{activeNotification.eventTitle}</span>
+                </p>
+                <p className="text-white/50 font-mono text-xs mt-1">Team: <span className="text-white/80 font-bold">{activeNotification.teamName}</span></p>
+              </div>
+              <div className="flex gap-3 mt-4">
+                <button
+                  onClick={() => dismissNotification(activeNotification)}
+                  className="flex-1 py-2 border-[3px] border-black bg-verve-gold text-black font-heading font-black uppercase text-sm hover:bg-white transition-colors shadow-[3px_3px_0_#000]"
+                >
+                  Got it!
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Read More Modal */}
       <AnimatePresence>

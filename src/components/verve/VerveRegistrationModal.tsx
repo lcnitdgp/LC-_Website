@@ -59,7 +59,7 @@ export function VerveRegistrationModal({ isOpen, onClose, initialEventId }: Prop
     // Team Form State
     const [teamName, setTeamName] = useState('');
     const [teamMembers, setTeamMembers] = useState([
-        { name: '', regNumber: '', phone: '' },
+        { name: '', regNumber: '', rollNumber: '', phone: '' },
     ]);
 
     useEffect(() => {
@@ -77,7 +77,7 @@ export function VerveRegistrationModal({ isOpen, onClose, initialEventId }: Prop
             setCurrentTeamEventId(null);
             setTeamName('');
             setTeamMembers([
-                { name: '', regNumber: '', phone: '' }
+                { name: '', regNumber: '', rollNumber: '', phone: '' }
             ]);
             return;
         }
@@ -294,6 +294,7 @@ export function VerveRegistrationModal({ isOpen, onClose, initialEventId }: Prop
                 leader: {
                     name: user.name,
                     regNumber: leaderRegNumber,
+                    rollNumber: user.rollNumber || '',
                     phone: phoneNumber,
                     email: userEmail
                 },
@@ -302,18 +303,33 @@ export function VerveRegistrationModal({ isOpen, onClose, initialEventId }: Prop
             });
 
             // 3. Update the individual `verve_registrations` document for members so they see it on their dashboard
+            const eventTitle = EVENTS_DATA.find(e => e.id === currentTeamEventId)?.title || currentTeamEventId;
+            const leaderName = user.name || leaderRegNumber;
             const memberUpdates = teamMembers.map(async (member) => {
                 const memberRegLower = member.regNumber.trim().toLowerCase();
                 const memberDocRef = doc(db, 'verve_registrations', memberRegLower);
                 const yearDigits = memberRegLower.substring(0, 2);
 
+                const notification = {
+                    id: `${currentTeamEventId}-${leaderRegNumber}-${Date.now()}`,
+                    type: 'team_registration',
+                    eventId: currentTeamEventId,
+                    eventTitle: eventTitle,
+                    registeredBy: leaderName,
+                    teamName: teamName,
+                    timestamp: new Date().toISOString(),
+                    seen: false,
+                };
+
                 await setDoc(memberDocRef, {
                     fullName: member.name, // Just in case it's a new profile
                     regNumber: memberRegLower,
+                    rollNumber: member.rollNumber || '',
                     phoneNumber: member.phone,
                     extractedYear: yearDigits,
                     yearOfStudy: getYearOfStudy(memberRegLower),
                     registeredEvents: arrayUnion(currentTeamEventId),
+                    pendingNotifications: arrayUnion(notification),
                     lastUpdated: new Date().toISOString()
                 }, { merge: true });
             });
@@ -330,7 +346,7 @@ export function VerveRegistrationModal({ isOpen, onClose, initialEventId }: Prop
 
             if (nextTeamEvent) {
                 setTeamName('');
-                setTeamMembers([{ name: '', regNumber: '', phone: '' }]);
+                setTeamMembers([{ name: '', regNumber: '', rollNumber: '', phone: '' }]);
                 setCurrentTeamEventId(nextTeamEvent);
                 setView('team-form');
             } else {
@@ -549,7 +565,7 @@ export function VerveRegistrationModal({ isOpen, onClose, initialEventId }: Prop
 
         const addMember = () => {
             if (teamMembers.length < maxAdditionalMembers) {
-                setTeamMembers([...teamMembers, { name: '', regNumber: '', phone: '' }]);
+                setTeamMembers([...teamMembers, { name: '', regNumber: '', rollNumber: '', phone: '' }]);
             }
         };
 
@@ -632,14 +648,23 @@ export function VerveRegistrationModal({ isOpen, onClose, initialEventId }: Prop
                                             placeholder="Name"
                                         />
                                     </div>
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                         <div>
-                                            <label className="text-xs font-bold text-gray-400 mb-1 block uppercase">Reg/Roll No</label>
+                                            <label className="text-xs font-bold text-gray-400 mb-1 block uppercase">Reg No</label>
                                             <input
                                                 type="text" required
                                                 value={member.regNumber} onChange={(e) => handleTeamMemberUpdate(idx, 'regNumber', e.target.value)}
                                                 className="w-full px-3 py-2 border-[2px] border-black bg-[#312e2e] text-white focus:border-verve-pink transition-colors outline-none font-mono text-sm uppercase"
-                                                placeholder="e.g. 21XX123"
+                                                placeholder="e.g. 24U10023"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-bold text-gray-400 mb-1 block uppercase">Roll No</label>
+                                            <input
+                                                type="text" required
+                                                value={member.rollNumber} onChange={(e) => handleTeamMemberUpdate(idx, 'rollNumber', e.target.value)}
+                                                className="w-full px-3 py-2 border-[2px] border-black bg-[#312e2e] text-white focus:border-verve-pink transition-colors outline-none font-mono text-sm uppercase"
+                                                placeholder="e.g. 24CS8001"
                                             />
                                         </div>
                                         <div>
