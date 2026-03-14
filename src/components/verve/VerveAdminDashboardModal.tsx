@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
@@ -164,15 +164,18 @@ export function VerveAdminDashboardModal({ isOpen, onClose }: Props) {
             setIsTeamLoading(true);
             try {
                 const collectionName = `${activeTab.replace(/-/g, '_')}_teams`;
+                console.log(`[AdminDashboard] Fetching teams from collection: "${collectionName}"`);
                 const querySnapshot = await getDocs(collection(db, collectionName));
+                console.log(`[AdminDashboard] Found ${querySnapshot.size} team documents in "${collectionName}"`);
                 const teams: TeamEntry[] = [];
                 querySnapshot.forEach((doc) => {
+                    console.log(`[AdminDashboard] Team doc id: ${doc.id}`, doc.data());
                     teams.push(doc.data() as TeamEntry);
                 });
                 teams.sort((a, b) => a.teamName.localeCompare(b.teamName));
                 setTeamData(teams);
             } catch (error) {
-                // Collection might not exist — that's fine
+                console.error(`[AdminDashboard] Error fetching teams for tab "${activeTab}":`, error);
                 setTeamData([]);
             } finally {
                 setIsTeamLoading(false);
