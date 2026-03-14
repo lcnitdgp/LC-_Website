@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context';
-import { HomePage, NitmunxivPage, AuditionsPage, MembersDashboardPage, DejaVuPage, AlumniPage, TeamPage, VervePage } from './pages';
+import { HomePage, NitmunxivPage, AuditionsPage, MembersDashboardPage, DejaVuPage, AlumniPage, TeamPage, VervePage, CheckpointCompletedPage } from './pages';
 import { migrateTeamMembersToFirestore } from './firebase/migrateTeam';
 
 function App() {
@@ -21,6 +21,7 @@ function App() {
           <Route path="/team" element={<TeamPage />} />
           <Route path="/nitmunxiv" element={<NitmunxivPage />} />
           <Route path="/verve" element={<VervePage />} />
+          <Route path="/checkpoint-completed/:id" element={<CheckpointCompletedPage />} />
         </Routes>
       </HashRouter>
     </AuthProvider>
