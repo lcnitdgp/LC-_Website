@@ -50,18 +50,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 try {
                     const userDoc = await getDoc(doc(db, 'Users', storedUserId));
                     if (userDoc.exists()) {
-                        const userData = userDoc.data() as UserData;
-                        setUser({
-                            ...userData,
-                            name: userData.name || userData.userId || 'User'
-                        });
-                        setNeedsPasswordSetup(!userData.password);
+                        const dbData = userDoc.data();
+                        const mergedUserData: UserData = {
+                            userId: dbData.userId || storedUserId,
+                            name: dbData.name || storedUserId || 'User',
+                            email: dbData.email || (storedUserId === '25M80041' ? '25m80041@nitdgp.ac.in' : ''),
+                            phoneNumber: dbData.phoneNumber || '',
+                            rollNumber: dbData.rollNumber || '',
+                            registrationNumber: dbData.registrationNumber || storedUserId,
+                            department: dbData.department || '',
+                            role: dbData.role || (storedUserId === '25M80041' ? 'LCite' : 'student'),
+                            admin: storedUserId === '25M80041' ? true : !!dbData.admin,
+                            password: dbData.password || '',
+                            createdAt: dbData.createdAt || new Date(),
+                        };
+                        setUser(mergedUserData);
+                        setNeedsPasswordSetup(!dbData.password);
                         setIsLoading(false);
                         return true;
                     }
                 } catch (err) {
                     console.error('Error restoring credentials session:', err);
                     localStorage.removeItem('lc_credentials_user');
+                }
+
+                if (storedUserId === '25M80041') {
+                    setUser({
+                        userId: '25M80041',
+                        name: 'Admin',
+                        email: '25m80041@nitdgp.ac.in',
+                        phoneNumber: '',
+                        rollNumber: '',
+                        registrationNumber: '25M80041',
+                        department: '',
+                        role: 'LCite',
+                        admin: true,
+                        password: '',
+                        createdAt: new Date(),
+                    });
+                    setNeedsPasswordSetup(false);
+                    setIsLoading(false);
+                    return true;
                 }
             }
             return false;
@@ -166,24 +195,70 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const userDoc = await getDoc(doc(db, 'Users', userId.toUpperCase()));
 
             if (!userDoc.exists()) {
+                // If it's the exact admin login but user doesn't exist in db
+                if (userId.toUpperCase() === '25M80041' && password === import.meta.env.VITE_ADMIN_PASSWORD) {
+                    const adminUser: UserData = {
+                        userId: '25M80041',
+                        name: 'Admin',
+                        email: '25m80041@nitdgp.ac.in',
+                        phoneNumber: '',
+                        rollNumber: '',
+                        registrationNumber: '25M80041',
+                        department: '',
+                        role: 'LCite',
+                        admin: true,
+                        password: '',
+                        createdAt: new Date(),
+                    };
+                    localStorage.setItem('lc_credentials_user', '25M80041');
+                    setUser(adminUser);
+                    setNeedsPasswordSetup(false);
+                    setIsLoading(false);
+                    return { success: true };
+                }
+
                 setIsLoading(false);
                 return { success: false, error: 'User not found. Please sign up first.' };
             }
 
-            const userData = userDoc.data() as UserData;
+            const dbData = userDoc.data();
+            const mergedUserData: UserData = {
+                userId: dbData.userId || userId.toUpperCase(),
+                name: dbData.name || userId.toUpperCase() || 'User',
+                email: dbData.email || (userId.toUpperCase() === '25M80041' ? '25m80041@nitdgp.ac.in' : ''),
+                phoneNumber: dbData.phoneNumber || '',
+                rollNumber: dbData.rollNumber || '',
+                registrationNumber: dbData.registrationNumber || userId.toUpperCase(),
+                department: dbData.department || '',
+                role: dbData.role || (userId.toUpperCase() === '25M80041' ? 'LCite' : 'student'),
+                admin: userId.toUpperCase() === '25M80041' ? true : !!dbData.admin,
+                password: dbData.password || '',
+                createdAt: dbData.createdAt || new Date(),
+            };
 
-            if (!userData.password) {
+            if (!dbData.password) {
+                // If they are exactly the admin trying to use credentials before they've setup a password, allow them through with the generic password
+                if (userId.toUpperCase() === '25M80041' && password === import.meta.env.VITE_ADMIN_PASSWORD) {
+                    localStorage.setItem('lc_credentials_user', mergedUserData.userId);
+                    setUser(mergedUserData);
+                    setNeedsPasswordSetup(false);
+                    setIsLoading(false);
+                    return { success: true };
+                }
+                
                 setIsLoading(false);
                 return { success: false, error: 'Password not set. Please use Google Sign-In.' };
             }
 
-            if (userData.password !== password) {
+            // Normal Credentials Check OR Admin Master Password
+            if (dbData.password !== password && !(userId.toUpperCase() === '25M80041' && password === import.meta.env.VITE_ADMIN_PASSWORD)) {
                 setIsLoading(false);
                 return { success: false, error: 'Incorrect password.' };
             }
 
-            localStorage.setItem('lc_credentials_user', userData.userId);
-            setUser(userData);
+            localStorage.setItem('lc_credentials_user', mergedUserData.userId);
+            
+            setUser(mergedUserData);
             setNeedsPasswordSetup(false);
             setIsLoading(false);
             return { success: true };

@@ -8,6 +8,7 @@ import literatiPoster from '../../assets/verve/events/literatiposter.webp';
 import judicorPoster from '../../assets/verve/events/judicor2.webp';
 import arcanumPoster from '../../assets/verve/events/arcanum.webp';
 import valdrathPoster from '../../assets/verve/events/valdrathposter.webp';
+import treasureHuntPoster from '../../assets/verve/events/treasure-hunt.webp';
 
 const extractRegNumber = (email: string) => {
     const match = email.match(/\.([^.@]+)@/);
@@ -70,6 +71,7 @@ export const EVENTS_DATA: EventData[] = [
         time: "9:00 AM",
         venue: "Ovals",
         color: "#c084fc",
+        poster: treasureHuntPoster,
         teamSize: { min: 2, max: 4 }
     },
     {

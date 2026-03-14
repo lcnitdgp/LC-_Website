@@ -14,6 +14,8 @@
     "@fontsource/special-elite": "^5.2.8",
     "@google/generative-ai": "^0.24.1",
     "@studio-freight/lenis": "^1.0.42",
+    "@types/canvas-confetti": "^1.9.0",
+    "canvas-confetti": "^1.9.4",
     "firebase": "^12.10.0",
     "framer-motion": "^12.23.26",
     "lucide-react": "^0.561.0",
@@ -21,6 +23,7 @@
     "react-dom": "^19.2.0",
     "react-helmet-async": "^2.0.5",
     "react-icons": "^5.5.0",
+    "react-qr-code": "^2.0.18",
     "react-router-dom": "^7.11.0",
     "sharp": "^0.34.5",
     "webp-converter": "^2.3.3"

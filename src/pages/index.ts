@@ -6,3 +6,4 @@ export { MembersDashboardPage } from './MembersDashboardPage';
 export { AlumniPage } from './AlumniPage';
 export { TeamPage } from './TeamPage';
 export { VervePage } from './VervePage';
+export { CheckpointCompletedPage } from './CheckpointCompletedPage';
