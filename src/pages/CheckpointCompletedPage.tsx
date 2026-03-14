@@ -55,36 +55,56 @@ export function CheckpointCompletedPage() {
         }, 250);
     };
 
+    const [isVerifying, setIsVerifying] = useState(false);
+    const [teamError, setTeamError] = useState<string | null>(null);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!teamName.trim()) return;
 
-        // Normalize team name for flexible matching
+        setIsVerifying(true);
+        setTeamError(null);
+
+        // Normalize for flexible matching
         const normalizedTeamName = teamName.trim().toLowerCase().replace(/\s+/g, ' ');
 
         try {
-            const { doc, setDoc } = await import('firebase/firestore');
+            const { doc, setDoc, getDocs, collection } = await import('firebase/firestore');
             const { db } = await import('../firebase');
 
+            // --- Step 1: Validate team name against registered teams ---
+            const teamsSnapshot = await getDocs(collection(db, 'treasure_hunt_teams'));
+            const isRegistered = teamsSnapshot.docs.some(teamDoc => {
+                const data = teamDoc.data();
+                const storedName = (data.teamName as string ?? '').trim().toLowerCase().replace(/\s+/g, ' ');
+                return storedName === normalizedTeamName;
+            });
+
+            if (!isRegistered) {
+                setTeamError("Team not found! Please cross-check your team name spelling — it must match exactly what was registered.");
+                setIsVerifying(false);
+                return;
+            }
+
+            // --- Step 2: Team verified — record the checkpoint scan ---
             const teamDocId = normalizedTeamName.replace(/[^a-z0-9]/g, '-');
 
-            // Upsert the team document (preserves casing of first entry)
             await setDoc(doc(db, 'passed_checkpoints', teamDocId), {
                 teamName: teamName.trim(),
                 normalizedTeamName,
             }, { merge: true });
 
-            // Write to checkpoints subcollection — doc ID is checkpoint label,
-            // so re-scanning the same CP just overwrites (natural deduplication)
             await setDoc(doc(db, 'passed_checkpoints', teamDocId, 'checkpoints', checkpointLabel!), {
                 checkpointId: checkpointLabel,
                 completedAt: new Date().toISOString(),
             });
+
         } catch (err) {
-            console.error('Failed to record checkpoint completion:', err);
-            // Still show success screen even if Firestore write fails
+            console.error('Checkpoint verification/write failed:', err);
+            // Still allow success if write fails after successful validation
         }
 
+        setIsVerifying(false);
         setIsSubmitted(true);
         triggerConfetti();
     };
@@ -127,27 +147,46 @@ export function CheckpointCompletedPage() {
                                 <p className="text-gray-400 text-sm uppercase tracking-widest font-bold">Treasure Hunt Verification</p>
                             </div>
 
-                            <form onSubmit={handleSubmit} className="space-y-6">
+                            <form onSubmit={handleSubmit} className="space-y-4">
                                 <div>
                                     <label className="block text-xs uppercase font-bold text-gray-400 mb-2 tracking-widest">Enter Team Name</label>
                                     <input
                                         type="text"
                                         required
                                         value={teamName}
-                                        onChange={(e) => setTeamName(e.target.value)}
+                                        onChange={(e) => { setTeamName(e.target.value); setTeamError(null); }}
                                         placeholder="Team Name..."
-                                        className="w-full bg-[#1e1c1c] border-[3px] border-black p-4 text-white placeholder-gray-600 focus:border-verve-gold focus:outline-none transition-colors text-lg"
+                                        className={`w-full bg-[#1e1c1c] border-[3px] p-4 text-white placeholder-gray-600 focus:outline-none transition-colors text-lg ${
+                                            teamError ? 'border-red-500 focus:border-red-400' : 'border-black focus:border-verve-gold'
+                                        }`}
                                     />
+                                    {teamError && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: -6 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="mt-3 bg-red-950/60 border-[2px] border-red-500 p-3 flex gap-2"
+                                        >
+                                            <span className="text-lg shrink-0">⚠️</span>
+                                            <p className="text-red-300 text-xs font-mono leading-relaxed">{teamError}</p>
+                                        </motion.div>
+                                    )}
                                 </div>
                                 
                                 <button
                                     type="submit"
-                                    className="w-full bg-verve-gold text-black font-heading font-black text-2xl uppercase tracking-widest py-4 border-[4px] border-black shadow-[6px_6px_0_#fff] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0_#fff] active:translate-y-2 active:translate-x-2 active:shadow-none transition-all"
+                                    disabled={isVerifying}
+                                    className="w-full bg-verve-gold text-black font-heading font-black text-2xl uppercase tracking-widest py-4 border-[4px] border-black shadow-[6px_6px_0_#fff] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[10px_10px_0_#fff] active:translate-y-2 active:translate-x-2 active:shadow-none transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0 disabled:translate-x-0 disabled:shadow-none"
                                 >
-                                    Verify Team
+                                    {isVerifying ? (
+                                        <span className="flex items-center justify-center gap-3">
+                                            <span className="w-5 h-5 border-[3px] border-black border-t-transparent rounded-full animate-spin" />
+                                            Verifying...
+                                        </span>
+                                    ) : 'Verify Team'}
                                 </button>
                             </form>
                         </motion.div>
+
                     ) : (
                         <motion.div
                             key="success"
