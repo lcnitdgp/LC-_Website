@@ -153,6 +153,13 @@ export function VerveAdminDashboardModal({ isOpen, onClose }: Props) {
 
     const { user } = useAuth();
     
+    // Admin guard — same check used by QR Code button and Manual Entry tab
+    const isCheckpointAdmin = !!(
+        user?.userId?.toUpperCase()?.includes('25M80041') ||
+        user?.email?.toUpperCase()?.includes('25M80041') ||
+        user?.registrationNumber?.toUpperCase()?.includes('25M80041')
+    );
+
     // Checkpoints State for 25M80041
     const [showQrModal, setShowQrModal] = useState(false);
     const [selectedCheckpoint, setSelectedCheckpoint] = useState<string | null>(null);
@@ -181,6 +188,75 @@ export function VerveAdminDashboardModal({ isOpen, onClose }: Props) {
     // Sorted by most checkpoints cleared first (leaderboard order)
     const cpOrder = ['1','2','3','4a','4b','5a','5b','6','7','8','9','10'];
     const sortedTeamProgress = [...passedCheckpoints].sort((a, b) => b.checkpoints.length - a.checkpoints.length);
+
+    // Manual Entry State (admin 25M80041 only)
+    const [manualTeamName, setManualTeamName] = useState('');
+    const [manualCheckpoint, setManualCheckpoint] = useState('');
+    const [manualError, setManualError] = useState<string | null>(null);
+    const [manualSuccess, setManualSuccess] = useState<string | null>(null);
+    const [isManualSubmitting, setIsManualSubmitting] = useState(false);
+
+    const handleManualEntry = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!manualTeamName.trim() || !manualCheckpoint) return;
+        setIsManualSubmitting(true);
+        setManualError(null);
+        setManualSuccess(null);
+
+        const normalizedTeamName = manualTeamName.trim().toLowerCase().replace(/\s+/g, ' ');
+
+        try {
+            const { doc, setDoc, getDocs, getDoc, collection } = await import('firebase/firestore');
+
+            // Step 1: Validate team name against registered teams
+            const teamsSnapshot = await getDocs(collection(db, 'treasure_hunt_teams'));
+            const matchedDoc = teamsSnapshot.docs.find(d => {
+                const stored = (d.data().teamName as string ?? '').trim().toLowerCase().replace(/\s+/g, ' ');
+                return stored === normalizedTeamName;
+            });
+
+            if (!matchedDoc) {
+                setManualError('Team not found! Please cross-check the team name spelling — it must match exactly what was registered.');
+                setIsManualSubmitting(false);
+                return;
+            }
+
+            // Use the original casing from the registered record
+            const registeredTeamName = (matchedDoc.data().teamName as string).trim();
+            const teamDocId = normalizedTeamName.replace(/[^a-z0-9]/g, '-');
+
+            // Step 2: Check for duplicate — don't overwrite an existing checkpoint
+            const cpDocRef = doc(db, 'passed_checkpoints', teamDocId, 'checkpoints', manualCheckpoint);
+            const cpDocSnap = await getDoc(cpDocRef);
+
+            if (cpDocSnap.exists()) {
+                setManualError(`Checkpoint ${manualCheckpoint} is already recorded for "${registeredTeamName}". No changes made.`);
+                setIsManualSubmitting(false);
+                return;
+            }
+
+            // Step 3: Write team doc (merge) + new checkpoint subcollection doc
+            await setDoc(doc(db, 'passed_checkpoints', teamDocId), {
+                teamName: registeredTeamName,
+                normalizedTeamName,
+            }, { merge: true });
+
+            await setDoc(cpDocRef, {
+                checkpointId: manualCheckpoint,
+                completedAt: new Date().toISOString(),
+                manualEntry: true,
+            });
+
+            setManualSuccess(`✅ Checkpoint ${manualCheckpoint} recorded for "${registeredTeamName}"`);
+            setManualTeamName('');
+            setManualCheckpoint('');
+        } catch (err) {
+            console.error('Manual entry write failed:', err);
+            setManualError('An error occurred. Please try again.');
+        } finally {
+            setIsManualSubmitting(false);
+        }
+    };
 
     const resetOnSpotForm = () => {
         setOnSpotData({
@@ -298,6 +374,11 @@ export function VerveAdminDashboardModal({ isOpen, onClose }: Props) {
             setPassedCheckpoints([]);
             return;
         }
+        // Also reset manual entry state when leaving that tab
+        setManualTeamName('');
+        setManualCheckpoint('');
+        setManualError(null);
+        setManualSuccess(null);
         const fetchPassed = async () => {
             setIsPassedLoading(true);
             try {
@@ -514,7 +595,7 @@ export function VerveAdminDashboardModal({ isOpen, onClose }: Props) {
                             </p>
                         </div>
                         <div className="flex items-center gap-3 self-end md:self-auto shrink-0 z-[60]">
-                            {(user?.userId?.toUpperCase()?.includes('25M80041') || user?.email?.toUpperCase()?.includes('25M80041') || user?.registrationNumber?.toUpperCase()?.includes('25M80041')) && (
+                            {isCheckpointAdmin && (
                                 <button type="button" onClick={() => setShowQrModal(true)}
                                     className="h-12 px-4 bg-verve-pink text-black flex items-center justify-center gap-2 font-heading tracking-widest text-sm uppercase hover:bg-white hover:text-black border-[3px] border-black shadow-[4px_4px_0_#fff] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[6px_6px_0_#fff] active:translate-y-2 active:translate-x-2 active:shadow-none transition-all"
                                 >
@@ -529,7 +610,7 @@ export function VerveAdminDashboardModal({ isOpen, onClose }: Props) {
                                 <Download size={20} className="stroke-[3]" />
                                 <span className="hidden sm:inline">Export CSV</span>
                             </button>
-                            {activeTab === 'treasure-hunt' && (
+                            {activeTab === 'treasure-hunt' && isCheckpointAdmin && (
                                 <button type="button" onClick={() => setShowOnSpotForm(true)}
                                     className="h-12 px-4 bg-verve-gold text-black flex items-center justify-center gap-2 font-heading tracking-widest text-sm uppercase hover:bg-white hover:text-black border-[3px] border-black shadow-[4px_4px_0_#fff] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[6px_6px_0_#fff] active:translate-y-2 active:translate-x-2 active:shadow-none transition-all"
                                 >
@@ -609,6 +690,23 @@ export function VerveAdminDashboardModal({ isOpen, onClose }: Props) {
                             >
                                 <Trophy className="w-4 h-4" /> Passed Checkpoints ({sortedTeamProgress.length})
                             </button>
+
+                            {/* Manual Entry Tab — admin 25M80041 only */}
+                            {isCheckpointAdmin && (
+                                <button
+                                    onClick={() => setActiveTab('manual-entry')}
+                                    className={`shrink-0 px-6 py-2 font-heading tracking-widest uppercase border-[3px] border-black transition-all flex items-center gap-2 ${
+                                        activeTab === 'manual-entry'
+                                            ? 'text-black shadow-[4px_4px_0_#000]'
+                                            : 'bg-[#201f1f] text-white hover:text-black'
+                                    }`}
+                                    style={{
+                                        backgroundColor: activeTab === 'manual-entry' ? '#fb923c' : undefined,
+                                    }}
+                                >
+                                    ✏️ Manual Entry
+                                </button>
+                            )}
                         </div>
                     </div>
 
@@ -619,6 +717,89 @@ export function VerveAdminDashboardModal({ isOpen, onClose }: Props) {
                             <div className="flex flex-col items-center justify-center p-20 gap-6 h-full">
                                 <div className="w-16 h-16 border-[6px] border-black border-t-verve-gold animate-spin" />
                                 <span className="text-2xl font-heading uppercase tracking-widest text-[#e08585] drop-shadow-[2px_2px_0_#000]">Gathering Intel...</span>
+                            </div>
+                        ) : activeTab === 'manual-entry' ? (
+                            // --- MANUAL CHECKPOINT ENTRY VIEW ---
+                            <div className="flex items-start justify-center pt-6">
+                                <div className="w-full max-w-lg bg-[#2a2828] border-[4px] border-black shadow-[8px_8px_0_#fb923c] p-8">
+                                    <div className="flex items-center gap-3 mb-6 border-b-2 border-dashed border-gray-600 pb-4">
+                                        <span className="text-3xl">✏️</span>
+                                        <div>
+                                            <h2 className="text-2xl font-heading text-white uppercase tracking-widest">Manual Checkpoint Entry</h2>
+                                            <p className="text-gray-400 font-mono text-xs mt-1">For cases where QR scan fails. Validates team name and prevents duplicate entries.</p>
+                                        </div>
+                                    </div>
+
+                                    <form onSubmit={handleManualEntry} className="space-y-5">
+                                        {/* Team Name */}
+                                        <div>
+                                            <label className="block text-xs uppercase font-bold text-gray-400 mb-2 tracking-widest">Team Name</label>
+                                            <input
+                                                type="text"
+                                                required
+                                                value={manualTeamName}
+                                                onChange={e => { setManualTeamName(e.target.value); setManualError(null); setManualSuccess(null); }}
+                                                placeholder="Enter registered team name..."
+                                                className={`w-full bg-[#1e1c1c] border-[3px] p-3 text-white placeholder-gray-600 focus:outline-none transition-colors font-mono ${
+                                                    manualError ? 'border-red-500 focus:border-red-400' : 'border-gray-600 focus:border-orange-400'
+                                                }`}
+                                            />
+                                        </div>
+
+                                        {/* Checkpoint Dropdown */}
+                                        <div>
+                                            <label className="block text-xs uppercase font-bold text-gray-400 mb-2 tracking-widest">Select Checkpoint</label>
+                                            <select
+                                                required
+                                                value={manualCheckpoint}
+                                                onChange={e => { setManualCheckpoint(e.target.value); setManualError(null); setManualSuccess(null); }}
+                                                className="w-full bg-[#1e1c1c] border-[3px] border-gray-600 p-3 text-white focus:border-orange-400 focus:outline-none transition-colors font-mono appearance-none cursor-pointer"
+                                            >
+                                                <option value="" disabled>-- Select checkpoint --</option>
+                                                {cpOrder.map(cp => (
+                                                    <option key={cp} value={cp}>Checkpoint {cp}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        {/* Error */}
+                                        {manualError && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: -4 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                className="bg-red-950/60 border-[2px] border-red-500 p-3 flex gap-2"
+                                            >
+                                                <span className="shrink-0">⚠️</span>
+                                                <p className="text-red-300 text-xs font-mono leading-relaxed">{manualError}</p>
+                                            </motion.div>
+                                        )}
+
+                                        {/* Success */}
+                                        {manualSuccess && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: -4 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                className="bg-green-950/60 border-[2px] border-green-400 p-3 flex gap-2"
+                                            >
+                                                <p className="text-green-300 text-xs font-mono leading-relaxed font-bold">{manualSuccess}</p>
+                                            </motion.div>
+                                        )}
+
+                                        {/* Submit */}
+                                        <button
+                                            type="submit"
+                                            disabled={isManualSubmitting}
+                                            className="w-full bg-orange-400 text-black font-heading font-black text-xl uppercase tracking-widest py-3 border-[3px] border-black shadow-[4px_4px_0_#000] hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[8px_8px_0_#000] active:translate-y-1 active:translate-x-1 active:shadow-none transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0 disabled:translate-x-0 disabled:shadow-none"
+                                        >
+                                            {isManualSubmitting ? (
+                                                <span className="flex items-center justify-center gap-2">
+                                                    <span className="w-4 h-4 border-[2px] border-black border-t-transparent rounded-full animate-spin" />
+                                                    Recording...
+                                                </span>
+                                            ) : 'Record Checkpoint'}
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         ) : activeTab === 'passed-checkpoints' ? (
                             // --- PASSED CHECKPOINTS VIEW ---

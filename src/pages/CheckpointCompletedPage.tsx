@@ -69,7 +69,7 @@ export function CheckpointCompletedPage() {
         const normalizedTeamName = teamName.trim().toLowerCase().replace(/\s+/g, ' ');
 
         try {
-            const { doc, setDoc, getDocs, collection } = await import('firebase/firestore');
+            const { doc, setDoc, getDocs, getDoc, collection } = await import('firebase/firestore');
             const { db } = await import('../firebase');
 
             // --- Step 1: Validate team name against registered teams ---
@@ -86,9 +86,24 @@ export function CheckpointCompletedPage() {
                 return;
             }
 
-            // --- Step 2: Team verified — record the checkpoint scan ---
             const teamDocId = normalizedTeamName.replace(/[^a-z0-9]/g, '-');
 
+            // --- Step 1.5: Enforce sequential order ---
+            const cpOrder = ['1', '2', '3', '4a', '4b', '5a', '5b', '6', '7', '8', '9', '10'];
+            const currentIndex = cpOrder.indexOf(checkpointLabel!);
+            if (currentIndex > 0) {
+                const prerequisite = cpOrder[currentIndex - 1];
+                const prereqDoc = await getDoc(doc(db, 'passed_checkpoints', teamDocId, 'checkpoints', prerequisite));
+                if (!prereqDoc.exists()) {
+                    setTeamError(
+                        `You must complete Checkpoint ${prerequisite} before attempting Checkpoint ${checkpointLabel}. Please complete them in the correct order.`
+                    );
+                    setIsVerifying(false);
+                    return;
+                }
+            }
+
+            // --- Step 2: Team verified & order confirmed — record the checkpoint scan ---
             await setDoc(doc(db, 'passed_checkpoints', teamDocId), {
                 teamName: teamName.trim(),
                 normalizedTeamName,
